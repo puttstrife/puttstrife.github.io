@@ -1,0 +1,34 @@
+:root {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F5F5FA;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+    margin-top: 200px;
+}
+
+.info-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+}
+
+.button-links {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+.summary {
+    text-align: left;
+}
