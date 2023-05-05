@@ -2,10 +2,11 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    --brand-background: #F5F5FA;
 }
 
 body {
-    background-color: #F5F5FA;
+    background-color: var(--brand-background);
 }
 
 .grid-container {
