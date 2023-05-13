@@ -1,8 +1,48 @@
+@import url('https://fonts.cdnfonts.com/css/montserrat');
+@import url('https://fonts.cdnfonts.com/css/open-sans');
 :root {
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
     --brand-background: #F5F5FA;
+    font-family: 'Montserrat', sans-serif;
+}
+
+p {
+    margin: 0px;
+}
+
+h1,
+h2 {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0px;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+    color: gray;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+a {
+    font-weight: 500;
+    color: black;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0px;
 }
 
 body {
@@ -15,6 +55,11 @@ body {
     grid-template-rows: 1fr;
     place-items: center;
     margin-top: 200px;
+}
+
+.designation {
+    margin-top: 5px;
+    font-size: 20px;
 }
 
 .info-container {
@@ -32,4 +77,11 @@ body {
 
 .summary {
     text-align: left;
+    margin-top: 10px;
+}
+
+.icon {
+    margin: 0 10px 0 10px;
+    height: 30px;
+    width: 30px;
 }
