@@ -10,6 +10,7 @@
 
 p {
     margin: 0px;
+    line-height: 24px;
 }
 
 h1,
@@ -78,6 +79,7 @@ body {
 .summary {
     text-align: left;
     margin-top: 10px;
+    max-width: 600px;
 }
 
 .icon {
