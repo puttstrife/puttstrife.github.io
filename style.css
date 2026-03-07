@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 @import url('https://fonts.cdnfonts.com/css/montserrat');
 @import url('https://fonts.cdnfonts.com/css/open-sans');
 :root {
@@ -96,4 +100,122 @@ body {
     background: transparent;
     height: 382px !important;
     border-radius: 10px;
+}
+
+/* ── Floating Nav ── */
+.floating-nav {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 50px;
+    padding: 12px 36px;
+    display: flex;
+    gap: 36px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+}
+
+.floating-nav a,
+.floating-nav a:visited {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.floating-nav a:hover {
+    color: #888;
+}
+
+/* ── Blog Section ── */
+.blog-section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 100px 40px 120px;
+}
+
+.blog-heading {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 36px;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.blog-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card-image {
+    height: 180px;
+}
+
+.blog-card-image--1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.blog-card-image--2 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.blog-card-content {
+    padding: 24px;
+}
+
+.blog-date {
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.blog-card-content h3 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111;
+    line-height: 1.4;
+    margin: 8px 0 12px;
+}
+
+.blog-card-content p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.65;
+    margin-bottom: 20px;
+}
+
+.blog-read-more,
+.blog-read-more:visited {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.blog-read-more:hover {
+    color: #666;
 }
