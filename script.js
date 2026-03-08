@@ -285,6 +285,147 @@ loadNews();
 /* ─────────────────────────────────────────
    Contact Form
 ───────────────────────────────────────── */
+/* ─────────────────────────────────────────
+   Custom Booking Calendar
+───────────────────────────────────────── */
+const TIME_SLOTS   = ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'];
+const MONTH_NAMES  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAY_NAMES    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+let calYear, calMonth, calSelectedDate, calSelectedTime;
+
+function initCalendar() {
+    const now = new Date();
+    calYear  = now.getFullYear();
+    calMonth = now.getMonth();
+    renderCalendar();
+}
+
+function renderCalendar() {
+    const container = document.getElementById('custom-calendar');
+    if (!container) return;
+
+    const today    = new Date(); today.setHours(0,0,0,0);
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    // Shift so Mon = 0
+    const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
+    const prevMonthStart = new Date(calYear, calMonth, 1) <= today;
+
+    let daysHtml = DAY_NAMES.map(d => `<span>${d}</span>`).join('');
+    let gridHtml = '';
+
+    for (let i = 0; i < startOffset; i++) gridHtml += `<div class="cal-day"></div>`;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const date    = new Date(calYear, calMonth, d);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        const isPast    = date < today;
+        const dateStr   = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const isSelected = dateStr === calSelectedDate;
+        const cls = ['cal-day', isWeekend || isPast ? 'disabled' : 'available', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
+        const click = (!isWeekend && !isPast) ? `onclick="calPickDate('${dateStr}')"` : '';
+        gridHtml += `<div class="${cls}" ${click}>${d}</div>`;
+    }
+
+    let timesHtml = '';
+    if (calSelectedDate) {
+        timesHtml = `
+        <div class="cal-timeslots">
+            <p class="cal-timeslot-label">Pick a time</p>
+            <div class="cal-times">
+                ${TIME_SLOTS.map(t => `<button class="cal-time ${t === calSelectedTime ? 'selected' : ''}" onclick="calPickTime('${t}')">${t}</button>`).join('')}
+            </div>
+        </div>`;
+    }
+
+    let bookingHtml = '';
+    if (calSelectedDate && calSelectedTime) {
+        const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+        bookingHtml = `
+        <form class="cal-booking-form" id="cal-booking-form">
+            <p class="cal-selected-info">📅 ${formatted} · ${calSelectedTime}</p>
+            <input type="text"  name="cal_name"  placeholder="Your name"   required>
+            <input type="email" name="cal_email" placeholder="Your email"  required>
+            <button type="submit" class="cal-confirm-btn" id="cal-confirm-btn">Confirm Booking</button>
+        </form>`;
+    }
+
+    container.innerHTML = `
+        <div class="cal-header">
+            <button class="cal-nav" onclick="calChangeMonth(-1)" ${prevMonthStart ? 'disabled' : ''}>‹</button>
+            <span class="cal-month-label">${MONTH_NAMES[calMonth]} ${calYear}</span>
+            <button class="cal-nav" onclick="calChangeMonth(1)">›</button>
+        </div>
+        <div class="cal-weekdays">${daysHtml}</div>
+        <div class="cal-grid">${gridHtml}</div>
+        ${timesHtml}
+        ${bookingHtml}`;
+
+    document.getElementById('cal-booking-form')?.addEventListener('submit', calSubmitBooking);
+}
+
+function calChangeMonth(dir) {
+    calMonth += dir;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
+    renderCalendar();
+}
+
+function calPickDate(dateStr) {
+    calSelectedDate = dateStr;
+    calSelectedTime = null;
+    renderCalendar();
+}
+
+function calPickTime(time) {
+    calSelectedTime = time;
+    renderCalendar();
+}
+
+async function calSubmitBooking(e) {
+    e.preventDefault();
+    const btn   = document.getElementById('cal-confirm-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled    = true;
+
+    const name  = e.target.cal_name.value;
+    const email = e.target.cal_email.value;
+    const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+
+    try {
+        const res  = await fetch('https://api.web3forms.com/submit', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({
+                access_key: '03657e8a-ab0f-4d25-be91-76d8ad81c7b1',
+                subject:    `📅 Meeting Request from ${name} — ${formatted} at ${calSelectedTime}`,
+                name,
+                email,
+                message:    `${name} has requested a 30-min call on ${formatted} at ${calSelectedTime} (their local time).\n\nReply to: ${email}`,
+            }),
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error();
+
+        document.getElementById('custom-calendar').innerHTML = `
+            <div class="cal-success">
+                <div class="success-icon">✓</div>
+                <h4>Booking request sent!</h4>
+                <p>${formatted} at ${calSelectedTime}.<br>Jeffrey will confirm your call shortly.</p>
+            </div>`;
+    } catch {
+        btn.textContent = 'Failed — try again';
+        btn.disabled    = false;
+    }
+}
+
+initCalendar();
+
+
+/* ─────────────────────────────────────────
+   Contact Form
+───────────────────────────────────────── */
 const contactForm  = document.getElementById('contact-form');
 const submitBtn    = document.getElementById('submit-btn');
 const successMsg   = document.getElementById('contact-success');
