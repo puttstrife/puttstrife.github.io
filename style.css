@@ -298,6 +298,7 @@ body {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .blog-card:hover {
@@ -837,6 +838,7 @@ body.article-page {
     flex-direction: column;
     gap: 10px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 .news-card:hover {

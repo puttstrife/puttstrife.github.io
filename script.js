@@ -51,7 +51,7 @@ function renderMediumPosts(posts) {
         const date = formatDate(post.date);
         const read = estimateReadTime(stripHtml(post.content));
         return `
-        <article class="blog-card">
+        <article class="blog-card" onclick="window.open('${post.link}','_blank','noopener noreferrer')" role="link" tabindex="0">
             <div class="blog-card-content">
                 <div class="blog-card-header">
                     <span class="blog-tag">${post.category}</span>
@@ -77,7 +77,7 @@ function renderMediumFallback() {
         { tag: 'Travel',  title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)',   subtitle: "The complete guide I wish I had when I first tried to stay in Thailand long-term. Visas, paperwork, and hard-won lessons.",    date: 'Dec 2025', read: '7 min read' },
     ];
     document.getElementById('medium-posts').innerHTML = posts.map(p => `
-        <article class="blog-card">
+        <article class="blog-card" onclick="window.open('https://medium.com/@puttstrife','_blank','noopener noreferrer')" role="link" tabindex="0">
             <div class="blog-card-content">
                 <div class="blog-card-header">
                     <span class="blog-tag">${p.tag}</span>
@@ -163,7 +163,7 @@ const NEWS_PAGE_SIZE = 4;
 
 function buildNewsCards(articles) {
     return articles.map(a => `
-        <article class="news-card">
+        <article class="news-card" onclick="window.open('${a.link}','_blank','noopener noreferrer')" role="link" tabindex="0">
             <div class="news-card-header">
                 <span class="news-source">${a.source}</span>
                 <span class="news-time">${timeAgo(a.pubDate)}</span>
