@@ -629,6 +629,159 @@ body.article-page {
     color: #fff;
 }
 
+/* ── Tech News Section ── */
+.news-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 100px 40px 120px;
+    text-align: center;
+}
+
+.news-heading {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+}
+
+.news-subheading {
+    font-size: 14px;
+    color: #999;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.news-filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.news-filter {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    background: #fff;
+    border: 1.5px solid #e0e0e0;
+    padding: 8px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.news-filter:hover {
+    border-color: #111;
+    color: #111;
+}
+
+.news-filter.active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+}
+
+.news-count {
+    font-size: 13px;
+    color: #bbb;
+    margin-bottom: 28px;
+    font-weight: 500;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    text-align: left;
+}
+
+.news-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
+
+.news-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.news-source {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #764ba2;
+    background: rgba(118, 75, 162, 0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.news-time {
+    font-size: 12px;
+    color: #bbb;
+    white-space: nowrap;
+}
+
+.news-title a,
+.news-title a:visited {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.2s;
+}
+
+.news-title a:hover {
+    color: #764ba2;
+}
+
+.news-author {
+    font-size: 12px;
+    color: #aaa;
+    margin: 0;
+}
+
+.news-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.news-card-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 16px;
+    height: 160px;
+}
+
+.news-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #bbb;
+    font-size: 14px;
+    padding: 40px 0;
+}
+
 /* ── Contact Section ── */
 .contact-section {
     max-width: 600px;
