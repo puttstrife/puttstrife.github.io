@@ -297,24 +297,43 @@ const GCAL_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrXpvEYSzcIf7i
 
 let calYear, calMonth, calSelectedDate, calSelectedTime;
 
-function openCalModal() {
-    const overlay = document.getElementById('cal-modal-overlay');
-    overlay.classList.add('open');
+/* ── Modal helpers ── */
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
     document.body.style.overflow = 'hidden';
-    if (!calYear) initCalendar();
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
 }
 
-function closeCalModal(e) {
-    if (e && e.target !== document.getElementById('cal-modal-overlay')) return;
-    const overlay = document.getElementById('cal-modal-overlay');
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
+function openBookingModal() {
+    const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    document.getElementById('booking-modal-subtitle').textContent = '📅 ' + formatted + ' · ' + calSelectedTime;
+    document.getElementById('booking-form-container').innerHTML = `
+        <form class="cal-booking-form" id="cal-booking-form">
+            <input type="text"  name="cal_name"  placeholder="Your name"  required>
+            <input type="email" name="cal_email" placeholder="Your email" required>
+            <button type="submit" class="cal-confirm-btn" id="cal-confirm-btn">Confirm Booking</button>
+        </form>`;
+    document.getElementById('cal-booking-form').addEventListener('submit', calSubmitBooking);
+    openModal('booking-modal-overlay');
+}
+function closeBookingModal(e) {
+    if (e && e.target !== document.getElementById('booking-modal-overlay')) return;
+    closeModal('booking-modal-overlay');
+}
+
+function openContactModal() { openModal('contact-modal-overlay'); }
+function closeContactModal(e) {
+    if (e && e.target !== document.getElementById('contact-modal-overlay')) return;
+    closeModal('contact-modal-overlay');
 }
 
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-        document.getElementById('cal-modal-overlay')?.classList.remove('open');
-        document.body.style.overflow = '';
+        closeModal('booking-modal-overlay');
+        closeModal('contact-modal-overlay');
     }
 });
 
@@ -359,16 +378,10 @@ function renderCalendar() {
             </div>
         </div>` : '';
 
-    const bookingHtml = (calSelectedDate && calSelectedTime) ? (() => {
-        const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-        return `
-        <form class="cal-booking-form" id="cal-booking-form">
-            <p class="cal-selected-info">📅 ${formatted} · ${calSelectedTime}</p>
-            <input type="text"  name="cal_name"  placeholder="Your name"  required>
-            <input type="email" name="cal_email" placeholder="Your email" required>
-            <button type="submit" class="cal-confirm-btn" id="cal-confirm-btn">Confirm Booking</button>
-        </form>`;
-    })() : '';
+    const bookingHtml = (calSelectedDate && calSelectedTime) ? `
+        <div class="cal-schedule-btn-wrap">
+            <button class="cal-schedule-btn" onclick="openBookingModal()">Set Schedule →</button>
+        </div>` : '';
 
     container.innerHTML = `
         <div class="cal-header">
@@ -385,7 +398,6 @@ function renderCalendar() {
         </div>
         ${bookingHtml}`;
 
-    document.getElementById('cal-booking-form')?.addEventListener('submit', calSubmitBooking);
 }
 
 function calChangeMonth(dir) {
@@ -444,7 +456,7 @@ async function calSubmitBooking(e) {
         const json = await res.json();
         if (!json.success) throw new Error();
 
-        document.getElementById('custom-calendar').innerHTML = `
+        document.getElementById('booking-form-container').innerHTML = `
             <div class="cal-success">
                 <div class="success-icon">✓</div>
                 <h4>You're booked!</h4>
@@ -457,17 +469,16 @@ async function calSubmitBooking(e) {
 }
 
 
+initCalendar();
+
 /* ─────────────────────────────────────────
    Contact Form
 ───────────────────────────────────────── */
-const contactForm  = document.getElementById('contact-form');
-const submitBtn    = document.getElementById('submit-btn');
-const successMsg   = document.getElementById('contact-success');
-
-contactForm?.addEventListener('submit', async function (e) {
+document.getElementById('contact-form')?.addEventListener('submit', async function (e) {
     e.preventDefault();
-    submitBtn.textContent = 'Sending…';
-    submitBtn.disabled    = true;
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled    = true;
 
     const payload = Object.fromEntries(new FormData(this));
 
@@ -480,13 +491,13 @@ contactForm?.addEventListener('submit', async function (e) {
         const json = await res.json();
 
         if (json.success) {
-            contactForm.style.display = 'none';
-            successMsg.classList.add('visible');
+            this.style.display = 'none';
+            document.getElementById('contact-success').classList.add('visible');
         } else {
             throw new Error(json.message || 'Submission failed');
         }
     } catch {
-        submitBtn.textContent = 'Failed — please try again';
-        submitBtn.disabled    = false;
+        btn.textContent = 'Failed — please try again';
+        btn.disabled    = false;
     }
 });
