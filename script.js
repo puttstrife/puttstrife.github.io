@@ -298,8 +298,42 @@ loadNews();
 
 
 /* ─────────────────────────────────────────
-   Contact Form
+   Input Validation
 ───────────────────────────────────────── */
+function validateName(value) {
+    const v = value.trim();
+    if (!v)                        return 'Name is required.';
+    if (v.length < 2)              return 'Name must be at least 2 characters.';
+    if (v.length > 60)             return 'Name must be 60 characters or fewer.';
+    // Allow letters (including accented), spaces, hyphens, apostrophes, and dots only
+    if (!/^[a-zA-ZÀ-ÿ\s'\-.]+$/.test(v)) return 'Name may only contain letters, spaces, hyphens, or apostrophes. No symbols or code allowed.';
+    return null;
+}
+
+function validateEmail(value) {
+    const v = value.trim();
+    if (!v)                              return 'Email address is required.';
+    if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(v)) return 'Please enter a valid email address (e.g. you@example.com).';
+    return null;
+}
+
+function showFieldError(inputEl, message) {
+    inputEl.classList.add('input-error');
+    let err = inputEl.parentNode.querySelector('.field-error');
+    if (!err) {
+        err = document.createElement('span');
+        err.className = 'field-error';
+        inputEl.parentNode.appendChild(err);
+    }
+    err.textContent = message;
+}
+
+function clearFieldError(inputEl) {
+    inputEl.classList.remove('input-error');
+    const err = inputEl.parentNode.querySelector('.field-error');
+    if (err) err.remove();
+}
+
 /* ─────────────────────────────────────────
    Custom Booking Calendar
 ───────────────────────────────────────── */
@@ -326,9 +360,13 @@ function openBookingModal() {
     const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
     document.getElementById('booking-modal-subtitle').textContent = '📅 ' + formatted + ' · ' + calSelectedTime;
     document.getElementById('booking-form-container').innerHTML = `
-        <form class="cal-booking-form" id="cal-booking-form">
-            <input type="text"  name="cal_name"  placeholder="Your name"  required>
-            <input type="email" name="cal_email" placeholder="Your email" required>
+        <form class="cal-booking-form" id="cal-booking-form" novalidate>
+            <div class="cal-field-wrap">
+                <input type="text"  name="cal_name"  placeholder="Your name"  autocomplete="name">
+            </div>
+            <div class="cal-field-wrap">
+                <input type="email" name="cal_email" placeholder="Your email" autocomplete="email">
+            </div>
             <button type="submit" class="cal-confirm-btn" id="cal-confirm-btn">Confirm Booking</button>
         </form>`;
     document.getElementById('cal-booking-form').addEventListener('submit', calSubmitBooking);
@@ -435,12 +473,23 @@ function calPickTime(time) {
 
 async function calSubmitBooking(e) {
     e.preventDefault();
-    const btn   = document.getElementById('cal-confirm-btn');
+
+    const nameInput  = e.target.cal_name;
+    const emailInput = e.target.cal_email;
+    const name       = nameInput.value.trim();
+    const email      = emailInput.value.trim();
+
+    clearFieldError(nameInput);
+    clearFieldError(emailInput);
+
+    const nameErr  = validateName(name);
+    const emailErr = validateEmail(email);
+    if (nameErr)  { showFieldError(nameInput,  nameErr);  return; }
+    if (emailErr) { showFieldError(emailInput, emailErr); return; }
+
+    const btn = document.getElementById('cal-confirm-btn');
     btn.textContent = 'Booking…';
     btn.disabled    = true;
-
-    const name      = e.target.cal_name.value.trim();
-    const email     = e.target.cal_email.value.trim();
     const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
 
     // Try Google Calendar via Apps Script first
@@ -491,6 +540,18 @@ initCalendar();
 ───────────────────────────────────────── */
 document.getElementById('contact-form')?.addEventListener('submit', async function (e) {
     e.preventDefault();
+
+    const nameInput  = document.getElementById('contact-name');
+    const emailInput = document.getElementById('contact-email');
+
+    clearFieldError(nameInput);
+    clearFieldError(emailInput);
+
+    const nameErr  = validateName(nameInput.value);
+    const emailErr = validateEmail(emailInput.value);
+    if (nameErr)  { showFieldError(nameInput,  nameErr);  return; }
+    if (emailErr) { showFieldError(emailInput, emailErr); return; }
+
     const btn = document.getElementById('submit-btn');
     btn.textContent = 'Sending…';
     btn.disabled    = true;

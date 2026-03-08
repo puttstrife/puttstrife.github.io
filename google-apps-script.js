@@ -12,32 +12,85 @@
  * 8. Open script.js in your portfolio and replace PASTE_YOUR_APPS_SCRIPT_URL_HERE with that URL
  */
 
-function doPost(e) {
+/* ── Server-side input validation ── */
+function isValidName(name) {
+    if (!name || name.trim().length < 2 || name.trim().length > 60) return false;
+    // Only letters (including accented), spaces, hyphens, apostrophes, dots
+    return /^[a-zA-ZÀ-ÿ\s'\-.]+$/.test(name.trim());
+}
+
+function isValidEmail(email) {
+    if (!email || email.trim().length > 254) return false;
+    return /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email.trim());
+}
+
+function isValidDate(date) {
+    // Must be YYYY-MM-DD format and a real calendar date
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+    var parts = date.split('-').map(Number);
+    var d = new Date(parts[0], parts[1] - 1, parts[2]);
+    return d.getFullYear() === parts[0] && d.getMonth() === parts[1] - 1 && d.getDate() === parts[2];
+}
+
+function isValidTime(time) {
+    // Only allow the exact time slots offered on the booking calendar
+    var allowed = ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'];
+    return allowed.indexOf(time) !== -1;
+}
+
+function doGet(e) {
     try {
-        const data  = JSON.parse(e.postData.contents);
-        const { name, email, date, time } = data;
+        var name  = (e.parameter.name  || '').trim();
+        var email = (e.parameter.email || '').trim();
+        var date  = (e.parameter.date  || '').trim();
+        var time  = (e.parameter.time  || '').trim();
 
-        // Parse date string "YYYY-MM-DD"
-        const [year, month, day] = date.split('-').map(Number);
+        // ── Validate all inputs before touching Google Calendar ──
+        if (!isValidName(name)) {
+            return ContentService
+                .createTextOutput(JSON.stringify({ success: false, error: 'Invalid name.' }))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
+        if (!isValidEmail(email)) {
+            return ContentService
+                .createTextOutput(JSON.stringify({ success: false, error: 'Invalid email address.' }))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
+        if (!isValidDate(date)) {
+            return ContentService
+                .createTextOutput(JSON.stringify({ success: false, error: 'Invalid date.' }))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
+        if (!isValidTime(time)) {
+            return ContentService
+                .createTextOutput(JSON.stringify({ success: false, error: 'Invalid time slot.' }))
+                .setMimeType(ContentService.MimeType.JSON);
+        }
 
-        // Parse time string "9:00 AM" or "2:00 PM"
-        const match   = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
-        let hours     = parseInt(match[1], 10);
-        const minutes = parseInt(match[2], 10);
-        const period  = match[3].toUpperCase();
+        // ── Parse date ──
+        var parts = date.split('-').map(Number);
+        var year  = parts[0];
+        var month = parts[1];
+        var day   = parts[2];
+
+        // ── Parse time ──
+        var match   = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        var hours   = parseInt(match[1], 10);
+        var minutes = parseInt(match[2], 10);
+        var period  = match[3].toUpperCase();
         if (period === 'PM' && hours !== 12) hours += 12;
         if (period === 'AM' && hours === 12) hours  = 0;
 
-        const startDate = new Date(year, month - 1, day, hours, minutes, 0);
-        const endDate   = new Date(startDate.getTime() + 30 * 60 * 1000);
+        var startDate = new Date(year, month - 1, day, hours, minutes, 0);
+        var endDate   = new Date(startDate.getTime() + 30 * 60 * 1000);
 
-        const calendar = CalendarApp.getDefaultCalendar();
-        const event    = calendar.createEvent(
-            `30-min call with ${name}`,
+        var calendar = CalendarApp.getDefaultCalendar();
+        var event    = calendar.createEvent(
+            '30-min call with ' + name,
             startDate,
             endDate,
             {
-                description: `Booking from puttstrife.github.io\n\nName: ${name}\nEmail: ${email}`,
+                description: 'Booking from puttstrife.github.io\n\nName: ' + name + '\nEmail: ' + email,
                 guests:      email,
                 sendInvites: true,
             }
@@ -52,11 +105,4 @@ function doPost(e) {
             .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
             .setMimeType(ContentService.MimeType.JSON);
     }
-}
-
-// Required for CORS preflight
-function doGet() {
-    return ContentService
-        .createTextOutput(JSON.stringify({ status: 'ok' }))
-        .setMimeType(ContentService.MimeType.JSON);
 }

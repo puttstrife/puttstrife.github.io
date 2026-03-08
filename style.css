@@ -1427,6 +1427,28 @@ body.article-page {
 .cal-booking-form input:focus { border-color: #764ba2; }
 .cal-booking-form input::placeholder { color: #bbb; }
 
+/* ── Field validation errors ── */
+.cal-field-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.cal-field-wrap input { width: 100%; }
+
+.field-error {
+    font-size: 12px;
+    color: #d93025;
+    font-weight: 500;
+    padding-left: 2px;
+}
+.input-error {
+    border-color: #d93025 !important;
+    background: #fff5f5 !important;
+}
+.form-group .field-error {
+    margin-top: 2px;
+}
+
 .cal-confirm-btn {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
