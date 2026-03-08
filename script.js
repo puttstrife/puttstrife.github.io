@@ -55,7 +55,7 @@ function renderMediumPosts(posts) {
             <div class="blog-card-content">
                 <div class="blog-card-header">
                     <span class="blog-tag">${post.category}</span>
-                    <span class="blog-date">${date} · ${read}</span>
+                    <span class="blog-date">${read}</span>
                 </div>
                 <h3>${post.title}</h3>
                 <p class="blog-subtitle">${post.subtitle}</p>
@@ -81,7 +81,7 @@ function renderMediumFallback() {
             <div class="blog-card-content">
                 <div class="blog-card-header">
                     <span class="blog-tag">${p.tag}</span>
-                    <span class="blog-date">${p.date} · ${p.read}</span>
+                    <span class="blog-date">${p.read}</span>
                 </div>
                 <h3>${p.title}</h3>
                 <p class="blog-subtitle">${p.subtitle}</p>
