@@ -14,13 +14,14 @@ html {
 
 p {
     margin: 0px;
-    line-height: 24px;
+    line-height: 1.75;
 }
 
 h1,
 h2 {
     font-family: 'Open Sans', sans-serif;
     margin: 0px;
+    line-height: 1.15;
 }
 
 a:link {
@@ -63,8 +64,11 @@ body {
 }
 
 .designation {
-    margin-top: 5px;
-    font-size: 20px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #888;
+    letter-spacing: 0.3px;
 }
 
 .info-container {
@@ -77,13 +81,35 @@ body {
 .button-links {
     display: flex;
     align-items: center;
-    justify-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.icon-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icon-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .summary {
     text-align: left;
     margin-top: 10px;
-    max-width: 600px;
+    max-width: 480px;
+    font-size: 15px;
+    color: #555;
+    line-height: 1.8;
 }
 
 .icon {
