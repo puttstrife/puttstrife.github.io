@@ -1513,13 +1513,9 @@ body.article-page {
     }
 
     .grid-container {
-        margin-top: 0;
-        padding-top: 60px;
-    }
-
-    .grid-container {
         grid-template-columns: 1fr;
-        padding: 100px 24px 60px;
+        margin-top: 0;
+        padding: 60px 24px 60px;
         text-align: center;
     }
 
