@@ -564,9 +564,9 @@ body.article-page {
 }
 
 .tweet-x-logo {
-    width: 18px;
-    height: 18px;
-    fill: #111;
+    width: 14px;
+    height: 14px;
+    fill: #999;
     flex-shrink: 0;
 }
 
