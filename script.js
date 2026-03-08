@@ -92,7 +92,7 @@ fetch(PROXY)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v1';
+const NEWS_CACHE_KEY = 'tc_news_v2';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
@@ -174,19 +174,43 @@ function renderNews(topic) {
 }
 
 async function fetchNewsFeed(source) {
-    const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}&count=20`;
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(source.url);
     try {
-        const res  = await fetch(api);
-        const data = await res.json();
-        if (data.status !== 'ok') return [];
-        return data.items.map(item => ({
-            title:       item.title?.trim() || 'Untitled',
-            link:        item.link || '#',
-            author:      item.author || '',
-            pubDate:     item.pubDate || '',
-            description: stripHtml(item.description || item.content || ''),
-            source:      source.name,
-        }));
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error();
+        const xml = await res.text();
+
+        const parser = new DOMParser();
+        const doc    = parser.parseFromString(xml, 'text/xml');
+
+        // Support both RSS <item> and Atom <entry>
+        const items = Array.from(doc.querySelectorAll('item, entry')).slice(0, 20);
+
+        return items.map(item => {
+            // Title
+            const title = item.querySelector('title')?.textContent?.trim() || 'Untitled';
+
+            // Link — Atom uses href attribute, RSS uses text node
+            const linkEl = item.querySelector('link');
+            const link   = linkEl?.getAttribute('href')
+                        || linkEl?.nextSibling?.textContent?.trim()
+                        || linkEl?.textContent?.trim()
+                        || '#';
+
+            // Description
+            const descEl    = item.querySelector('description, summary, content');
+            const description = stripHtml(descEl?.textContent || '');
+
+            // Author
+            const author = item.querySelector('author > name, creator, author')
+                              ?.textContent?.trim() || '';
+
+            // Date
+            const pubDate = item.querySelector('pubDate, published, updated')
+                               ?.textContent?.trim() || '';
+
+            return { title, link, author, pubDate, description, source: source.name };
+        }).filter(a => a.title !== 'Untitled' && a.link !== '#');
     } catch {
         return [];
     }
