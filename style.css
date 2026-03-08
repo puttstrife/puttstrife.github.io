@@ -220,10 +220,10 @@ body {
 
 .blog-card-content {
     padding: 36px 32px;
-    text-align: center;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     flex: 1;
 }
 
