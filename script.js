@@ -19,32 +19,37 @@ function stripHtml(html) {
 function parseFeed(xmlText) {
     const parser = new DOMParser();
     const xml    = parser.parseFromString(xmlText, 'text/xml');
-    const items  = Array.from(xml.querySelectorAll('item')).slice(0, 2);
+    const items  = Array.from(xml.querySelectorAll('item')).slice(0, 4);
 
-    return items.map(item => ({
-        title:    item.querySelector('title')?.textContent || 'Untitled',
-        link:     item.querySelector('link')?.nextSibling?.textContent?.trim() || '#',
-        date:     item.querySelector('pubDate')?.textContent || '',
-        content:  item.querySelector('encoded')?.textContent || item.querySelector('description')?.textContent || '',
-        category: item.querySelector('category')?.textContent || 'Article',
-    }));
+    return items.map(item => {
+        // Medium puts the URL as text between <link> tags (after a CDATA comment)
+        const linkEl   = item.querySelector('link');
+        const link     = linkEl?.nextSibling?.textContent?.trim()
+                      || linkEl?.textContent?.trim()
+                      || '#';
+        const content  = item.querySelector('encoded')?.textContent
+                      || item.querySelector('description')?.textContent
+                      || '';
+        return {
+            title:    item.querySelector('title')?.textContent?.trim() || 'Untitled',
+            link,
+            date:     item.querySelector('pubDate')?.textContent || '',
+            content,
+            category: item.querySelector('category')?.textContent || 'Article',
+        };
+    });
 }
 
 function renderPosts(posts) {
-    const grid = document.getElementById('medium-posts');
-
-    grid.innerHTML = posts.map(post => {
-        const text    = stripHtml(post.content);
-        const excerpt = text.slice(0, 120).trim() + '…';
-        const date    = formatDate(post.date);
-        const read    = estimateReadTime(text);
+    document.getElementById('medium-posts').innerHTML = posts.map(post => {
+        const date = formatDate(post.date);
+        const read = estimateReadTime(stripHtml(post.content));
 
         return `
         <article class="blog-card">
             <div class="blog-card-content">
                 <span class="blog-tag">${post.category}</span>
                 <h3>${post.title}</h3>
-                <p>${excerpt}</p>
                 <div class="blog-card-meta">
                     <span class="blog-date">${date} · ${read}</span>
                     <a href="${post.link}" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
@@ -55,29 +60,24 @@ function renderPosts(posts) {
 }
 
 function renderFallback() {
-    document.getElementById('medium-posts').innerHTML = `
-    <article class="blog-card">
-        <div class="blog-card-content">
-            <span class="blog-tag">Design</span>
-            <h3>If it didn't move a metric, it didn't work</h3>
-            <p>How design effectiveness should be measured through business outcomes rather than aesthetic appeal alone…</p>
-            <div class="blog-card-meta">
-                <span class="blog-date">Mar 2026 · 4 min read</span>
-                <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+    const posts = [
+        { tag: 'Design',   title: 'If it didn\'t move a metric, it didn\'t work',                              date: 'Mar 2026', read: '4 min read' },
+        { tag: 'SEO',      title: 'A Practical 20-Step SEO Checklist That Actually Moves the Needle',          date: 'Feb 2026', read: '6 min read' },
+        { tag: 'Culture',  title: 'Why Asians Chase Status — And How the West Does It Differently',            date: 'Jan 2026', read: '5 min read' },
+        { tag: 'Travel',   title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)', date: 'Dec 2025', read: '7 min read' },
+    ];
+
+    document.getElementById('medium-posts').innerHTML = posts.map(p => `
+        <article class="blog-card">
+            <div class="blog-card-content">
+                <span class="blog-tag">${p.tag}</span>
+                <h3>${p.title}</h3>
+                <div class="blog-card-meta">
+                    <span class="blog-date">${p.date} · ${p.read}</span>
+                    <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+                </div>
             </div>
-        </div>
-    </article>
-    <article class="blog-card">
-        <div class="blog-card-content">
-            <span class="blog-tag">SEO</span>
-            <h3>A Practical 20-Step SEO Checklist That Actually Moves the Needle</h3>
-            <p>A comprehensive, actionable framework for SEO implementation, covering technical foundations through content strategy…</p>
-            <div class="blog-card-meta">
-                <span class="blog-date">Feb 2026 · 6 min read</span>
-                <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
-            </div>
-        </div>
-    </article>`;
+        </article>`).join('');
 }
 
 fetch(PROXY)
@@ -87,10 +87,6 @@ fetch(PROXY)
     })
     .then(xml => {
         const posts = parseFeed(xml);
-        if (posts.length > 0) {
-            renderPosts(posts);
-        } else {
-            renderFallback();
-        }
+        posts.length > 0 ? renderPosts(posts) : renderFallback();
     })
     .catch(renderFallback);
