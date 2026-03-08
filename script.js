@@ -144,27 +144,10 @@ function timeAgo(dateStr) {
     return formatDate(dateStr);
 }
 
-function renderNews(topic) {
-    activeTopic = topic;
-    const filtered = allNews
-        .filter(a => matchesTopic(a, topic))
-        .slice(0, 10);
+const NEWS_PAGE_SIZE = 4;
 
-    const countEl = document.getElementById('news-count');
-    const grid    = document.getElementById('news-grid');
-
-    countEl.textContent = `${filtered.length} article${filtered.length !== 1 ? 's' : ''} found`;
-
-    document.querySelectorAll('.news-filter').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.topic === topic);
-    });
-
-    if (filtered.length === 0) {
-        grid.innerHTML = '<p class="news-empty">No articles found for this topic.</p>';
-        return;
-    }
-
-    grid.innerHTML = filtered.map(a => `
+function buildNewsCards(articles) {
+    return articles.map(a => `
         <article class="news-card">
             <div class="news-card-header">
                 <span class="news-source">${a.source}</span>
@@ -176,6 +159,38 @@ function renderNews(topic) {
             ${a.author ? `<p class="news-author">By ${a.author}</p>` : ''}
             <p class="news-desc">${a.description.slice(0, 130).trim()}…</p>
         </article>`).join('');
+}
+
+function renderNews(topic, showAll = false) {
+    activeTopic = topic;
+    const all      = allNews.filter(a => matchesTopic(a, topic));
+    const visible  = showAll ? all : all.slice(0, NEWS_PAGE_SIZE);
+    const hasMore  = !showAll && all.length > NEWS_PAGE_SIZE;
+
+    const countEl = document.getElementById('news-count');
+    const grid    = document.getElementById('news-grid');
+
+    countEl.textContent = `${all.length} article${all.length !== 1 ? 's' : ''} found`;
+
+    document.querySelectorAll('.news-filter').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.topic === topic);
+    });
+
+    if (all.length === 0) {
+        grid.innerHTML = '<p class="news-empty">No articles found for this topic.</p>';
+        return;
+    }
+
+    grid.innerHTML = buildNewsCards(visible)
+        + (hasMore ? `
+        <div class="news-see-more-wrap">
+            <button class="news-see-more-btn" id="news-see-more">
+                See all ${all.length} articles
+            </button>
+        </div>` : '');
+
+    document.getElementById('news-see-more')
+        ?.addEventListener('click', () => renderNews(topic, true));
 }
 
 async function fetchNewsFeed(source) {

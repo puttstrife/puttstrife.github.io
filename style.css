@@ -783,6 +783,31 @@ body.article-page {
     padding: 40px 0;
 }
 
+.news-see-more-wrap {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.news-see-more-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+    background: transparent;
+    border: 1.5px solid #222;
+    padding: 10px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.news-see-more-btn:hover {
+    background: #111;
+    color: #fff;
+}
+
 /* ── Contact Section ── */
 .contact-section {
     max-width: 560px;
