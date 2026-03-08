@@ -92,7 +92,7 @@ fetch(PROXY)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v2';
+const NEWS_CACHE_KEY = 'tc_news_v3';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
@@ -230,7 +230,18 @@ async function loadNews() {
     // Fetch all feeds in parallel, ignore individual failures
     const results = await Promise.allSettled(NEWS_SOURCES.map(fetchNewsFeed));
     allNews = results
-        .flatMap(r => r.status === 'fulfilled' ? r.value : [])
+        .flatMap((r, i) => {
+            if (r.status !== 'fulfilled') return [];
+            const name     = NEWS_SOURCES[i].name;
+            const articles = r.value;
+
+            if (name === 'Dev.to') {
+                // Only 1 article from Dev.to, and only if it's AI-related
+                return articles.filter(a => matchesTopic(a, 'ai')).slice(0, 1);
+            }
+            // All other sources: max 2 articles each
+            return articles.slice(0, 2);
+        })
         .filter(a => a.title && a.link)
         .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
