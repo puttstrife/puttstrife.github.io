@@ -1234,6 +1234,7 @@ body.article-page {
 
 .cal-modal-header {
     margin-bottom: 24px;
+    padding-right: 36px; /* keeps title clear of close button */
 }
 
 .cal-modal-header h3 {
@@ -1421,6 +1422,8 @@ body.article-page {
     border-radius: 10px;
     padding: 10px 14px;
     outline: none;
+    width: 100%;
+    box-sizing: border-box;
     transition: border-color 0.2s;
 }
 
@@ -1432,6 +1435,7 @@ body.article-page {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: 100%;
 }
 .cal-field-wrap input { width: 100%; }
 
@@ -1679,8 +1683,20 @@ body.article-page {
         flex-wrap: wrap;
     }
 
+    /* ── Modal → bottom sheet on mobile ── */
+    .cal-modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
     .cal-modal {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
         padding: 24px 20px;
+        padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+        max-height: 85vh;
+        max-height: 85dvh;
     }
 
     .cal-modal-sm {
@@ -1697,6 +1713,26 @@ body.article-page {
    Responsive — Mobile (max 480px)
 ───────────────────────────────────────── */
 @media (max-width: 480px) {
+
+    .cal-modal {
+        padding: 20px 16px;
+        padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+        max-height: 92vh;
+        max-height: 92dvh;
+    }
+
+    .cal-modal-header {
+        padding-right: 32px;
+    }
+
+    .cal-booking-form input {
+        font-size: 16px; /* prevents iOS auto-zoom on focus */
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px; /* prevents iOS auto-zoom on focus */
+    }
 
     .floating-nav {
         bottom: 16px;
