@@ -425,7 +425,7 @@ async function calSubmitBooking(e) {
             await fetch(GCAL_SCRIPT_URL, {
                 method: 'POST',
                 mode:   'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ name, email, date: calSelectedDate, time: calSelectedTime }),
             });
             gcalOk = true;
