@@ -995,15 +995,22 @@ body.article-page {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: #764ba2;
-    background: none;
-    border: none;
+    color: #444;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
+    padding: 11px 24px;
+    border-radius: 50px;
     cursor: pointer;
-    padding: 0;
-    transition: opacity 0.2s;
+    transition: box-shadow 0.2s, transform 0.2s;
 }
 
-.contact-message-btn:hover { opacity: 0.7; }
+.contact-message-btn:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+    transform: translateY(-2px);
+}
 
 .contact-form {
     display: flex;
@@ -1685,8 +1692,8 @@ body.article-page {
     }
 
     .news-filter {
-        font-size: 11px;
-        padding: 6px 12px;
+        font-size: 12px;
+        padding: 7px 14px;
     }
 
     .blog-card {
