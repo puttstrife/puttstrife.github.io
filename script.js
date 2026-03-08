@@ -422,12 +422,8 @@ async function calSubmitBooking(e) {
 
     if (scriptReady) {
         try {
-            await fetch(GCAL_SCRIPT_URL, {
-                method: 'POST',
-                mode:   'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ name, email, date: calSelectedDate, time: calSelectedTime }),
-            });
+            const params = new URLSearchParams({ name, email, date: calSelectedDate, time: calSelectedTime });
+            await fetch(GCAL_SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
             gcalOk = true;
         } catch { /* fall through to email notification */ }
     }
