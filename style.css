@@ -1478,8 +1478,8 @@ body.article-page {
 
     .floating-nav a {
         font-size: 13px;
-        padding: 14px 22px;
-        min-height: 52px;
+        padding: 11px 18px;
+        min-height: 44px;
         display: flex;
         align-items: center;
         border-radius: 28px;
@@ -1487,6 +1487,15 @@ body.article-page {
 
     .floating-nav .nav-hide-mobile {
         display: none;
+    }
+
+    html {
+        scroll-padding-top: 20px;
+    }
+
+    .grid-container {
+        margin-top: 0;
+        padding-top: 60px;
     }
 
     .grid-container {
@@ -1596,7 +1605,8 @@ body.article-page {
 
     .floating-nav a {
         font-size: 12px;
-        padding: 14px 18px;
+        padding: 11px 14px;
+        min-height: 44px;
     }
 
     h1 {
