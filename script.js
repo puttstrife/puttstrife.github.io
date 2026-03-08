@@ -224,3 +224,38 @@ document.querySelectorAll('.news-filter').forEach(btn => {
 });
 
 loadNews();
+
+
+/* ─────────────────────────────────────────
+   Contact Form
+───────────────────────────────────────── */
+const contactForm  = document.getElementById('contact-form');
+const submitBtn    = document.getElementById('submit-btn');
+const successMsg   = document.getElementById('contact-success');
+
+contactForm?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitBtn.textContent = 'Sending…';
+    submitBtn.disabled    = true;
+
+    const payload = Object.fromEntries(new FormData(this));
+
+    try {
+        const res  = await fetch('https://api.web3forms.com/submit', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body:    JSON.stringify(payload),
+        });
+        const json = await res.json();
+
+        if (json.success) {
+            contactForm.style.display = 'none';
+            successMsg.classList.add('visible');
+        } else {
+            throw new Error(json.message || 'Submission failed');
+        }
+    } catch {
+        submitBtn.textContent = 'Failed — please try again';
+        submitBtn.disabled    = false;
+    }
+});
