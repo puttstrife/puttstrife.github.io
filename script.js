@@ -1,9 +1,13 @@
-const MEDIUM_RSS = 'https://medium.com/feed/@puttstrife';
-const RSS2JSON   = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(MEDIUM_RSS);
+const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';
+const PROXY       = 'https://corsproxy.io/?' + encodeURIComponent(MEDIUM_FEED);
 
-function estimateReadTime(html) {
-    const words = html.replace(/<[^>]+>/g, '').split(/\s+/).length;
+function estimateReadTime(text) {
+    const words = text.trim().split(/\s+/).length;
     return Math.max(1, Math.round(words / 200)) + ' min read';
+}
+
+function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 function stripHtml(html) {
@@ -12,32 +16,37 @@ function stripHtml(html) {
     return div.textContent || div.innerText || '';
 }
 
-function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+function parseFeed(xmlText) {
+    const parser = new DOMParser();
+    const xml    = parser.parseFromString(xmlText, 'text/xml');
+    const items  = Array.from(xml.querySelectorAll('item')).slice(0, 2);
+
+    return items.map(item => ({
+        title:    item.querySelector('title')?.textContent || 'Untitled',
+        link:     item.querySelector('link')?.nextSibling?.textContent?.trim() || '#',
+        date:     item.querySelector('pubDate')?.textContent || '',
+        content:  item.querySelector('encoded')?.textContent || item.querySelector('description')?.textContent || '',
+        category: item.querySelector('category')?.textContent || 'Article',
+    }));
 }
 
 function renderPosts(posts) {
     const grid = document.getElementById('medium-posts');
-    if (!posts || posts.length === 0) {
-        grid.innerHTML = '<p style="color:#999;font-size:14px;text-align:center;grid-column:1/-1;">No posts found.</p>';
-        return;
-    }
 
-    grid.innerHTML = posts.slice(0, 2).map(post => {
-        const excerpt = stripHtml(post.description).slice(0, 120).trim() + '…';
-        const date    = formatDate(post.pubDate);
-        const readTime = estimateReadTime(post.content || post.description);
-        const tag     = (post.categories && post.categories[0]) ? post.categories[0] : 'Article';
+    grid.innerHTML = posts.map(post => {
+        const text    = stripHtml(post.content);
+        const excerpt = text.slice(0, 120).trim() + '…';
+        const date    = formatDate(post.date);
+        const read    = estimateReadTime(text);
 
         return `
         <article class="blog-card">
             <div class="blog-card-content">
-                <span class="blog-tag">${tag}</span>
+                <span class="blog-tag">${post.category}</span>
                 <h3>${post.title}</h3>
                 <p>${excerpt}</p>
                 <div class="blog-card-meta">
-                    <span class="blog-date">${date} · ${readTime}</span>
+                    <span class="blog-date">${date} · ${read}</span>
                     <a href="${post.link}" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
                 </div>
             </div>
@@ -45,38 +54,43 @@ function renderPosts(posts) {
     }).join('');
 }
 
-fetch(RSS2JSON)
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            renderPosts(data.items);
+function renderFallback() {
+    document.getElementById('medium-posts').innerHTML = `
+    <article class="blog-card">
+        <div class="blog-card-content">
+            <span class="blog-tag">Design</span>
+            <h3>If it didn't move a metric, it didn't work</h3>
+            <p>How design effectiveness should be measured through business outcomes rather than aesthetic appeal alone…</p>
+            <div class="blog-card-meta">
+                <span class="blog-date">Mar 2026 · 4 min read</span>
+                <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+            </div>
+        </div>
+    </article>
+    <article class="blog-card">
+        <div class="blog-card-content">
+            <span class="blog-tag">SEO</span>
+            <h3>A Practical 20-Step SEO Checklist That Actually Moves the Needle</h3>
+            <p>A comprehensive, actionable framework for SEO implementation, covering technical foundations through content strategy…</p>
+            <div class="blog-card-meta">
+                <span class="blog-date">Feb 2026 · 6 min read</span>
+                <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+            </div>
+        </div>
+    </article>`;
+}
+
+fetch(PROXY)
+    .then(res => {
+        if (!res.ok) throw new Error('fetch failed');
+        return res.text();
+    })
+    .then(xml => {
+        const posts = parseFeed(xml);
+        if (posts.length > 0) {
+            renderPosts(posts);
         } else {
-            throw new Error('Feed error');
+            renderFallback();
         }
     })
-    .catch(() => {
-        // Fallback to static cards if fetch fails
-        document.getElementById('medium-posts').innerHTML = `
-        <article class="blog-card">
-            <div class="blog-card-content">
-                <span class="blog-tag">Design</span>
-                <h3>The Future of AI in UX Design</h3>
-                <p>Exploring how artificial intelligence is reshaping the way designers think, prototype, and deliver user experiences at scale…</p>
-                <div class="blog-card-meta">
-                    <span class="blog-date">Feb 2025 · 5 min read</span>
-                    <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
-                </div>
-            </div>
-        </article>
-        <article class="blog-card">
-            <div class="blog-card-content">
-                <span class="blog-tag">Nomad Life</span>
-                <h3>Designing for Digital Nomads</h3>
-                <p>After 10 years as a digital nomad, here's what I've learned about designing products for location-independent lifestyles…</p>
-                <div class="blog-card-meta">
-                    <span class="blog-date">Jan 2025 · 6 min read</span>
-                    <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
-                </div>
-            </div>
-        </article>`;
-    });
+    .catch(renderFallback);
