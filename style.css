@@ -843,35 +843,7 @@ body.article-page {
 .contact-form {
     display: flex;
     flex-direction: column;
-}
-
-.form-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-}
-
-.form-left {
-    display: flex;
-    flex-direction: column;
     gap: 20px;
-}
-
-.form-right {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.form-right .form-group {
-    flex: 1;
-}
-
-.form-right textarea {
-    height: 100%;
-    min-height: 140px;
-    resize: none;
 }
 
 .form-group {
@@ -923,8 +895,7 @@ body.article-page {
     border-radius: 50px;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
-    width: 100%;
-    align-self: flex-end;
+    margin-top: 4px;
 }
 
 .contact-submit-btn:hover {
@@ -1002,6 +973,48 @@ body.article-page {
 
 .contact-calendar {
     text-align: center;
+}
+
+.cal-toggle-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    background: #fff;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 50px;
+    padding: 12px 24px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.cal-toggle-btn:hover {
+    border-color: #764ba2;
+    box-shadow: 0 4px 16px rgba(118, 75, 162, 0.12);
+    transform: translateY(-2px);
+}
+
+.cal-toggle-btn svg {
+    flex-shrink: 0;
+    color: #764ba2;
+}
+
+#custom-calendar.cal-hidden {
+    display: none;
+}
+
+#custom-calendar.cal-visible {
+    display: block;
+    margin-top: 20px;
+    animation: fadeInDown 0.25s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .calendar-label {
@@ -1200,9 +1213,4 @@ body.article-page {
     font-size: 13px;
     color: #888;
     line-height: 1.6;
-}
-@media (max-width: 700px) {
-    .form-columns {
-        grid-template-columns: 1fr;
-    }
 }
