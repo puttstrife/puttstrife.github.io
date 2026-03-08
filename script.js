@@ -293,7 +293,7 @@ const MONTH_NAMES  = ['January','February','March','April','May','June','July','
 const DAY_NAMES    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 // ── Replace this URL after deploying your Google Apps Script ──
-const GCAL_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+const GCAL_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqvWCdvFxJSmaf5UoaqSNAyFuQQ2kU-7XB9nRWL9CeqKr_ZLvWDLcbkO_2Xi8WenEjZw/exec';
 
 let calYear, calMonth, calSelectedDate, calSelectedTime;
 
