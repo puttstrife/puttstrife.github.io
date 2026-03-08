@@ -1480,21 +1480,39 @@ body.article-page {
     }
 
     .info-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+        gap: 8px;
     }
 
     .lottie-logo {
+        order: -1;
+        display: flex;
         justify-content: center;
+    }
+
+    .lottie-logo lottie-player {
+        width: 200px !important;
+        height: 200px !important;
+        right: 0 !important;
     }
 
     .cv-info {
+        display: flex;
+        flex-direction: column;
         align-items: center;
     }
 
+    .summary {
+        text-align: center;
+    }
+
     .button-links {
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
         justify-content: center;
+        gap: 10px;
     }
 
     .blog-grid,
@@ -1566,7 +1584,27 @@ body.article-page {
     }
 
     h1 {
-        font-size: 28px;
+        font-size: 26px;
+    }
+
+    .lottie-logo lottie-player {
+        width: 160px !important;
+        height: 160px !important;
+    }
+
+    .button-links {
+        grid-template-columns: repeat(3, 48px);
+        gap: 8px;
+    }
+
+    .icon-card {
+        width: 48px;
+        height: 48px;
+    }
+
+    .icon {
+        height: 24px;
+        width: 24px;
     }
 
     .blog-heading,
