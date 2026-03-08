@@ -1465,6 +1465,38 @@ body.article-page {
 .cal-confirm-btn:hover { background: #333; }
 .cal-confirm-btn:disabled { background: #aaa; cursor: not-allowed; }
 
+/* ── Cylon pixel art ── */
+@keyframes cylon-enter {
+    0%   { transform: scale(0.4) translateY(16px); opacity: 0; }
+    70%  { transform: scale(1.08) translateY(-4px); opacity: 1; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes cylon-scan {
+    0%   { transform: translateX(0px); }
+    100% { transform: translateX(38px); }
+}
+@keyframes cylon-chest-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 0.85; }
+}
+
+.cylon-sprite {
+    display: block;
+    margin: 0 auto 4px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    animation: cylon-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.cylon-eye-glow {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: cylon-scan 1.3s ease-in-out infinite alternate;
+}
+.cylon-sprite rect[opacity] {
+    animation: cylon-chest-pulse 2.2s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
 .cal-success {
     text-align: center;
     padding: 24px 0 8px;

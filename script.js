@@ -522,7 +522,46 @@ async function calSubmitBooking(e) {
 
         document.getElementById('booking-form-container').innerHTML = `
             <div class="cal-success">
-                <div class="success-icon">✓</div>
+                <svg class="cylon-sprite" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 96 112" width="96" height="112"
+                     shape-rendering="crispEdges" aria-hidden="true">
+                    <!-- helmet top -->
+                    <rect x="24" y="0"  width="48" height="8" fill="#a8a8a8"/>
+                    <rect x="16" y="8"  width="64" height="8" fill="#b8b8b8"/>
+                    <!-- highlight ridge -->
+                    <rect x="8"  y="16" width="80" height="8" fill="#d0d0d0"/>
+                    <!-- visor surround row top -->
+                    <rect x="8"  y="24" width="16" height="8" fill="#888"/>
+                    <rect x="24" y="24" width="48" height="8" fill="#282828"/>
+                    <rect x="72" y="24" width="16" height="8" fill="#888"/>
+                    <!-- eye row -->
+                    <rect x="8"  y="32" width="16" height="8" fill="#707070"/>
+                    <rect x="24" y="32" width="48" height="8" fill="#101010"/>
+                    <rect x="72" y="32" width="16" height="8" fill="#707070"/>
+                    <!-- scanning eye glow (animated) -->
+                    <rect class="cylon-eye-glow" x="24" y="33" width="10" height="6" fill="#e4e4e4"/>
+                    <!-- visor surround row bottom -->
+                    <rect x="8"  y="40" width="16" height="8" fill="#888"/>
+                    <rect x="24" y="40" width="48" height="8" fill="#282828"/>
+                    <rect x="72" y="40" width="16" height="8" fill="#888"/>
+                    <!-- lower helmet -->
+                    <rect x="8"  y="48" width="80" height="8" fill="#a0a0a0"/>
+                    <rect x="16" y="56" width="64" height="8" fill="#909090"/>
+                    <!-- neck -->
+                    <rect x="32" y="64" width="32" height="8" fill="#686868"/>
+                    <!-- shoulders -->
+                    <rect x="0"  y="72" width="96" height="8" fill="#848484"/>
+                    <!-- chest plate -->
+                    <rect x="0"  y="80" width="96" height="8" fill="#606060"/>
+                    <!-- chest detail stripe -->
+                    <rect x="16" y="88" width="64" height="4" fill="#484848"/>
+                    <!-- lower chest -->
+                    <rect x="0"  y="92" width="96" height="8" fill="#505050"/>
+                    <!-- base -->
+                    <rect x="8"  y="100" width="80" height="8" fill="#383838"/>
+                    <!-- chest center light (static dim) -->
+                    <rect x="44" y="81" width="8" height="6" fill="#b0b0b0" opacity="0.5"/>
+                </svg>
                 <h4>You're booked!</h4>
                 <p>${formatted} at ${calSelectedTime}.<br>A confirmation will be sent to ${email}.</p>
             </div>`;
