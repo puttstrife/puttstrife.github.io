@@ -160,6 +160,87 @@ body {
     color: #888;
 }
 
+/* ── Use Cases Section ── */
+.usecases-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    text-align: center;
+}
+
+.usecases-heading {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.usecases-subheading {
+    font-size: 15px;
+    color: #999;
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+
+.usecases-card {
+    background: #fff;
+    border: 1.5px dashed #e0e0e0;
+    border-radius: 20px;
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.usecases-badge {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #764ba2;
+    background: rgba(118, 75, 162, 0.08);
+    padding: 5px 14px;
+    border-radius: 20px;
+}
+
+.usecases-title {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+    margin: 4px 0 0;
+}
+
+.usecases-body {
+    font-size: 15px;
+    color: #888;
+    line-height: 1.8;
+    max-width: 520px;
+}
+
+.usecases-cta {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: #111;
+    padding: 13px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.usecases-cta:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
 /* ── Blog Section ── */
 .blog-section {
     max-width: 900px;
