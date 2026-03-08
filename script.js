@@ -1,4 +1,55 @@
 /* ─────────────────────────────────────────
+   Cursor Sand Trail
+───────────────────────────────────────── */
+(function () {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    let W = canvas.width  = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+
+    window.addEventListener('mousemove', e => {
+        const count = Math.floor(Math.random() * 3) + 2;
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x:     e.clientX + (Math.random() - 0.5) * 14,
+                y:     e.clientY + (Math.random() - 0.5) * 14,
+                r:     Math.random() * 1.4 + 0.6,
+                alpha: Math.random() * 0.12 + 0.10,
+                life:  1.0,
+                decay: Math.random() * 0.025 + 0.018,
+                vx:    (Math.random() - 0.5) * 0.25,
+                vy:    (Math.random() - 0.5) * 0.25,
+            });
+        }
+    });
+
+    (function animate() {
+        ctx.clearRect(0, 0, W, H);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.life -= p.decay;
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.life <= 0) { particles.splice(i, 1); continue; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(110,110,110,${(p.alpha * p.life).toFixed(3)})`;
+            ctx.fill();
+        }
+        requestAnimationFrame(animate);
+    })();
+})();
+
+/* ─────────────────────────────────────────
    Medium RSS Feed
 ───────────────────────────────────────── */
 const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';
