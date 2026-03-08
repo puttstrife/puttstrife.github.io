@@ -967,9 +967,11 @@ body.article-page {
     font-weight: 700;
     color: #111;
     text-decoration: none;
+    background: transparent;
     border: 1.5px solid #222;
     padding: 12px 28px;
     border-radius: 50px;
+    cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
 
