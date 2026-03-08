@@ -135,16 +135,17 @@ body {
     top: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-radius: 50px;
-    padding: 12px 36px;
+    padding: 12px 32px;
     display: flex;
-    gap: 36px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    gap: 28px;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     z-index: 1000;
+    white-space: nowrap;
 }
 
 .floating-nav a,
@@ -201,8 +202,12 @@ body {
     font-weight: 700;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: #764ba2;
-    background: rgba(118, 75, 162, 0.08);
+    color: #555;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 5px 14px;
     border-radius: 20px;
 }
@@ -315,8 +320,12 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #764ba2;
-    background: rgba(118, 75, 162, 0.08);
+    color: #555;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 4px 14px;
     border-radius: 20px;
     margin-bottom: 18px;
@@ -423,8 +432,12 @@ body.article-page {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #764ba2;
-    background: rgba(118, 75, 162, 0.08);
+    color: #555;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 4px 14px;
     border-radius: 20px;
     margin-bottom: 24px;
@@ -1443,4 +1456,162 @@ body.article-page {
 .footer-copy {
     font-size: 12px;
     color: #bbb;
+}
+
+/* ─────────────────────────────────────────
+   Responsive — Tablet (max 768px)
+───────────────────────────────────────── */
+@media (max-width: 768px) {
+
+    .floating-nav {
+        gap: 16px;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .floating-nav a {
+        font-size: 12px;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+        padding: 100px 24px 60px;
+        text-align: center;
+    }
+
+    .info-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .lottie-logo {
+        justify-content: center;
+    }
+
+    .cv-info {
+        align-items: center;
+    }
+
+    .button-links {
+        justify-content: center;
+    }
+
+    .blog-grid,
+    .tweet-list,
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .blog-section,
+    .usecases-section,
+    .feed-section,
+    .news-section,
+    .contact-section {
+        padding: 60px 20px;
+    }
+
+    .usecases-card {
+        padding: 40px 24px;
+    }
+
+    .contact-cal-card {
+        padding: 24px 16px;
+    }
+
+    .cal-body {
+        grid-template-columns: 1fr;
+    }
+
+    .cal-time-col {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e8e8e8;
+        padding-left: 0;
+        padding-top: 16px;
+    }
+
+    .cal-times {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .cal-modal {
+        padding: 24px 20px;
+    }
+
+    .cal-modal-sm {
+        max-width: 100%;
+    }
+
+    .footer-links {
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+}
+
+/* ─────────────────────────────────────────
+   Responsive — Mobile (max 480px)
+───────────────────────────────────────── */
+@media (max-width: 480px) {
+
+    .floating-nav {
+        top: 12px;
+        gap: 10px;
+        padding: 9px 16px;
+    }
+
+    .floating-nav a {
+        font-size: 11px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .blog-heading,
+    .feed-heading,
+    .news-heading,
+    .contact-heading,
+    .usecases-heading {
+        font-size: 26px;
+    }
+
+    .news-filters {
+        gap: 8px;
+    }
+
+    .news-filter {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .blog-card {
+        padding: 20px;
+    }
+
+    .tweet-card {
+        padding: 16px 18px;
+    }
+
+    .news-card {
+        padding: 16px 18px;
+    }
+
+    .cal-day {
+        font-size: 11px;
+    }
+
+    .contact-secondary {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .footer-links {
+        gap: 12px;
+    }
+
+    .footer-links a span {
+        display: none;
+    }
 }
