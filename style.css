@@ -628,3 +628,49 @@ body.article-page {
     background: #111;
     color: #fff;
 }
+
+/* ── Contact Section ── */
+.contact-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 100px 40px 140px;
+    text-align: center;
+}
+
+.contact-heading {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.contact-subheading {
+    font-size: 15px;
+    color: #999;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-btn,
+.contact-btn:visited {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: #111;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 50px;
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.contact-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
