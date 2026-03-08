@@ -1485,7 +1485,7 @@ body.article-page {
         border-radius: 28px;
     }
 
-    .nav-hide-mobile {
+    .floating-nav .nav-hide-mobile {
         display: none;
     }
 
