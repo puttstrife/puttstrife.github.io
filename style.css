@@ -57,60 +57,33 @@ body {
 .grid-container {
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     place-items: center;
-    margin-top: 120px;
-    padding-bottom: 80px;
-}
-
-.info-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    max-width: 640px;
-    width: 100%;
-}
-
-.info-container h1 {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 44px;
-    font-weight: 800;
-    color: #111;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    margin-top: 200px;
 }
 
 .designation {
-    font-size: 14px;
-    font-weight: 600;
-    color: #888;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
+    margin-top: 5px;
+    font-size: 20px;
 }
 
-.summary {
-    text-align: center;
-    max-width: 480px;
-    color: #666;
-    font-size: 15px;
-    line-height: 1.75;
-    margin-bottom: 0;
-}
-
-.cv-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+.info-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
 }
 
 .button-links {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 8px;
+    justify-items: center;
+}
+
+.summary {
+    text-align: left;
+    margin-top: 10px;
+    max-width: 600px;
 }
 
 .icon {
@@ -119,15 +92,14 @@ body {
     width: 30px;
 }
 
-.lottie-logo {
-    margin: 20px 0 12px;
-}
-
 .lottie-logo lottie-player {
-    width: 200px !important;
-    height: 200px !important;
+    position: relative;
+    right: 63px;
+    width: 394px !important;
+    padding: 0px;
     background: transparent;
-    display: block;
+    height: 382px !important;
+    border-radius: 10px;
 }
 
 /* ── Floating Nav ── */
