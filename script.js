@@ -92,14 +92,16 @@ fetch(PROXY)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v3';
+const NEWS_CACHE_KEY = 'tc_news_v4';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
-    { name: 'TechCrunch', url: 'https://techcrunch.com/feed/'                  },
-    { name: 'The Verge',  url: 'https://www.theverge.com/rss/index.xml'        },
-    { name: 'Dev.to',     url: 'https://dev.to/feed/'                          },
-    { name: 'Hacker News', url: 'https://news.ycombinator.com/rss'             },
+    { name: 'TechCrunch',  url: 'https://techcrunch.com/feed/',                          topics: ['ai', 'uiux']       },
+    { name: 'The Verge',   url: 'https://www.theverge.com/rss/index.xml',                topics: ['ai', 'uiux']       },
+    { name: 'Dev.to',      url: 'https://dev.to/feed/',                                  topics: ['ai']               },
+    { name: 'Hacker News', url: 'https://news.ycombinator.com/rss',                      topics: ['ai', 'uiux']       },
+    { name: 'HBR',         url: 'https://feeds.hbr.org/harvardbusiness',                 topics: ['leadership']       },
+    { name: 'Fast Company', url: 'https://www.fastcompany.com/latest/rss',               topics: ['leadership', 'uiux'] },
 ];
 
 const TOPIC_KEYWORDS = {
@@ -125,7 +127,10 @@ let activeTopic = 'all';
 
 function matchesTopic(article, topic) {
     if (topic === 'all') return true;
-    const text = `${article.title} ${article.description}`.toLowerCase();
+    const text   = `${article.title} ${article.description}`.toLowerCase();
+    const source = NEWS_SOURCES.find(s => s.name === article.source);
+    // If source has topic restrictions, only match within its allowed topics
+    if (source?.topics && !source.topics.includes(topic)) return false;
     return (TOPIC_KEYWORDS[topic] || []).some(kw => text.includes(kw));
 }
 
@@ -232,14 +237,14 @@ async function loadNews() {
     allNews = results
         .flatMap((r, i) => {
             if (r.status !== 'fulfilled') return [];
-            const name     = NEWS_SOURCES[i].name;
+            const source   = NEWS_SOURCES[i];
             const articles = r.value;
 
-            if (name === 'Dev.to') {
-                // Only 1 article from Dev.to, and only if it's AI-related
+            if (source.name === 'Dev.to') {
+                // Only 1 AI article from Dev.to
                 return articles.filter(a => matchesTopic(a, 'ai')).slice(0, 1);
             }
-            // All other sources: max 2 articles each
+            // Max 2 articles per source
             return articles.slice(0, 2);
         })
         .filter(a => a.title && a.link)
