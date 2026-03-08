@@ -14,36 +14,46 @@
         H = canvas.height = window.innerHeight;
     });
 
-    const particles = [];
+    const ripples = [];
 
+    // Subtle trail ripples on mouse move
+    let lastMove = 0;
     window.addEventListener('mousemove', e => {
-        const count = Math.floor(Math.random() * 3) + 2;
-        for (let i = 0; i < count; i++) {
-            particles.push({
-                x:     e.clientX + (Math.random() - 0.5) * 14,
-                y:     e.clientY + (Math.random() - 0.5) * 14,
-                r:     Math.random() * 1.4 + 0.6,
-                alpha: Math.random() * 0.12 + 0.10,
-                life:  1.0,
-                decay: Math.random() * 0.025 + 0.018,
-                vx:    (Math.random() - 0.5) * 0.25,
-                vy:    (Math.random() - 0.5) * 0.25,
-            });
-        }
+        const now = Date.now();
+        if (now - lastMove < 60) return; // throttle: one ripple every 60ms
+        lastMove = now;
+        ripples.push({
+            x:      e.clientX,
+            y:      e.clientY,
+            r:      0,
+            maxR:   18 + Math.random() * 10,
+            alpha:  0.18,
+            decay:  0.022,
+            life:   1.0,
+            click:  false,
+        });
+    });
+
+    // Obvious click ripples
+    window.addEventListener('click', e => {
+        // outer ring
+        ripples.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 55, alpha: 0.45, decay: 0.030, life: 1.0, click: true });
+        // inner ring (slight delay feel via smaller decay)
+        ripples.push({ x: e.clientX, y: e.clientY, r: 0, maxR: 28, alpha: 0.30, decay: 0.040, life: 1.0, click: true });
     });
 
     (function animate() {
         ctx.clearRect(0, 0, W, H);
-        for (let i = particles.length - 1; i >= 0; i--) {
-            const p = particles[i];
+        for (let i = ripples.length - 1; i >= 0; i--) {
+            const p = ripples[i];
             p.life -= p.decay;
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.life <= 0) { particles.splice(i, 1); continue; }
+            p.r += (p.maxR - p.r) * 0.12; // ease outward
+            if (p.life <= 0) { ripples.splice(i, 1); continue; }
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(110,110,110,${(p.alpha * p.life).toFixed(3)})`;
-            ctx.fill();
+            ctx.strokeStyle = `rgba(110,110,110,${(p.alpha * p.life).toFixed(3)})`;
+            ctx.lineWidth   = p.click ? 1.5 : 0.8;
+            ctx.stroke();
         }
         requestAnimationFrame(animate);
     })();
