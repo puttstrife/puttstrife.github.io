@@ -1096,17 +1096,6 @@ body.article-page {
     display: flex;
 }
 
-.success-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: #fff;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .contact-success h3 {
     font-family: 'Open Sans', sans-serif;

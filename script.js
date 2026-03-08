@@ -626,7 +626,11 @@ document.getElementById('contact-form')?.addEventListener('submit', async functi
 
         if (json.success) {
             this.style.display = 'none';
-            document.getElementById('contact-success').classList.add('visible');
+            const successEl = document.getElementById('contact-success');
+            // Re-trigger SVG animations by briefly removing and re-adding the element
+            const svg = successEl.querySelector('.retro-mail-svg');
+            if (svg) { svg.remove(); successEl.prepend(svg); }
+            successEl.classList.add('visible');
         } else {
             throw new Error(json.message || 'Submission failed');
         }
