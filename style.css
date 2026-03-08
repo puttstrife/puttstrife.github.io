@@ -484,14 +484,14 @@ body.article-page {
 }
 
 .feed-embed-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     background: #ffffff;
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
-    max-height: 700px;
-    overflow-y: auto;
-}
-
-.feed-embed-wrapper .twitter-timeline {
-    width: 100% !important;
+    width: 560px;
+    height: 700px;
+    margin: 0 auto;
 }
