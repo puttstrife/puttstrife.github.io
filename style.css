@@ -821,8 +821,12 @@ body.article-page {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #764ba2;
-    background: rgba(118, 75, 162, 0.08);
+    color: #555;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 3px 10px;
     border-radius: 20px;
 }
