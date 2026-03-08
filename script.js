@@ -66,6 +66,7 @@ function renderMediumPosts(posts) {
             </div>
         </article>`;
     }).join('');
+    staggerReveal('#medium-posts', '.blog-card');
 }
 
 function renderMediumFallback() {
@@ -90,6 +91,7 @@ function renderMediumFallback() {
                 </div>
             </div>
         </article>`).join('');
+    staggerReveal('#medium-posts', '.blog-card');
 }
 
 fetch(PROXY)
@@ -204,6 +206,7 @@ function renderNews(topic, showAll = false) {
 
     document.getElementById('news-see-more')
         ?.addEventListener('click', () => renderNews(topic, true));
+    staggerReveal('#news-grid', '.news-card');
 }
 
 async function fetchNewsFeed(source) {
@@ -513,3 +516,53 @@ document.getElementById('contact-form')?.addEventListener('submit', async functi
         btn.disabled    = false;
     }
 });
+
+/* ─────────────────────────────────────────
+   Scroll Animations
+───────────────────────────────────────── */
+function staggerReveal(containerSel, cardSel) {
+    const container = document.querySelector(containerSel);
+    if (!container) return;
+    const cards = container.querySelectorAll(cardSel);
+    cards.forEach((card, i) => {
+        card.classList.add('reveal');
+        card.style.transitionDelay = `${i * 0.09}s`;
+    });
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll(cardSel).forEach(c => c.classList.add('visible'));
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    obs.observe(container);
+}
+
+function initScrollAnimations() {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    const els = document.querySelectorAll(
+        '.blog-heading, .blog-subheading, ' +
+        '.usecases-heading, .usecases-subheading, .usecases-card, ' +
+        '.feed-heading, .feed-subheading, .tweet-list, .feed-follow-btn, ' +
+        '.news-heading, .news-subheading, .news-filters, ' +
+        '.contact-heading, .contact-subheading, .contact-cal-card, .contact-secondary'
+    );
+    els.forEach(el => {
+        el.classList.add('reveal');
+        observer.observe(el);
+    });
+
+    // Stagger static tweet cards
+    staggerReveal('.tweet-list', '.tweet-card');
+}
+
+initScrollAnimations();
