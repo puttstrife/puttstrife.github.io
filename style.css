@@ -1,5 +1,6 @@
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
 }
 
 @import url('https://fonts.cdnfonts.com/css/montserrat');
