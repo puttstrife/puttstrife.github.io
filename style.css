@@ -175,8 +175,11 @@ body {
     margin-bottom: 8px;
 }
 
-.blog-section .feed-subheading {
+.blog-subheading {
+    font-size: 14px;
+    color: #999;
     margin-bottom: 40px;
+    line-height: 1.6;
 }
 
 .blog-card-skeleton {
