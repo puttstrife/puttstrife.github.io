@@ -70,10 +70,10 @@ function renderMediumPosts(posts) {
 
 function renderMediumFallback() {
     const posts = [
-        { tag: 'Design',  title: "If it didn't move a metric, it didn't work",                                    subtitle: 'Design work that can't be measured is just art. Here's how I tie every design decision to a real business outcome.',           date: 'Mar 2026', read: '4 min read' },
-        { tag: 'SEO',     title: 'A Practical 20-Step SEO Checklist That Actually Moves the Needle',               subtitle: 'Most SEO advice is noise. This is the exact checklist I run through before every launch — and it works.',                    date: 'Feb 2026', read: '6 min read' },
-        { tag: 'Culture', title: 'Why Asians Chase Status — And How the West Does It Differently',                 subtitle: 'After a decade of living across cultures, I started noticing a pattern in how people signal success — and what it costs them.', date: 'Jan 2026', read: '5 min read' },
-        { tag: 'Travel',  title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)',   subtitle: 'The complete guide I wish I had when I first tried to stay in Thailand long-term. Visas, paperwork, and hard-won lessons.',    date: 'Dec 2025', read: '7 min read' },
+        { tag: 'Design',  title: "If it didn't move a metric, it didn't work",                                    subtitle: "Design work that can't be measured is just art. Here's how I tie every design decision to a real business outcome.",           date: 'Mar 2026', read: '4 min read' },
+        { tag: 'SEO',     title: 'A Practical 20-Step SEO Checklist That Actually Moves the Needle',               subtitle: "Most SEO advice is noise. This is the exact checklist I run through before every launch — and it works.",                    date: 'Feb 2026', read: '6 min read' },
+        { tag: 'Culture', title: 'Why Asians Chase Status — And How the West Does It Differently',                 subtitle: "After a decade of living across cultures, I started noticing a pattern in how people signal success — and what it costs them.", date: 'Jan 2026', read: '5 min read' },
+        { tag: 'Travel',  title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)',   subtitle: "The complete guide I wish I had when I first tried to stay in Thailand long-term. Visas, paperwork, and hard-won lessons.",    date: 'Dec 2025', read: '7 min read' },
     ];
     document.getElementById('medium-posts').innerHTML = posts.map(p => `
         <article class="blog-card">
