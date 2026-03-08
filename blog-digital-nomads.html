@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Designing for Digital Nomads — Jeffrey Farañal</title>
+    <meta name="description" content="After 10 years as a digital nomad, here's what I've learned about designing products that truly serve location-independent lifestyles.">
+    <link rel="canonical" href="https://puttstrife.github.io/blog-digital-nomads.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://puttstrife.github.io/blog-digital-nomads.html">
+    <meta property="og:title" content="Designing for Digital Nomads — Jeffrey Farañal">
+    <meta property="og:description" content="After 10 years as a digital nomad, here's what I've learned about designing products that truly serve location-independent lifestyles.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Designing for Digital Nomads — Jeffrey Farañal">
+    <meta name="twitter:description" content="After 10 years as a digital nomad, here's what I've learned about designing products that truly serve location-independent lifestyles.">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Designing for Digital Nomads",
+        "author": { "@type": "Person", "name": "Jeffrey Farañal" },
+        "datePublished": "2025-01-01",
+        "url": "https://puttstrife.github.io/blog-digital-nomads.html"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="images/icon-fabIcon.svg">
+</head>
+
+<body>
+
+    <nav class="blog-nav">
+        <a href="index.html">← Home</a>
+        <a href="index.html#blog">Blog</a>
+    </nav>
+
+    <main class="blog-page">
+
+        <span class="blog-article-tag">Nomad Life</span>
+
+        <h1 class="blog-article-title">Designing for Digital Nomads</h1>
+
+        <div class="blog-article-byline">
+            <strong>Jeffrey Farañal</strong>
+            <span class="dot">·</span>
+            <span>January 2025</span>
+            <span class="dot">·</span>
+            <span>6 min read</span>
+        </div>
+
+        <hr class="blog-article-divider">
+
+        <div class="blog-article-body">
+
+            <p>
+                For over ten years, I lived and worked from different countries — designing products for companies while navigating time zones, unreliable internet, and the particular kind of focus that comes from working in a cafe in Lisbon or a co-working space in Chiang Mai.
+            </p>
+
+            <p>
+                That experience fundamentally changed how I think about the products I design. Most digital products are still built with a single assumption baked in: the user is sitting at a stable desk, with fast internet, in a predictable environment. For the growing global workforce of remote workers and nomads, that assumption breaks constantly.
+            </p>
+
+            <h2>Connectivity is Never Guaranteed</h2>
+
+            <p>
+                The first and most important lesson from nomadic life: design for offline or low-bandwidth first. Your users may be on a slow hostel WiFi, tethering from a local SIM, or briefly disconnected mid-task. If your app loses state, fails silently, or shows a blank screen when the connection drops, you've failed a significant portion of your users.
+            </p>
+
+            <p>
+                Progressive loading, optimistic UI updates, and clear offline indicators aren't just nice-to-haves — they're respect for your user's reality. Cache aggressively. Sync gracefully. Communicate honestly when something isn't available.
+            </p>
+
+            <blockquote>
+                "Design the experience for the worst connection your user will ever have, not the best one you tested on."
+            </blockquote>
+
+            <h2>Time Zones Are UX Problems</h2>
+
+            <p>
+                Scheduling features are notoriously bad at handling time zones, and nothing frustrates a nomad more than a meeting notification that quietly converted to local time — or didn't. Always display the timezone explicitly alongside any time. Let users set a "working timezone" separate from their device locale. Never assume.
+            </p>
+
+            <p>
+                The same applies to deadlines, subscription renewals, and any time-sensitive action. A user in Bangkok and a user in Berlin should both understand immediately, without mental math, when something is due.
+            </p>
+
+            <h2>Async First, Real-Time Second</h2>
+
+            <p>
+                Nomadic workers are rarely available at the same time as their colleagues. Products that assume real-time collaboration as the default — with synchronous notifications, live cursors always present, urgent pings — create anxiety and fragment focus.
+            </p>
+
+            <p>
+                The best tools I've used as a nomad treat async as the primary mode and real-time as an optional enhancement. Status indicators that respect "do not disturb" schedules, comment threads instead of live chat for decisions, and notifications that batch intelligently — these aren't just productivity features, they're inclusion features.
+            </p>
+
+            <h2>Localization Goes Deeper Than Translation</h2>
+
+            <p>
+                Designing for nomads means designing for people who interact with multiple cultures and languages in the same week. A truly localized experience considers date formats, currency displays, reading direction, culturally appropriate imagery, and payment methods — not just translated strings.
+            </p>
+
+            <p>
+                I've seen products lose users in entire regions because the only payment option was a US-issued credit card, or because a date displayed as 04/05 was ambiguous enough to cause real scheduling errors. These aren't edge cases. They're the daily reality of anyone operating globally.
+            </p>
+
+            <h2>The Bigger Picture</h2>
+
+            <p>
+                Designing for digital nomads is really designing for everyone who doesn't fit the default mold. The accessibility improvements, offline capabilities, and async-first thinking that benefit nomads also benefit users with unreliable infrastructure, caregivers who can't always be available, and anyone operating across time zones.
+            </p>
+
+            <p>
+                The best thing my nomadic years gave me as a designer wasn't a list of features to build — it was the habit of questioning every default assumption about who my user is and what their environment looks like. That habit has made everything I build better.
+            </p>
+
+        </div>
+
+        <footer class="blog-article-footer">
+            <a href="index.html#blog" class="blog-back-btn">← Back to Blog</a>
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
