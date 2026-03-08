@@ -314,6 +314,14 @@ body {
     flex: 1;
 }
 
+.blog-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
 .blog-tag {
     display: inline-block;
     font-size: 11px;
@@ -328,7 +336,19 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     padding: 4px 14px;
     border-radius: 20px;
-    margin-bottom: 18px;
+}
+
+.blog-subtitle {
+    font-size: 14px;
+    color: #777;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.blog-author {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
 }
 
 .blog-card-content h3 {
@@ -340,12 +360,11 @@ body {
     margin-bottom: 14px;
 }
 
-.blog-card-content p {
+.blog-card-content h3 + p {
     font-size: 14px;
     color: #777;
     line-height: 1.7;
     margin-bottom: 0;
-    max-width: 300px;
 }
 
 .blog-card-meta {

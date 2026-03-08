@@ -32,11 +32,15 @@ function parseMediumFeed(xmlText) {
         const content = item.querySelector('encoded')?.textContent
                      || item.querySelector('description')?.textContent
                      || '';
+        const plainText = stripHtml(content);
+        const subtitle  = plainText.trim().replace(/\s+/g, ' ').slice(0, 120).trim() + '…';
         return {
             title:    item.querySelector('title')?.textContent?.trim() || 'Untitled',
             link,
             date:     item.querySelector('pubDate')?.textContent || '',
             content,
+            subtitle,
+            author:   item.querySelector('creator')?.textContent?.trim() || 'Jeffrey Farañal',
             category: item.querySelector('category')?.textContent || 'Article',
         };
     });
@@ -49,10 +53,14 @@ function renderMediumPosts(posts) {
         return `
         <article class="blog-card">
             <div class="blog-card-content">
-                <span class="blog-tag">${post.category}</span>
-                <h3>${post.title}</h3>
-                <div class="blog-card-meta">
+                <div class="blog-card-header">
+                    <span class="blog-tag">${post.category}</span>
                     <span class="blog-date">${date} · ${read}</span>
+                </div>
+                <h3>${post.title}</h3>
+                <p class="blog-subtitle">${post.subtitle}</p>
+                <div class="blog-card-meta">
+                    <span class="blog-author">By ${post.author}</span>
                     <a href="${post.link}" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
                 </div>
             </div>
@@ -62,18 +70,22 @@ function renderMediumPosts(posts) {
 
 function renderMediumFallback() {
     const posts = [
-        { tag: 'Design',  title: "If it didn't move a metric, it didn't work",                                 date: 'Mar 2026', read: '4 min read' },
-        { tag: 'SEO',     title: 'A Practical 20-Step SEO Checklist That Actually Moves the Needle',           date: 'Feb 2026', read: '6 min read' },
-        { tag: 'Culture', title: 'Why Asians Chase Status — And How the West Does It Differently',             date: 'Jan 2026', read: '5 min read' },
-        { tag: 'Travel',  title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)', date: 'Dec 2025', read: '7 min read' },
+        { tag: 'Design',  title: "If it didn't move a metric, it didn't work",                                    subtitle: 'Design work that can't be measured is just art. Here's how I tie every design decision to a real business outcome.',           date: 'Mar 2026', read: '4 min read' },
+        { tag: 'SEO',     title: 'A Practical 20-Step SEO Checklist That Actually Moves the Needle',               subtitle: 'Most SEO advice is noise. This is the exact checklist I run through before every launch — and it works.',                    date: 'Feb 2026', read: '6 min read' },
+        { tag: 'Culture', title: 'Why Asians Chase Status — And How the West Does It Differently',                 subtitle: 'After a decade of living across cultures, I started noticing a pattern in how people signal success — and what it costs them.', date: 'Jan 2026', read: '5 min read' },
+        { tag: 'Travel',  title: 'How to Get a Thailand Non-Immigrant Education Visa (Without Losing Your Mind)',   subtitle: 'The complete guide I wish I had when I first tried to stay in Thailand long-term. Visas, paperwork, and hard-won lessons.',    date: 'Dec 2025', read: '7 min read' },
     ];
     document.getElementById('medium-posts').innerHTML = posts.map(p => `
         <article class="blog-card">
             <div class="blog-card-content">
-                <span class="blog-tag">${p.tag}</span>
-                <h3>${p.title}</h3>
-                <div class="blog-card-meta">
+                <div class="blog-card-header">
+                    <span class="blog-tag">${p.tag}</span>
                     <span class="blog-date">${p.date} · ${p.read}</span>
+                </div>
+                <h3>${p.title}</h3>
+                <p class="blog-subtitle">${p.subtitle}</p>
+                <div class="blog-card-meta">
+                    <span class="blog-author">By Jeffrey Farañal</span>
                     <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
                 </div>
             </div>
