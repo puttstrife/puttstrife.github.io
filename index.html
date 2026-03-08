@@ -241,15 +241,26 @@
 
             <!-- Calendar toggle -->
             <div class="contact-calendar">
-                <button class="cal-toggle-btn" id="cal-toggle-btn" onclick="toggleCalendar()">
+                <button class="cal-toggle-btn" onclick="openCalModal()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     Book a 30-min call
                 </button>
-                <div id="custom-calendar" class="cal-hidden"></div>
             </div>
 
         </div>
     </section>
+
+    <!-- Calendar Modal -->
+    <div id="cal-modal-overlay" class="cal-modal-overlay" onclick="closeCalModal(event)">
+        <div class="cal-modal">
+            <button class="cal-modal-close" onclick="closeCalModal()">✕</button>
+            <div class="cal-modal-header">
+                <h3>Book a 30-min call</h3>
+                <p>Pick a date and time — I'll confirm within 24 hours.</p>
+            </div>
+            <div id="custom-calendar"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

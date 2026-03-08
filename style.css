@@ -1002,19 +1002,80 @@ body.article-page {
     color: #764ba2;
 }
 
-#custom-calendar.cal-hidden {
+/* ── Calendar Modal ── */
+.cal-modal-overlay {
     display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-#custom-calendar.cal-visible {
-    display: block;
-    margin-top: 20px;
-    animation: fadeInDown 0.25s ease;
+.cal-modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.2s ease;
 }
 
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-8px); }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.cal-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
+}
+
+.cal-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.cal-modal-close:hover { color: #111; background: #f0f0f0; }
+
+.cal-modal-header {
+    margin-bottom: 24px;
+}
+
+.cal-modal-header h3 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 4px;
+}
+
+.cal-modal-header p {
+    font-size: 13px;
+    color: #888;
+    margin: 0;
 }
 
 .calendar-label {
@@ -1108,10 +1169,26 @@ body.article-page {
 .cal-day.selected { background: #111; color: #fff !important; }
 .cal-day.disabled { color: #ddd; cursor: default; }
 
+/* ── Calendar two-column body ── */
+.cal-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: start;
+}
+
+.cal-grid-col {
+    min-width: 0;
+}
+
+.cal-time-col {
+    width: 140px;
+    border-left: 1px solid #e8e8e8;
+    padding-left: 20px;
+}
+
 .cal-timeslots {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid #e8e8e8;
+    /* no margin-top needed — lives in right column */
 }
 
 .cal-timeslot-label {
@@ -1120,12 +1197,12 @@ body.article-page {
     color: #aaa;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .cal-times {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
 }
 
@@ -1136,18 +1213,20 @@ body.article-page {
     color: #555;
     background: #fff;
     border: 1.5px solid #e0e0e0;
-    padding: 6px 14px;
+    padding: 8px 12px;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.15s;
+    width: 100%;
+    text-align: center;
 }
 
 .cal-time:hover { border-color: #111; color: #111; }
 .cal-time.selected { background: #111; border-color: #111; color: #fff; }
 
 .cal-booking-form {
-    margin-top: 18px;
-    padding-top: 16px;
+    margin-top: 20px;
+    padding-top: 20px;
     border-top: 1px solid #e8e8e8;
     display: flex;
     flex-direction: column;

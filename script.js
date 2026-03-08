@@ -292,23 +292,31 @@ const TIME_SLOTS   = ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '
 const MONTH_NAMES  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAY_NAMES    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
+// ── Replace this URL after deploying your Google Apps Script ──
+const GCAL_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+
 let calYear, calMonth, calSelectedDate, calSelectedTime;
 
-function toggleCalendar() {
-    const cal = document.getElementById('custom-calendar');
-    const btn = document.getElementById('cal-toggle-btn');
-    const isHidden = cal.classList.contains('cal-hidden');
-    if (isHidden) {
-        cal.classList.remove('cal-hidden');
-        cal.classList.add('cal-visible');
-        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Close calendar`;
-        if (!calYear) initCalendar();
-    } else {
-        cal.classList.remove('cal-visible');
-        cal.classList.add('cal-hidden');
-        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Book a 30-min call`;
-    }
+function openCalModal() {
+    const overlay = document.getElementById('cal-modal-overlay');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (!calYear) initCalendar();
 }
+
+function closeCalModal(e) {
+    if (e && e.target !== document.getElementById('cal-modal-overlay')) return;
+    const overlay = document.getElementById('cal-modal-overlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.getElementById('cal-modal-overlay')?.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+});
 
 function initCalendar() {
     const now = new Date();
@@ -321,20 +329,17 @@ function renderCalendar() {
     const container = document.getElementById('custom-calendar');
     if (!container) return;
 
-    const today    = new Date(); today.setHours(0,0,0,0);
-    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const today       = new Date(); today.setHours(0,0,0,0);
+    const firstDay    = new Date(calYear, calMonth, 1).getDay();
     const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-    // Shift so Mon = 0
     const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
-    const prevMonthStart = new Date(calYear, calMonth, 1) <= today;
+    const atMinMonth  = new Date(calYear, calMonth, 1) <= today;
 
     let daysHtml = DAY_NAMES.map(d => `<span>${d}</span>`).join('');
     let gridHtml = '';
-
     for (let i = 0; i < startOffset; i++) gridHtml += `<div class="cal-day"></div>`;
-
     for (let d = 1; d <= daysInMonth; d++) {
-        const date    = new Date(calYear, calMonth, d);
+        const date      = new Date(calYear, calMonth, d);
         const isWeekend = date.getDay() === 0 || date.getDay() === 6;
         const isPast    = date < today;
         const dateStr   = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -344,38 +349,40 @@ function renderCalendar() {
         gridHtml += `<div class="${cls}" ${click}>${d}</div>`;
     }
 
-    let timesHtml = '';
-    if (calSelectedDate) {
-        timesHtml = `
-        <div class="cal-timeslots">
-            <p class="cal-timeslot-label">Pick a time</p>
-            <div class="cal-times">
-                ${TIME_SLOTS.map(t => `<button class="cal-time ${t === calSelectedTime ? 'selected' : ''}" onclick="calPickTime('${t}')">${t}</button>`).join('')}
+    const timesColHtml = calSelectedDate ? `
+        <div class="cal-time-col">
+            <div class="cal-timeslots">
+                <p class="cal-timeslot-label">Pick a time</p>
+                <div class="cal-times">
+                    ${TIME_SLOTS.map(t => `<button class="cal-time ${t === calSelectedTime ? 'selected' : ''}" onclick="calPickTime('${t}')">${t}</button>`).join('')}
+                </div>
             </div>
-        </div>`;
-    }
+        </div>` : '';
 
-    let bookingHtml = '';
-    if (calSelectedDate && calSelectedTime) {
+    const bookingHtml = (calSelectedDate && calSelectedTime) ? (() => {
         const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-        bookingHtml = `
+        return `
         <form class="cal-booking-form" id="cal-booking-form">
             <p class="cal-selected-info">📅 ${formatted} · ${calSelectedTime}</p>
-            <input type="text"  name="cal_name"  placeholder="Your name"   required>
-            <input type="email" name="cal_email" placeholder="Your email"  required>
+            <input type="text"  name="cal_name"  placeholder="Your name"  required>
+            <input type="email" name="cal_email" placeholder="Your email" required>
             <button type="submit" class="cal-confirm-btn" id="cal-confirm-btn">Confirm Booking</button>
         </form>`;
-    }
+    })() : '';
 
     container.innerHTML = `
         <div class="cal-header">
-            <button class="cal-nav" onclick="calChangeMonth(-1)" ${prevMonthStart ? 'disabled' : ''}>‹</button>
+            <button class="cal-nav" onclick="calChangeMonth(-1)" ${atMinMonth ? 'disabled' : ''}>‹</button>
             <span class="cal-month-label">${MONTH_NAMES[calMonth]} ${calYear}</span>
             <button class="cal-nav" onclick="calChangeMonth(1)">›</button>
         </div>
-        <div class="cal-weekdays">${daysHtml}</div>
-        <div class="cal-grid">${gridHtml}</div>
-        ${timesHtml}
+        <div class="cal-body">
+            <div class="cal-grid-col">
+                <div class="cal-weekdays">${daysHtml}</div>
+                <div class="cal-grid">${gridHtml}</div>
+            </div>
+            ${timesColHtml}
+        </div>
         ${bookingHtml}`;
 
     document.getElementById('cal-booking-form')?.addEventListener('submit', calSubmitBooking);
@@ -402,23 +409,40 @@ function calPickTime(time) {
 async function calSubmitBooking(e) {
     e.preventDefault();
     const btn   = document.getElementById('cal-confirm-btn');
-    btn.textContent = 'Sending…';
+    btn.textContent = 'Booking…';
     btn.disabled    = true;
 
-    const name  = e.target.cal_name.value;
-    const email = e.target.cal_email.value;
+    const name      = e.target.cal_name.value.trim();
+    const email     = e.target.cal_email.value.trim();
     const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
 
+    // Try Google Calendar via Apps Script first
+    const scriptReady = GCAL_SCRIPT_URL && !GCAL_SCRIPT_URL.startsWith('PASTE');
+    let gcalOk = false;
+
+    if (scriptReady) {
+        try {
+            await fetch(GCAL_SCRIPT_URL, {
+                method: 'POST',
+                mode:   'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, date: calSelectedDate, time: calSelectedTime }),
+            });
+            gcalOk = true;
+        } catch { /* fall through to email notification */ }
+    }
+
+    // Always send email notification via Web3Forms
     try {
         const res  = await fetch('https://api.web3forms.com/submit', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify({
                 access_key: '03657e8a-ab0f-4d25-be91-76d8ad81c7b1',
-                subject:    `📅 Meeting Request from ${name} — ${formatted} at ${calSelectedTime}`,
+                subject:    `📅 Meeting Request: ${name} — ${formatted} at ${calSelectedTime}`,
                 name,
                 email,
-                message:    `${name} has requested a 30-min call on ${formatted} at ${calSelectedTime} (their local time).\n\nReply to: ${email}`,
+                message: `${name} has requested a 30-min call.\n\nDate: ${formatted}\nTime: ${calSelectedTime}\nEmail: ${email}${gcalOk ? '\n\n✓ Event added to Google Calendar.' : ''}`,
             }),
         });
         const json = await res.json();
@@ -427,16 +451,14 @@ async function calSubmitBooking(e) {
         document.getElementById('custom-calendar').innerHTML = `
             <div class="cal-success">
                 <div class="success-icon">✓</div>
-                <h4>Booking request sent!</h4>
-                <p>${formatted} at ${calSelectedTime}.<br>Jeffrey will confirm your call shortly.</p>
+                <h4>You're booked!</h4>
+                <p>${formatted} at ${calSelectedTime}.<br>A confirmation will be sent to ${email}.</p>
             </div>`;
     } catch {
         btn.textContent = 'Failed — try again';
         btn.disabled    = false;
     }
 }
-
-initCalendar();
 
 
 /* ─────────────────────────────────────────
