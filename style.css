@@ -460,3 +460,38 @@ body.article-page {
     background: #111;
     color: #fff;
 }
+
+/* ── X Feed Section ── */
+.feed-section {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 100px 40px 120px;
+    text-align: center;
+}
+
+.feed-heading {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+}
+
+.feed-subheading {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 40px;
+}
+
+.feed-embed-wrapper {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+.feed-embed-wrapper .twitter-timeline {
+    width: 100% !important;
+}
