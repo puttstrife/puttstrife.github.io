@@ -522,45 +522,64 @@ async function calSubmitBooking(e) {
 
         document.getElementById('booking-form-container').innerHTML = `
             <div class="cal-success">
-                <svg class="cylon-sprite" xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 96 112" width="96" height="112"
+                <svg class="retro-mail-svg" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 110 108" width="110" height="108"
                      shape-rendering="crispEdges" aria-hidden="true">
-                    <!-- helmet top -->
-                    <rect x="24" y="0"  width="48" height="8" fill="#a8a8a8"/>
-                    <rect x="16" y="8"  width="64" height="8" fill="#b8b8b8"/>
-                    <!-- highlight ridge -->
-                    <rect x="8"  y="16" width="80" height="8" fill="#d0d0d0"/>
-                    <!-- visor surround row top -->
-                    <rect x="8"  y="24" width="16" height="8" fill="#888"/>
-                    <rect x="24" y="24" width="48" height="8" fill="#282828"/>
-                    <rect x="72" y="24" width="16" height="8" fill="#888"/>
-                    <!-- eye row -->
-                    <rect x="8"  y="32" width="16" height="8" fill="#707070"/>
-                    <rect x="24" y="32" width="48" height="8" fill="#101010"/>
-                    <rect x="72" y="32" width="16" height="8" fill="#707070"/>
-                    <!-- scanning eye glow (animated) -->
-                    <rect class="cylon-eye-glow" x="24" y="33" width="10" height="6" fill="#e4e4e4"/>
-                    <!-- visor surround row bottom -->
-                    <rect x="8"  y="40" width="16" height="8" fill="#888"/>
-                    <rect x="24" y="40" width="48" height="8" fill="#282828"/>
-                    <rect x="72" y="40" width="16" height="8" fill="#888"/>
-                    <!-- lower helmet -->
-                    <rect x="8"  y="48" width="80" height="8" fill="#a0a0a0"/>
-                    <rect x="16" y="56" width="64" height="8" fill="#909090"/>
-                    <!-- neck -->
-                    <rect x="32" y="64" width="32" height="8" fill="#686868"/>
-                    <!-- shoulders -->
-                    <rect x="0"  y="72" width="96" height="8" fill="#848484"/>
-                    <!-- chest plate -->
-                    <rect x="0"  y="80" width="96" height="8" fill="#606060"/>
-                    <!-- chest detail stripe -->
-                    <rect x="16" y="88" width="64" height="4" fill="#484848"/>
-                    <!-- lower chest -->
-                    <rect x="0"  y="92" width="96" height="8" fill="#505050"/>
-                    <!-- base -->
-                    <rect x="8"  y="100" width="80" height="8" fill="#383838"/>
-                    <!-- chest center light (static dim) -->
-                    <rect x="44" y="81" width="8" height="6" fill="#b0b0b0" opacity="0.5"/>
+
+                    <!-- motion dots (retro speed indicator, left side) -->
+                    <circle class="mail-dot-1" cx="5"  cy="68" r="2.5" fill="#c8c8c8"/>
+                    <circle class="mail-dot-2" cx="2"  cy="58" r="2"   fill="#d0d0d0"/>
+                    <circle class="mail-dot-3" cx="4"  cy="78" r="2"   fill="#cccccc"/>
+
+                    <!-- envelope shadow (depth layer) -->
+                    <rect x="12" y="56" width="90" height="56" rx="3" fill="#c8c8c8"/>
+
+                    <!-- envelope body -->
+                    <rect x="8"  y="52" width="94" height="56" rx="2"
+                          fill="#e8e8e8" stroke="#a0a0a0" stroke-width="2"/>
+
+                    <!-- envelope inner folds (back diamond pattern) -->
+                    <line x1="8"   y1="108" x2="55" y2="80" stroke="#c4c4c4" stroke-width="1.5"/>
+                    <line x1="102" y1="108" x2="55" y2="80" stroke="#c4c4c4" stroke-width="1.5"/>
+                    <line x1="8"   y1="52"  x2="38" y2="78" stroke="#c4c4c4" stroke-width="1.5"/>
+                    <line x1="102" y1="52"  x2="72" y2="78" stroke="#c4c4c4" stroke-width="1.5"/>
+
+                    <!-- envelope flap — starts closed (↓), animates to open (↑) -->
+                    <polygon class="mail-flap"
+                             points="8,52 102,52 55,80"
+                             fill="#d8d8d8" stroke="#a0a0a0" stroke-width="2"/>
+
+                    <!-- letter paper — slides up out of envelope -->
+                    <g class="mail-letter-group">
+                        <rect x="30" y="8" width="50" height="52" rx="1"
+                              fill="#f7f7f7" stroke="#c0c0c0" stroke-width="1.5"/>
+                        <!-- text lines -->
+                        <rect x="38" y="20" width="34" height="2.5" rx="1" fill="#d8d8d8"/>
+                        <rect x="38" y="28" width="34" height="2.5" rx="1" fill="#d8d8d8"/>
+                        <rect x="38" y="36" width="26" height="2.5" rx="1" fill="#dcdcdc"/>
+                        <rect x="38" y="44" width="30" height="2.5" rx="1" fill="#dcdcdc"/>
+                    </g>
+
+                    <!-- sparkle — top right -->
+                    <g class="mail-star-1">
+                        <rect x="97" y="10" width="2.5" height="14" rx="1" fill="#b0b0b0"/>
+                        <rect x="91" y="16" width="14"  height="2.5" rx="1" fill="#b0b0b0"/>
+                        <rect x="94" y="12" width="2"   height="2"   fill="#cacaca"/>
+                        <rect x="100" y="22" width="2"  height="2"   fill="#cacaca"/>
+                    </g>
+
+                    <!-- sparkle — top left -->
+                    <g class="mail-star-2">
+                        <rect x="14" y="16" width="2"  height="10" rx="1" fill="#bcbcbc"/>
+                        <rect x="10" y="20" width="10" height="2"  rx="1" fill="#bcbcbc"/>
+                    </g>
+
+                    <!-- sparkle — right side -->
+                    <g class="mail-star-3">
+                        <rect x="105" y="56" width="2" height="8" rx="1" fill="#c4c4c4"/>
+                        <rect x="102" y="59" width="8" height="2" rx="1" fill="#c4c4c4"/>
+                    </g>
+
                 </svg>
                 <h4>You're booked!</h4>
                 <p>${formatted} at ${calSelectedTime}.<br>A confirmation will be sent to ${email}.</p>
