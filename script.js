@@ -61,7 +61,7 @@ function renderMediumPosts(posts) {
                 <p class="blog-subtitle">${post.subtitle}</p>
                 <div class="blog-card-meta">
                     <span class="blog-author">By ${post.author}</span>
-                    <a href="${post.link}" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+                    <a href="${post.link}" target="_blank" rel="noopener" class="blog-read-more">Read more</a>
                 </div>
             </div>
         </article>`;
@@ -87,7 +87,7 @@ function renderMediumFallback() {
                 <p class="blog-subtitle">${p.subtitle}</p>
                 <div class="blog-card-meta">
                     <span class="blog-author">By Jeffrey Farañal</span>
-                    <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more →</a>
+                    <a href="https://medium.com/@puttstrife" target="_blank" rel="noopener" class="blog-read-more">Read more</a>
                 </div>
             </div>
         </article>`).join('');
