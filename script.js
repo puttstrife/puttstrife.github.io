@@ -92,16 +92,17 @@ fetch(PROXY)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v4';
+const NEWS_CACHE_KEY = 'tc_news_v5';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
-    { name: 'TechCrunch',  url: 'https://techcrunch.com/feed/',                          topics: ['ai', 'uiux']       },
-    { name: 'The Verge',   url: 'https://www.theverge.com/rss/index.xml',                topics: ['ai', 'uiux']       },
-    { name: 'Dev.to',      url: 'https://dev.to/feed/',                                  topics: ['ai']               },
-    { name: 'Hacker News', url: 'https://news.ycombinator.com/rss',                      topics: ['ai', 'uiux']       },
-    { name: 'HBR',         url: 'https://feeds.hbr.org/harvardbusiness',                 topics: ['leadership']       },
-    { name: 'Fast Company', url: 'https://www.fastcompany.com/latest/rss',               topics: ['leadership', 'uiux'] },
+    { name: 'TechCrunch',       url: 'https://techcrunch.com/feed/',                     topics: ['ai', 'uiux']         },
+    { name: 'The Verge',        url: 'https://www.theverge.com/rss/index.xml',           topics: ['ai', 'uiux']         },
+    { name: 'Dev.to',           url: 'https://dev.to/feed/',                             topics: ['ai']                 },
+    { name: 'Wired',            url: 'https://www.wired.com/feed/rss',                   topics: ['ai', 'uiux']         },
+    { name: 'Smashing Magazine', url: 'https://www.smashingmagazine.com/feed/',          topics: ['uiux']               },
+    { name: 'HBR',              url: 'https://feeds.hbr.org/harvardbusiness',            topics: ['leadership']         },
+    { name: 'Fast Company',     url: 'https://www.fastcompany.com/latest/rss',           topics: ['leadership', 'uiux'] },
 ];
 
 const TOPIC_KEYWORDS = {
