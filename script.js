@@ -106,10 +106,20 @@ function renderMediumFallback() {
     staggerReveal('#medium-posts', '.blog-card');
 }
 
-fetchViaProxy(MEDIUM_FEED)
-    .then(res => res.text())
-    .then(xml => {
-        const posts = parseMediumFeed(xml);
+fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(MEDIUM_FEED))
+    .then(res => res.json())
+    .then(json => {
+        if (json.status !== 'ok' || !json.items?.length) throw new Error();
+        // Re-map rss2json items to the shape parseMediumFeed returns
+        const posts = json.items.slice(0, 4).map(item => ({
+            title:    (item.title || '').trim() || 'Untitled',
+            link:     item.link || '#',
+            date:     item.pubDate || '',
+            content:  item.content || item.description || '',
+            subtitle: stripHtml(item.description || item.content || '').trim().replace(/\s+/g, ' ').slice(0, 120).trim() + '…',
+            author:   item.author || 'Jeffrey Farañal',
+            category: (item.categories && item.categories[0]) || 'Article',
+        }));
         posts.length > 0 ? renderMediumPosts(posts) : renderMediumFallback();
     })
     .catch(renderMediumFallback);
@@ -118,7 +128,7 @@ fetchViaProxy(MEDIUM_FEED)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v6';
+const NEWS_CACHE_KEY = 'tc_news_v7';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
@@ -223,40 +233,20 @@ function renderNews(topic, showAll = false) {
 
 async function fetchNewsFeed(source) {
     try {
-        const res = await fetchViaProxy(source.url);
-        const xml = await res.text();
+        const apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(source.url);
+        const res    = await fetch(apiUrl);
+        if (!res.ok) throw new Error(res.status);
+        const json = await res.json();
+        if (json.status !== 'ok' || !Array.isArray(json.items) || json.items.length === 0) throw new Error('empty');
 
-        const parser = new DOMParser();
-        const doc    = parser.parseFromString(xml, 'text/xml');
-
-        // Support both RSS <item> and Atom <entry>
-        const items = Array.from(doc.querySelectorAll('item, entry')).slice(0, 20);
-
-        return items.map(item => {
-            // Title
-            const title = item.querySelector('title')?.textContent?.trim() || 'Untitled';
-
-            // Link — Atom uses href attribute, RSS uses text node
-            const linkEl = item.querySelector('link');
-            const link   = linkEl?.getAttribute('href')
-                        || linkEl?.nextSibling?.textContent?.trim()
-                        || linkEl?.textContent?.trim()
-                        || '#';
-
-            // Description
-            const descEl    = item.querySelector('description, summary, content');
-            const description = stripHtml(descEl?.textContent || '');
-
-            // Author
-            const author = item.querySelector('author > name, creator, author')
-                              ?.textContent?.trim() || '';
-
-            // Date
-            const pubDate = item.querySelector('pubDate, published, updated')
-                               ?.textContent?.trim() || '';
-
-            return { title, link, author, pubDate, description, source: source.name };
-        }).filter(a => a.title !== 'Untitled' && a.link !== '#');
+        return json.items.slice(0, 20).map(item => ({
+            title:       (item.title || '').trim() || 'Untitled',
+            link:        item.link  || '#',
+            author:      item.author || '',
+            pubDate:     item.pubDate || '',
+            description: stripHtml(item.description || item.content || ''),
+            source:      source.name,
+        })).filter(a => a.title !== 'Untitled' && a.link !== '#');
     } catch {
         return [];
     }
