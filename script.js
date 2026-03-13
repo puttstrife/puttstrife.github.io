@@ -2,19 +2,18 @@
    Medium RSS Feed
 ───────────────────────────────────────── */
 const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';
-const PROXY       = 'https://corsproxy.io/?' + encodeURIComponent(MEDIUM_FEED);
-const PROXY_FALLBACK = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(MEDIUM_FEED);
 
-async function fetchWithFallback(primaryUrl, fallbackUrl) {
-    try {
-        const res = await fetch(primaryUrl);
-        if (!res.ok) throw new Error('primary failed');
-        return res;
-    } catch {
-        const res = await fetch(fallbackUrl);
-        if (!res.ok) throw new Error('fallback failed');
-        return res;
-    }
+// Try all 3 proxies simultaneously — first successful response wins
+async function fetchViaProxy(url) {
+    const encoded = encodeURIComponent(url);
+    const proxies = [
+        'https://corsproxy.io/?' + encoded,
+        'https://api.allorigins.win/raw?url=' + encoded,
+        'https://thingproxy.freeboard.io/fetch/' + url,
+    ];
+    return Promise.any(
+        proxies.map(p => fetch(p).then(r => { if (!r.ok) throw new Error(r.status); return r; }))
+    );
 }
 
 function estimateReadTime(text) {
@@ -107,7 +106,7 @@ function renderMediumFallback() {
     staggerReveal('#medium-posts', '.blog-card');
 }
 
-fetchWithFallback(PROXY, PROXY_FALLBACK)
+fetchViaProxy(MEDIUM_FEED)
     .then(res => res.text())
     .then(xml => {
         const posts = parseMediumFeed(xml);
@@ -119,7 +118,7 @@ fetchWithFallback(PROXY, PROXY_FALLBACK)
 /* ─────────────────────────────────────────
    Tech News Aggregator
 ───────────────────────────────────────── */
-const NEWS_CACHE_KEY = 'tc_news_v5';
+const NEWS_CACHE_KEY = 'tc_news_v6';
 const NEWS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 const NEWS_SOURCES = [
@@ -223,10 +222,8 @@ function renderNews(topic, showAll = false) {
 }
 
 async function fetchNewsFeed(source) {
-    const primary  = 'https://corsproxy.io/?' + encodeURIComponent(source.url);
-    const fallback = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(source.url);
     try {
-        const res = await fetchWithFallback(primary, fallback);
+        const res = await fetchViaProxy(source.url);
         const xml = await res.text();
 
         const parser = new DOMParser();
@@ -350,7 +347,53 @@ function clearFieldError(inputEl) {
 /* ─────────────────────────────────────────
    Custom Booking Calendar
 ───────────────────────────────────────── */
-const TIME_SLOTS   = ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'];
+// Availability is defined in Bangkok time (ICT, UTC+7)
+const THAI_UTC_OFFSET = 7;
+const TIME_SLOTS_THAI = [
+    { value: '9:00 AM',  hours: 9,  minutes: 0 },
+    { value: '10:00 AM', hours: 10, minutes: 0 },
+    { value: '11:00 AM', hours: 11, minutes: 0 },
+    { value: '2:00 PM',  hours: 14, minutes: 0 },
+    { value: '3:00 PM',  hours: 15, minutes: 0 },
+    { value: '4:00 PM',  hours: 16, minutes: 0 },
+];
+
+// Convert a Bangkok time slot to the visitor's local time.
+// Returns { display: '3:00 AM', dayOffset: -1 | 0 | 1 }
+function thaiTimeToLocal(thaiHours, thaiMinutes) {
+    const visitorOffset = -new Date().getTimezoneOffset() / 60; // e.g. UK=0, US/NY=-5
+    let h = thaiHours + (visitorOffset - THAI_UTC_OFFSET);
+    let dayOffset = 0;
+    if (h >= 24) { h -= 24; dayOffset = +1; }
+    if (h < 0)   { h += 24; dayOffset = -1; }
+    const period = h >= 12 ? 'PM' : 'AM';
+    const display = `${h % 12 || 12}:${String(thaiMinutes).padStart(2, '0')} ${period}`;
+    return { display, dayOffset };
+}
+
+// Returns enriched slot list for the current visitor's timezone
+function getLocalTimeSlots() {
+    const visitorOffset = -new Date().getTimezoneOffset() / 60;
+    const isThai = visitorOffset === THAI_UTC_OFFSET;
+    return TIME_SLOTS_THAI.map(slot => {
+        const local = thaiTimeToLocal(slot.hours, slot.minutes);
+        return {
+            value:      slot.value,       // Thai time — always sent to Apps Script
+            thaiLabel:  slot.value,
+            localLabel: isThai ? slot.value : local.display,
+            dayOffset:  local.dayOffset,
+            isThai,
+        };
+    });
+}
+
+function localTZLabel() {
+    try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ');
+    } catch {
+        return 'your time';
+    }
+}
 const MONTH_NAMES  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAY_NAMES    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -371,7 +414,13 @@ function closeModal(id) {
 
 function openBookingModal() {
     const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-    document.getElementById('booking-modal-subtitle').textContent = '📅 ' + formatted + ' · ' + calSelectedTime;
+    const slot = TIME_SLOTS_THAI.find(s => s.value === calSelectedTime);
+    const local = slot ? thaiTimeToLocal(slot.hours, slot.minutes) : null;
+    const isThai = (-new Date().getTimezoneOffset() / 60) === THAI_UTC_OFFSET;
+    const timeDisplay = (local && !isThai)
+        ? `${local.display} (${localTZLabel()}) · ${calSelectedTime} ICT`
+        : `${calSelectedTime} ICT`;
+    document.getElementById('booking-modal-subtitle').textContent = '📅 ' + formatted + ' · ' + timeDisplay;
     document.getElementById('booking-form-container').innerHTML = `
         <form class="cal-booking-form" id="cal-booking-form" novalidate>
             <div class="cal-field-wrap">
@@ -434,12 +483,21 @@ function renderCalendar() {
         gridHtml += `<div class="${cls}" ${click}>${d}</div>`;
     }
 
+    const slots = getLocalTimeSlots();
+    const tzNote = slots[0].isThai ? '' : `<p class="cal-tz-note">Times shown in your timezone · Slots are ${THAI_UTC_OFFSET > 0 ? 'UTC+' + THAI_UTC_OFFSET : 'UTC' + THAI_UTC_OFFSET} Bangkok</p>`;
     const timesColHtml = calSelectedDate ? `
         <div class="cal-time-col">
             <div class="cal-timeslots">
                 <p class="cal-timeslot-label">Pick a time</p>
+                ${tzNote}
                 <div class="cal-times">
-                    ${TIME_SLOTS.map(t => `<button class="cal-time ${t === calSelectedTime ? 'selected' : ''}" onclick="calPickTime('${t}')">${t}</button>`).join('')}
+                    ${slots.map(s => {
+                        const dayTag = s.dayOffset === -1 ? ' <span class="cal-day-offset">-1d</span>'
+                                     : s.dayOffset === +1 ? ' <span class="cal-day-offset">+1d</span>'
+                                     : '';
+                        const subLabel = s.isThai ? '' : `<span class="cal-time-thai">${s.thaiLabel} ICT</span>`;
+                        return `<button class="cal-time ${s.value === calSelectedTime ? 'selected' : ''}" onclick="calPickTime('${s.value}')"><span class="cal-time-local">${s.localLabel}</span>${dayTag}${subLabel}</button>`;
+                    }).join('')}
                 </div>
             </div>
         </div>` : '';
@@ -504,6 +562,10 @@ async function calSubmitBooking(e) {
     btn.textContent = 'Booking…';
     btn.disabled    = true;
     const formatted = new Date(calSelectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    const slot = TIME_SLOTS_THAI.find(s => s.value === calSelectedTime);
+    const localSlot = slot ? thaiTimeToLocal(slot.hours, slot.minutes) : null;
+    const isThai = (-new Date().getTimezoneOffset() / 60) === THAI_UTC_OFFSET;
+    const localTimeStr = (localSlot && !isThai) ? `${localSlot.display} (${localTZLabel()})` : calSelectedTime + ' ICT';
 
     // Try Google Calendar via Apps Script first
     const scriptReady = GCAL_SCRIPT_URL && !GCAL_SCRIPT_URL.startsWith('PASTE');
@@ -524,10 +586,10 @@ async function calSubmitBooking(e) {
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             body: JSON.stringify({
                 access_key: '03657e8a-ab0f-4d25-be91-76d8ad81c7b1',
-                subject:    `📅 Meeting Request: ${name} — ${formatted} at ${calSelectedTime}`,
+                subject:    `📅 Meeting Request: ${name} — ${formatted} at ${calSelectedTime} ICT`,
                 name,
                 email,
-                message: `${name} has requested a 30-min call.\n\nDate: ${formatted}\nTime: ${calSelectedTime}\nEmail: ${email}${gcalOk ? '\n\n✓ Event added to Google Calendar.' : ''}`,
+                message: `${name} has requested a 30-min call.\n\nDate: ${formatted}\nTime: ${calSelectedTime} ICT (Bangkok)\nTheir local time: ${localTimeStr}\nEmail: ${email}${gcalOk ? '\n\n✓ Event added to Google Calendar.' : ''}`,
             }),
         });
         const json = await res.json();
@@ -595,7 +657,7 @@ async function calSubmitBooking(e) {
 
                 </svg>
                 <h4>You're booked!</h4>
-                <p>${formatted} at ${calSelectedTime}.<br>A confirmation will be sent to ${email}.</p>
+                <p>${formatted} at ${localTimeStr}.<br>A confirmation will be sent to ${email}.</p>
             </div>`;
     } catch {
         btn.textContent = 'Failed — try again';

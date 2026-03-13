@@ -1388,6 +1388,20 @@ body.article-page {
 .cal-time:hover { border-color: #111; color: #111; }
 .cal-time.selected { background: #111; border-color: #111; color: #fff; }
 
+.cal-time { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.cal-time-local { font-size: 12px; font-weight: 600; }
+.cal-time-thai  { font-size: 10px; font-weight: 400; opacity: 0.55; }
+.cal-day-offset { font-size: 9px; font-weight: 700; background: #f0f0f0; border-radius: 4px; padding: 0 4px; color: #888; }
+.cal-time.selected .cal-day-offset { background: rgba(255,255,255,0.2); color: #fff; }
+.cal-time.selected .cal-time-thai  { opacity: 0.65; }
+
+.cal-tz-note {
+    font-size: 10px;
+    color: #999;
+    margin: 0 0 8px;
+    text-align: center;
+}
+
 .cal-booking-form {
     margin-top: 20px;
     padding-top: 20px;
