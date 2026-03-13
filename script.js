@@ -3,6 +3,19 @@
 ───────────────────────────────────────── */
 const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';
 const PROXY       = 'https://corsproxy.io/?' + encodeURIComponent(MEDIUM_FEED);
+const PROXY_FALLBACK = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(MEDIUM_FEED);
+
+async function fetchWithFallback(primaryUrl, fallbackUrl) {
+    try {
+        const res = await fetch(primaryUrl);
+        if (!res.ok) throw new Error('primary failed');
+        return res;
+    } catch {
+        const res = await fetch(fallbackUrl);
+        if (!res.ok) throw new Error('fallback failed');
+        return res;
+    }
+}
 
 function estimateReadTime(text) {
     const words = text.trim().split(/\s+/).length;
@@ -94,8 +107,8 @@ function renderMediumFallback() {
     staggerReveal('#medium-posts', '.blog-card');
 }
 
-fetch(PROXY)
-    .then(res => { if (!res.ok) throw new Error(); return res.text(); })
+fetchWithFallback(PROXY, PROXY_FALLBACK)
+    .then(res => res.text())
     .then(xml => {
         const posts = parseMediumFeed(xml);
         posts.length > 0 ? renderMediumPosts(posts) : renderMediumFallback();
@@ -210,10 +223,10 @@ function renderNews(topic, showAll = false) {
 }
 
 async function fetchNewsFeed(source) {
-    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(source.url);
+    const primary  = 'https://corsproxy.io/?' + encodeURIComponent(source.url);
+    const fallback = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(source.url);
     try {
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error();
+        const res = await fetchWithFallback(primary, fallback);
         const xml = await res.text();
 
         const parser = new DOMParser();
