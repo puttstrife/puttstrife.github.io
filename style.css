@@ -117,6 +117,12 @@ body {
     margin: 0 10px 0 10px;
     height: 30px;
     width: 30px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.button-links a:hover .icon {
+    transform: translateY(-3px);
+    opacity: 0.6;
 }
 
 .lottie-logo lottie-player {
