@@ -1,4 +1,45 @@
 /* ─────────────────────────────────────────
+   Use Cases Filter
+───────────────────────────────────────── */
+(function () {
+    function initUsecasesFilter() {
+        const filters = document.querySelectorAll('.usecases-filter');
+        const cards   = document.querySelectorAll('#usecases-grid .usecase-card');
+        const count   = document.getElementById('usecases-count');
+
+        if (!cards.length || !count || !filters.length) return;
+
+        function updateCount(visible) {
+            count.textContent = visible === cards.length
+                ? `${visible} projects`
+                : `${visible} of ${cards.length} projects`;
+        }
+
+        function applyFilter(filter) {
+            let visible = 0;
+            cards.forEach(card => {
+                const match = filter === 'all' || card.dataset.category === filter;
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            updateCount(visible);
+        }
+
+        filters.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filters.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilter(btn.dataset.filter);
+            });
+        });
+
+        updateCount(cards.length);
+    }
+
+    document.addEventListener('DOMContentLoaded', initUsecasesFilter);
+})();
+
+/* ─────────────────────────────────────────
    Medium RSS Feed
 ───────────────────────────────────────── */
 const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Work — Jeffrey Farañal</title>
+    <meta name="description" content="Selected case studies, built products, AI experiments, and multimedia work by Jeffrey Farañal — UI/UX Manager and AI Designer.">
+    <link rel="canonical" href="https://puttstrife.github.io/work.html">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="images/icon-fabIcon.svg">
+</head>
+
+<body class="work-page">
+
+    <nav class="floating-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#blog">Blog</a>
+        <a href="index.html#feed" class="nav-hide-mobile">Socials</a>
+        <a href="index.html#news" class="nav-hide-mobile">News</a>
+        <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <!-- ── Featured Carousel ── -->
+    <section class="work-hero">
+        <div class="work-hero-top">
+            <div>
+                <h1 class="work-hero-heading">Selected Work.</h1>
+                <p class="work-hero-subhead">Published case studies up top. Supporting projects and work-in-progress below.</p>
+            </div>
+            <div class="work-carousel-nav">
+                <button class="work-carousel-btn" id="carousel-prev" aria-label="Previous">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <button class="work-carousel-btn" id="carousel-next" aria-label="Next">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="work-carousel-track-wrap">
+            <div class="work-carousel-track" id="carousel-track">
+                <a class="work-carousel-slide" href="case-study-wells-fargo.html" style="--slide-bg: linear-gradient(135deg, #111 0%, #2c1f1d 58%, #6d1d1d 100%);">
+                    <div class="work-slide-text">
+                        <span class="work-slide-tag">Case Studies</span>
+                        <h2 class="work-slide-title">Wells Fargo &amp; Coral</h2>
+                        <p class="work-slide-desc">An omnichannel workspace for regulated banking operations, built to keep the agent focused and the compliance surface under control.</p>
+                        <span class="work-slide-cta">Open case study</span>
+                    </div>
+                    <div class="work-slide-thumb">
+                        <img src="case-studies/assets/Wells Fargo and Coral/Page 1.pdf.png" alt="Wells Fargo and Coral preview">
+                    </div>
+                </a>
+
+                <a class="work-carousel-slide" href="case-study-medibank.html" style="--slide-bg: linear-gradient(135deg, #0c2d2b 0%, #0c5b54 52%, #0f8b84 100%);">
+                    <div class="work-slide-text">
+                        <span class="work-slide-tag">Case Studies</span>
+                        <h2 class="work-slide-title">Medibank Health Solutions</h2>
+                        <p class="work-slide-desc">A status-management system that makes availability visible across voice, chat, and email without forcing agents to think about the tool.</p>
+                        <span class="work-slide-cta">Open case study</span>
+                    </div>
+                    <div class="work-slide-thumb">
+                        <img src="case-studies/assets/Medibank/2.jpg" alt="Medibank preview">
+                    </div>
+                </a>
+
+                <a class="work-carousel-slide" href="case-study-palantir.html" style="--slide-bg: linear-gradient(135deg, #171717 0%, #3a2f24 52%, #7a5a30 100%);">
+                    <div class="work-slide-text">
+                        <span class="work-slide-tag">Case Studies</span>
+                        <h2 class="work-slide-title">Palantir Issue Management</h2>
+                        <p class="work-slide-desc">A unified search layer for service desk analysts who need to find the answer before a ticket turns into duplicate work.</p>
+                        <span class="work-slide-cta">Open case study</span>
+                    </div>
+                    <div class="work-slide-thumb">
+                        <img src="case-studies/assets/Palantir/Landing.jpg" alt="Palantir preview">
+                    </div>
+                </a>
+
+                <div class="work-carousel-slide" style="--slide-bg: linear-gradient(135deg, #201a2a 0%, #3c2a4d 56%, #6b4b8d 100%);">
+                    <div class="work-slide-text">
+                        <span class="work-slide-tag">Built &amp; Shipped</span>
+                        <h2 class="work-slide-title">Elumia</h2>
+                        <p class="work-slide-desc">Game-world staking flows for crypto-native users. This one stays in the coming-soon lane for now.</p>
+                        <span class="work-slide-cta work-slide-cta--disabled">Coming Soon</span>
+                    </div>
+                    <div class="work-slide-thumb">
+                        <img src="case-studies/assets/Elumia/Home page.png" alt="Elumia preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="work-carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- ── All Work Grid ── -->
+    <section class="work-grid-section">
+        <div class="work-grid-header">
+            <h2 class="work-grid-heading">All Projects</h2>
+            <div class="work-grid-filters">
+                <button class="usecases-filter active" data-filter="all">All</button>
+                <button class="usecases-filter" data-filter="case-studies">Case Studies</button>
+                <button class="usecases-filter" data-filter="built-shipped">Built & Shipped</button>
+                <button class="usecases-filter" data-filter="ai-products">AI Products</button>
+                <button class="usecases-filter" data-filter="motion-media">Motion & Media</button>
+            </div>
+        </div>
+
+        <p class="usecases-count" id="work-count"></p>
+
+        <div class="work-all-grid" id="work-all-grid">
+            <a class="usecase-card work-project-card" data-category="case-studies" href="case-study-wells-fargo.html">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Wells Fargo and Coral/Page 1.pdf.png" alt="Wells Fargo and Coral preview">
+                    <span class="work-card-status">Published</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Case Studies</span>
+                        <span class="usecase-status usecase-status--done">Live</span>
+                    </div>
+                    <h3>Wells Fargo &amp; Coral</h3>
+                    <p>Omnichannel banking workspace for regulated call center operations.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">2024</span>
+                        <span class="usecase-cta-link">Open case study</span>
+                    </div>
+                </div>
+            </a>
+
+            <a class="usecase-card work-project-card" data-category="case-studies" href="case-study-medibank.html">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Medibank/2.jpg" alt="Medibank preview">
+                    <span class="work-card-status">Published</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Case Studies</span>
+                        <span class="usecase-status usecase-status--done">Live</span>
+                    </div>
+                    <h3>Medibank Health Solutions</h3>
+                    <p>One status widget for voice, chat, and email with reason codes and supervisor visibility.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">2023</span>
+                        <span class="usecase-cta-link">Open case study</span>
+                    </div>
+                </div>
+            </a>
+
+            <a class="usecase-card work-project-card" data-category="case-studies" href="case-study-palantir.html">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Palantir/Landing.jpg" alt="Palantir preview">
+                    <span class="work-card-status">Published</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Case Studies</span>
+                        <span class="usecase-status usecase-status--done">Live</span>
+                    </div>
+                    <h3>Palantir Issue Management</h3>
+                    <p>Unified search across Redmine, JIRA, Confluence, and shared files.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">2020</span>
+                        <span class="usecase-cta-link">Open case study</span>
+                    </div>
+                </div>
+            </a>
+
+            <article class="usecase-card work-project-card" data-category="built-shipped">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Elumia/Home page.png" alt="Elumia preview">
+                    <span class="work-card-status work-card-status--soon">Coming Soon</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Built &amp; Shipped</span>
+                        <span class="usecase-status usecase-status--wip">In Progress</span>
+                    </div>
+                    <h3>Elumia</h3>
+                    <p>Gaming-native staking flows built for crypto users, still under wraps.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">Coming soon</span>
+                        <span class="usecase-cta-disabled">Coming Soon</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="usecase-card work-project-card" data-category="case-studies">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Asian Development Bank/Landing Page — News Tab.jpg" alt="Asian Development Bank preview">
+                    <span class="work-card-status work-card-status--soon">Coming Soon</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Case Studies</span>
+                        <span class="usecase-status usecase-status--wip">In Progress</span>
+                    </div>
+                    <h3>Asian Development Bank</h3>
+                    <p>Enterprise search and checklist workflows with supporting assets ready.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">Coming soon</span>
+                        <span class="usecase-cta-disabled">Coming Soon</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="usecase-card work-project-card" data-category="built-shipped">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Star Seeker/Homepage - Web.jpg" alt="Star Seeker preview">
+                    <span class="work-card-status work-card-status--soon">Coming Soon</span>
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Built &amp; Shipped</span>
+                        <span class="usecase-status usecase-status--wip">In Progress</span>
+                    </div>
+                    <h3>Star Seeker</h3>
+                    <p>Product work ready for publication once the context is finalized.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">Coming soon</span>
+                        <span class="usecase-cta-disabled">Coming Soon</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="https://www.instagram.com/puttstrife/" target="_blank" rel="noopener" aria-label="Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+                Instagram
+            </a>
+            <a href="https://www.facebook.com/WquAvuaeB8/" target="_blank" rel="noopener" aria-label="Facebook">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                Facebook
+            </a>
+            <a href="https://www.linkedin.com/in/puttstrife/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn
+            </a>
+            <a href="https://x.com/meta_xr" target="_blank" rel="noopener" aria-label="X">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                X
+            </a>
+        </div>
+        <p class="footer-copy">© 2026 Jeffrey Farañal. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Carousel
+        (function () {
+            const track  = document.getElementById('carousel-track');
+            const dots   = document.getElementById('carousel-dots');
+            const prev   = document.getElementById('carousel-prev');
+            const next   = document.getElementById('carousel-next');
+            const slides = Array.from(track.querySelectorAll('.work-carousel-slide'));
+            let current  = 0;
+
+            // Build dots
+            slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'work-carousel-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                dot.addEventListener('click', () => goTo(i));
+                dots.appendChild(dot);
+            });
+
+            function goTo(index) {
+                current = (index + slides.length) % slides.length;
+                track.style.transform = `translateX(-${current * 100}%)`;
+                dots.querySelectorAll('.work-carousel-dot').forEach((d, i) => {
+                    d.classList.toggle('active', i === current);
+                });
+                prev.disabled = slides.length <= 1;
+                next.disabled = slides.length <= 1;
+            }
+
+            prev.addEventListener('click', () => goTo(current - 1));
+            next.addEventListener('click', () => goTo(current + 1));
+
+            if (slides.length <= 1) {
+                prev.disabled = true;
+                next.disabled = true;
+            }
+
+            goTo(0);
+
+            // Work grid filter
+            const filters = document.querySelectorAll('.work-grid-section .usecases-filter');
+            const cards   = document.querySelectorAll('#work-all-grid .usecase-card');
+            const count   = document.getElementById('work-count');
+
+            function updateCount(visible) {
+                count.textContent = visible === cards.length
+                    ? `${visible} project${visible !== 1 ? 's' : ''}`
+                    : `${visible} of ${cards.length} projects`;
+            }
+
+            filters.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filters.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const f = btn.dataset.filter;
+                    let visible = 0;
+                    cards.forEach(card => {
+                        const match = f === 'all' || card.dataset.category === f;
+                        card.style.display = match ? '' : 'none';
+                        if (match) visible++;
+                    });
+                    updateCount(visible);
+                });
+            });
+
+            updateCount(cards.length);
+        })();
+    </script>
+</body>
+</html>
