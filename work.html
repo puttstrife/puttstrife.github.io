@@ -276,14 +276,13 @@
             let dragDeltaX = 0;
             let dragging = false;
             let suppressClick = false;
-            let pointerType = 'mouse';
 
             // Build dots
             slides.forEach((_, i) => {
                 const dot = document.createElement('button');
                 dot.className = 'work-carousel-dot' + (i === 0 ? ' active' : '');
                 dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-                dot.addEventListener('click', () => goTo(i));
+                dot.addEventListener('click', () => { goTo(i); resetAuto(); });
                 dots.appendChild(dot);
             });
 
@@ -296,43 +295,34 @@
                 prev.disabled = slides.length <= 1;
                 next.disabled = slides.length <= 1;
                 dragDeltaX = 0;
-                track.style.transform = `translateX(-${current * 100}%)`;
             }
 
-            prev.addEventListener('click', () => goTo(current - 1));
-            next.addEventListener('click', () => goTo(current + 1));
+            prev.addEventListener('click', () => { goTo(current - 1); resetAuto(); });
+            next.addEventListener('click', () => { goTo(current + 1); resetAuto(); });
 
-            if (slides.length <= 1) {
-                prev.disabled = true;
-                next.disabled = true;
-            }
+            if (slides.length <= 1) { prev.disabled = true; next.disabled = true; }
 
             goTo(0);
 
+            // ── Touch swipe (mobile only) ──────────────────────────────────
             function getCurrentTranslate() {
                 const slideWidth = wrap?.getBoundingClientRect().width || track.getBoundingClientRect().width;
                 return -current * slideWidth + dragDeltaX;
             }
 
-            function updateDragTransform() {
-                track.style.transform = `translateX(${getCurrentTranslate()}px)`;
-            }
-
             if (wrap) {
                 wrap.addEventListener('pointerdown', (e) => {
-                    if (slides.length <= 1) return;
+                    if (slides.length <= 1 || e.pointerType !== 'touch') return;
                     dragging = true;
                     dragStartX = e.clientX;
                     dragDeltaX = 0;
-                    pointerType = e.pointerType;
                     track.classList.add('dragging');
-                    track.setPointerCapture?.(e.pointerId);
                 });
 
                 window.addEventListener('pointermove', (e) => {
                     if (!dragging) return;
                     dragDeltaX = e.clientX - dragStartX;
-                    updateDragTransform();
+                    track.style.transform = `translateX(${getCurrentTranslate()}px)`;
                 });
 
                 function endDrag() {
@@ -347,13 +337,14 @@
                     }
                     dragging = false;
                     track.classList.remove('dragging');
-                    // Only suppress navigation on touch — desktop mouse clicks always go through
-                    suppressClick = pointerType === 'touch' && wasDrag;
-                    if (suppressClick) window.setTimeout(() => { suppressClick = false; }, 180);
+                    suppressClick = wasDrag;
+                    if (wasDrag) window.setTimeout(() => { suppressClick = false; }, 180);
                 }
 
                 window.addEventListener('pointerup', endDrag);
                 window.addEventListener('pointercancel', endDrag);
+
+                // Block navigation only after a real touch-swipe
                 track.addEventListener('click', (e) => {
                     if (!suppressClick) return;
                     e.preventDefault();
@@ -361,23 +352,27 @@
                 }, true);
             }
 
-            // Auto-advance every 3 seconds; pause on hover or pointer interaction
+            // ── Auto-advance desktop only (5 seconds) ─────────────────────
+            const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
             let autoTimer = null;
+
             function startAuto() {
+                if (!isDesktop || slides.length <= 1) return;
                 stopAuto();
-                autoTimer = setInterval(() => goTo(current + 1), 3000);
+                autoTimer = setInterval(() => goTo(current + 1), 5000);
             }
             function stopAuto() {
                 if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
             }
-            if (wrap) {
+            function resetAuto() {
+                stopAuto();
+                window.setTimeout(startAuto, 5000);
+            }
+
+            if (isDesktop && wrap) {
                 wrap.addEventListener('mouseenter', stopAuto);
                 wrap.addEventListener('mouseleave', startAuto);
-                wrap.addEventListener('pointerdown', stopAuto);
-                wrap.addEventListener('pointerup', () => window.setTimeout(startAuto, 500));
             }
-            prev.addEventListener('click', () => { stopAuto(); window.setTimeout(startAuto, 4000); });
-            next.addEventListener('click', () => { stopAuto(); window.setTimeout(startAuto, 4000); });
             startAuto();
 
             // Work grid filter

@@ -464,9 +464,64 @@ body {
     .cal-times { flex-direction: row; flex-wrap: wrap; }
     .cal-time  { width: auto; }
 }
-    </style>
+    
+/* ── Page loader ── */
+#page-loader {
+    position: fixed;
+    inset: 0;
+    background: #F5F5FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 9999;
+    transition: opacity 0.35s ease;
+}
+#page-loader .loader-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    border: 1.5px solid rgba(200,200,200,0.5);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+#page-loader .loader-ring {
+    width: 32px;
+    height: 32px;
+    border: 2.5px solid #e0e0e0;
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#page-loader .loader-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    letter-spacing: 0.3px;
+}
+</style>
 </head>
 <body>
+    <div id="page-loader">
+        <div class="loader-avatar">JF</div>
+        <div class="loader-ring"></div>
+        <span class="loader-label">Loading booking page…</span>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            var l = document.getElementById('page-loader');
+            if (l) { l.style.opacity = '0'; setTimeout(function () { l.remove(); }, 350); }
+        });
+    </script>
 
     <header class="page-header">
         <div class="avatar">JF</div>
