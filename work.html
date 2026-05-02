@@ -276,6 +276,7 @@
             let dragDeltaX = 0;
             let dragging = false;
             let suppressClick = false;
+            let pointerType = 'mouse';
 
             // Build dots
             slides.forEach((_, i) => {
@@ -304,7 +305,6 @@
 
             goTo(0);
 
-            // ── Touch swipe (mobile only) ──────────────────────────────────
             function getCurrentTranslate() {
                 const slideWidth = wrap?.getBoundingClientRect().width || track.getBoundingClientRect().width;
                 return -current * slideWidth + dragDeltaX;
@@ -312,11 +312,13 @@
 
             if (wrap) {
                 wrap.addEventListener('pointerdown', (e) => {
-                    if (slides.length <= 1 || e.pointerType !== 'touch') return;
+                    if (slides.length <= 1) return;
                     dragging = true;
                     dragStartX = e.clientX;
                     dragDeltaX = 0;
+                    pointerType = e.pointerType;
                     track.classList.add('dragging');
+                    // no pointer capture — lets clicks reach the <a> slides normally
                 });
 
                 window.addEventListener('pointermove', (e) => {
@@ -337,14 +339,13 @@
                     }
                     dragging = false;
                     track.classList.remove('dragging');
-                    suppressClick = wasDrag;
-                    if (wasDrag) window.setTimeout(() => { suppressClick = false; }, 180);
+                    // suppress click only on touch after a real swipe
+                    suppressClick = pointerType === 'touch' && wasDrag;
+                    if (suppressClick) window.setTimeout(() => { suppressClick = false; }, 180);
                 }
 
                 window.addEventListener('pointerup', endDrag);
                 window.addEventListener('pointercancel', endDrag);
-
-                // Block navigation only after a real touch-swipe
                 track.addEventListener('click', (e) => {
                     if (!suppressClick) return;
                     e.preventDefault();
