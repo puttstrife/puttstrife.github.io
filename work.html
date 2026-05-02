@@ -337,6 +337,7 @@
                     if (!dragging) return;
                     const width = wrap?.getBoundingClientRect().width || track.getBoundingClientRect().width || 1;
                     const threshold = Math.min(140, width * 0.2);
+                    const wasDrag = Math.abs(dragDeltaX) > 8;
                     if (Math.abs(dragDeltaX) > threshold) {
                         goTo(current + (dragDeltaX < 0 ? 1 : -1));
                     } else {
@@ -344,8 +345,8 @@
                     }
                     dragging = false;
                     track.classList.remove('dragging');
-                    suppressClick = true;
-                    window.setTimeout(() => { suppressClick = false; }, 180);
+                    suppressClick = wasDrag;
+                    if (wasDrag) window.setTimeout(() => { suppressClick = false; }, 180);
                 }
 
                 window.addEventListener('pointerup', endDrag);
@@ -356,6 +357,25 @@
                     e.stopPropagation();
                 }, true);
             }
+
+            // Auto-advance every 3 seconds; pause on hover or pointer interaction
+            let autoTimer = null;
+            function startAuto() {
+                stopAuto();
+                autoTimer = setInterval(() => goTo(current + 1), 3000);
+            }
+            function stopAuto() {
+                if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+            }
+            if (wrap) {
+                wrap.addEventListener('mouseenter', stopAuto);
+                wrap.addEventListener('mouseleave', startAuto);
+                wrap.addEventListener('pointerdown', stopAuto);
+                wrap.addEventListener('pointerup', () => window.setTimeout(startAuto, 500));
+            }
+            prev.addEventListener('click', () => { stopAuto(); window.setTimeout(startAuto, 4000); });
+            next.addEventListener('click', () => { stopAuto(); window.setTimeout(startAuto, 4000); });
+            startAuto();
 
             // Work grid filter
             const filters = document.querySelectorAll('.work-grid-section .usecases-filter');
