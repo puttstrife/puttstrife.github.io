@@ -3081,6 +3081,17 @@ body.case-study-page { background: #fff; }
     }
 }
 
+/* ─────────────────────────────────────────
+   Responsive — Tablet (769px–1024px)
+───────────────────────────────────────── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .cs-hero { padding: 120px 40px 80px; }
+    .cs-hero-title { font-size: 48px; }
+    .work-all-grid { grid-template-columns: repeat(2, 1fr); }
+    .work-hero { padding: 72px 24px 24px; }
+    .work-grid-section { padding: 28px 24px 80px; }
+}
+
 /* ── Scroll Reveal ── */
 .reveal {
     opacity: 0;
