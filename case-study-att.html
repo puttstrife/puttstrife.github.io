@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AT&T Embedded Chat — Jeffrey Farañal</title>
+    <meta name="description" content="Designing an embedded chat experience inside Salesforce that reduces cognitive load, supports multichat, and keeps agent roles clear at a glance.">
+    <link rel="canonical" href="https://puttstrife.github.io/case-study-att.html">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="images/icon-fabIcon.svg">
+</head>
+<body class="case-study-page">
+
+    <nav class="floating-nav">
+        <a href="work.html">← Work</a>
+        <a href="index.html">Home</a>
+        <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <section class="cs-hero" style="--cs-accent: #175cbb;">
+        <div class="cs-hero-inner">
+            <span class="cs-hero-tag">Case Studies</span>
+            <h1 class="cs-hero-title">AT&amp;T Embedded Chat</h1>
+            <p class="cs-hero-summary">Designing a small but high-impact chat application inside Salesforce so agents can handle more conversations with less screen switching, less confusion, and a cleaner read on who they are talking to.</p>
+            <div class="cs-hero-meta">
+                <span>2024</span>
+                <span>·</span>
+                <span>UI / UX Design</span>
+                <span>·</span>
+                <span>Enterprise · Contact Center</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="cs-section">
+        <p class="cs-label">The Situation</p>
+        <h2 class="cs-heading">Agents needed less context switching, not more tools.</h2>
+        <div class="cs-body">
+            <p>AT&amp;T is one of the largest ISPs in America, which means support teams are constantly balancing speed, clarity, and customer trust. The embedded chat experience had to fit inside Salesforce while still making the conversation feel immediate and easy to manage.</p>
+            <p>The problem was not just the chat itself. It was the cognitive load around the chat: switching screens, identifying the user type, understanding whether a conversation was synchronous or asynchronous, and keeping multiple states straight while the queue kept moving.</p>
+            <p>The design goal was simple: make the conversation easier to read, easier to control, and easier to trust at a glance.</p>
+        </div>
+    </section>
+
+    <section class="cs-section" style="border-top: 1px solid #f0f0f0;">
+        <p class="cs-label">The Approach</p>
+        <h2 class="cs-heading">Role-aware chat states, designed to stay out of the way.</h2>
+        <div class="cs-body">
+            <p>The interface was shaped around the realities of live support work. Default chat, supervisor consultation, and customer-facing states all needed to feel distinct without adding visual noise.</p>
+            <p>Avatar treatment, bubble color, and toolbar placement were tuned so each mode could be recognized in seconds. The result is a chat surface that stays lightweight visually, but still gives agents and supervisors the cues they need to move quickly.</p>
+            <p>Because the application lives inside Salesforce, the design also had to respect the surrounding workspace and keep the embedded experience compact, legible, and easy to scan during fast-paced support work.</p>
+        </div>
+    </section>
+
+    <div class="cs-hscroll-label">
+        <p class="cs-label">The Design</p>
+        <p class="cs-hscroll-hint">Scroll to explore →</p>
+    </div>
+    <div class="cs-hscroll-section cs-att-carousel" id="hscroll-att" style="--slides: 4;">
+        <div class="cs-hscroll-sticky">
+            <div class="cs-hscroll-track" id="track-att">
+                <div class="cs-hscroll-slide">
+                    <img src="case-studies/assets/ATT/2.jpg" alt="AT&amp;T embedded chat consultation overview">
+                    <p class="cs-slide-caption">Default, supervisor, and customer modes sit side by side so the team can compare role states without changing context.</p>
+                </div>
+                <div class="cs-hscroll-slide">
+                    <img src="case-studies/assets/ATT/5.jpg" alt="AT&amp;T supervisor chat view">
+                    <p class="cs-slide-caption">Supervisor consultation and conference states keep the conversation readable while clarifying who is leading the interaction.</p>
+                </div>
+                <div class="cs-hscroll-slide">
+                    <img src="case-studies/assets/ATT/8.jpg" alt="AT&amp;T async sync tooltip and parked chat states">
+                    <p class="cs-slide-caption">Async, sync, and parked chat states are differentiated with tooltips and bubble treatment so agents know what mode they are in instantly.</p>
+                </div>
+                <div class="cs-hscroll-slide">
+                    <img src="case-studies/assets/ATT/10.jpg" alt="AT&amp;T active chats cleanup">
+                    <p class="cs-slide-caption">Completed chats drop out of Active Chats, keeping the queue focused on what still needs action.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="cs-section">
+        <p class="cs-label">The Results</p>
+        <h2 class="cs-heading">A smaller surface, with a clearer read.</h2>
+        <div class="cs-body">
+            <p>The final concept reduces friction by making state, role, and conversation status obvious before the agent has to think about it. That lowers cognitive load and helps the support flow feel calmer even when the queue is busy.</p>
+        </div>
+        <div class="cs-results-list">
+            <div class="cs-result-item">
+                <h4>Less screen switching</h4>
+                <p>The embedded experience keeps the agent inside Salesforce instead of bouncing between tools.</p>
+            </div>
+            <div class="cs-result-item">
+                <h4>Clearer chat states</h4>
+                <p>Sync, async, consultation, and parked states are visually distinct, so the user knows what is happening at a glance.</p>
+            </div>
+            <div class="cs-result-item">
+                <h4>Better queue focus</h4>
+                <p>Removing completed chats from the active list keeps attention on conversations that still need work.</p>
+            </div>
+            <div class="cs-result-item">
+                <h4>More confidence in multichat</h4>
+                <p>Agents can handle multiple conversations more comfortably when the interface keeps the status language simple.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cs-section cs-conclusion-section">
+        <p class="cs-label">Conclusion</p>
+        <blockquote class="cs-blockquote">"When the interface is clear, the agent can focus on the customer instead of the machinery around the conversation."</blockquote>
+        <div class="cs-body">
+            <p>AT&amp;T Embedded Chat is intentionally small in scope, but that is the point. In a service environment, the best design is often the one that removes friction quietly and leaves the agent with a cleaner read on the next action.</p>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-links">
+            <a href="https://www.instagram.com/puttstrife/" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+                Instagram
+            </a>
+            <a href="https://www.linkedin.com/in/puttstrife/" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn
+            </a>
+            <a href="https://x.com/meta_xr" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                X
+            </a>
+        </div>
+        <p class="footer-copy">© 2026 Jeffrey Farañal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        (function () {
+            const section = document.getElementById('hscroll-att');
+            const track   = document.getElementById('track-att');
+            if (!section || !track || window.innerWidth <= 768) return;
+
+            function onScroll() {
+                const sectionTop    = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const progress      = Math.max(0, Math.min(1,
+                    (window.scrollY - sectionTop) / (sectionHeight - window.innerHeight)
+                ));
+                const lastSlide     = track.lastElementChild;
+                const maxTranslate  = lastSlide
+                    ? Math.max(0, lastSlide.offsetLeft + (lastSlide.offsetWidth / 2) - (window.innerWidth / 2))
+                    : 0;
+                track.style.transform = `translateX(-${progress * maxTranslate}px)`;
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll, { passive: true });
+            onScroll();
+        })();
+    </script>
+</body>
+</html>

@@ -2148,6 +2148,10 @@ body.case-study-page { background: #fff; }
 .cs-star-seeker-carousel .cs-hscroll-slide img {
     object-position: center top;
 }
+
+.cs-att-carousel .cs-hscroll-slide img {
+    object-position: center top;
+}
 .cs-slide-caption {
     font-size: 13px;
     color: #888;

@@ -1,0 +1,1 @@
+ATT is one of the biggest ISP in America. Embedded Chat is a small application in Saleforce, to provide agents less cognitive load and switching screens. It provides multichat across any platfros. Small in size but powerful.
