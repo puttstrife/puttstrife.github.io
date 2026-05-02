@@ -1694,19 +1694,19 @@ body.work-page {
 .work-hero {
     max-width: 960px;
     margin: 0 auto;
-    padding: 120px 32px 60px;
+    padding: 72px 32px 24px;
 }
 
 .work-hero-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
 
 .work-hero-heading {
     font-family: 'Open Sans', sans-serif;
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 800;
     color: #111;
     letter-spacing: -0.5px;
@@ -1756,6 +1756,8 @@ body.work-page {
 .work-carousel-track-wrap {
     overflow: hidden;
     border-radius: 22px;
+    margin-bottom: 0;
+    height: 540px;
 }
 
 .work-carousel-track {
@@ -1769,7 +1771,7 @@ body.work-page {
     border-radius: 22px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 340px;
+    height: 540px;
     overflow: hidden;
 }
 
@@ -1779,11 +1781,11 @@ a.work-carousel-slide {
 }
 
 .work-slide-text {
-    padding: 52px 48px;
+    padding: 14px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 14px;
+    gap: 4px;
 }
 
 .work-slide-tag {
@@ -1796,7 +1798,7 @@ a.work-carousel-slide {
 
 .work-slide-title {
     font-family: 'Open Sans', sans-serif;
-    font-size: 32px;
+    font-size: 18px;
     font-weight: 800;
     color: #fff;
     line-height: 1.15;
@@ -1805,9 +1807,9 @@ a.work-carousel-slide {
 }
 
 .work-slide-desc {
-    font-size: 14px;
+    font-size: 11px;
     color: rgba(255,255,255,0.65);
-    line-height: 1.7;
+    line-height: 1.35;
     max-width: 340px;
     margin: 0;
 }
@@ -1820,7 +1822,7 @@ a.work-carousel-slide {
     font-weight: 700;
     color: #fff;
     background: rgba(0,0,0,0.55);
-    padding: 11px 24px;
+    padding: 7px 14px;
     border-radius: 50px;
     text-decoration: none;
     border: none;
@@ -1993,7 +1995,7 @@ a.work-carousel-slide .work-slide-thumb img {
 .work-grid-section {
     max-width: 960px;
     margin: 0 auto;
-    padding: 0 32px 120px;
+    padding: 28px 32px 120px;
 }
 
 .work-grid-header {
@@ -2539,15 +2541,15 @@ body.case-study-page { background: #fff; }
 
     .work-carousel-slide {
         grid-template-columns: 1fr;
-        min-height: auto;
+        height: 540px;
     }
 
     .work-slide-thumb {
-        height: 220px;
+        height: 540px;
     }
 
     .work-slide-text {
-        padding: 36px 28px 28px;
+        padding: 12px 16px 10px;
     }
 
     .work-hero-heading {
