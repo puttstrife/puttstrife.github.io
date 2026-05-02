@@ -1,0 +1,1 @@
+ADB is one of the biggest bank in APEC or Asia. This platform is use to identify quickly the background of customers, especially who loans. Customers tend to have bad records and international criminal cases.
