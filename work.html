@@ -276,6 +276,7 @@
             let dragDeltaX = 0;
             let dragging = false;
             let suppressClick = false;
+            let pointerType = 'mouse';
 
             // Build dots
             slides.forEach((_, i) => {
@@ -323,6 +324,7 @@
                     dragging = true;
                     dragStartX = e.clientX;
                     dragDeltaX = 0;
+                    pointerType = e.pointerType;
                     track.classList.add('dragging');
                     track.setPointerCapture?.(e.pointerId);
                 });
@@ -345,8 +347,9 @@
                     }
                     dragging = false;
                     track.classList.remove('dragging');
-                    suppressClick = wasDrag;
-                    if (wasDrag) window.setTimeout(() => { suppressClick = false; }, 180);
+                    // Only suppress navigation on touch — desktop mouse clicks always go through
+                    suppressClick = pointerType === 'touch' && wasDrag;
+                    if (suppressClick) window.setTimeout(() => { suppressClick = false; }, 180);
                 }
 
                 window.addEventListener('pointerup', endDrag);
