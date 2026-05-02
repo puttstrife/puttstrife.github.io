@@ -1739,11 +1739,20 @@ body.work-page {
     border-radius: 22px;
     margin-bottom: 0;
     height: 540px;
+    touch-action: pan-y;
 }
 
 .work-carousel-track {
     display: flex;
     transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+.work-carousel-track.dragging {
+    transition: none;
+    cursor: grabbing;
 }
 
 .work-carousel-slide {
@@ -1833,6 +1842,8 @@ a.work-carousel-slide {
     object-fit: cover;
     object-position: center top;
     display: block;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 a.work-carousel-slide .work-slide-thumb img {

@@ -28,7 +28,7 @@
     <section class="work-hero">
         <div class="work-hero-top">
             <div>
-                <h1 class="work-hero-heading">Selected Work.</h1>
+                <h1 class="work-hero-heading">Selected Work</h1>
                 <p class="work-hero-subhead">Published case studies up top. Supporting projects and work-in-progress below.</p>
             </div>
             <div class="work-carousel-nav">
@@ -67,18 +67,6 @@
                     </div>
                 </a>
 
-                <a class="work-carousel-slide" href="case-study-palantir.html" style="--slide-bg: linear-gradient(135deg, #171717 0%, #3a2f24 52%, #7a5a30 100%);">
-                    <div class="work-slide-text">
-                        <span class="work-slide-tag">Case Studies</span>
-                        <h2 class="work-slide-title">Palantir Issue Management</h2>
-                        <p class="work-slide-desc">A unified search layer for service desk analysts who need to find the answer before a ticket turns into duplicate work.</p>
-                        <span class="work-slide-cta">Open case study</span>
-                    </div>
-                    <div class="work-slide-thumb">
-                        <img src="case-studies/assets/Palantir/Landing.jpg" alt="Palantir preview">
-                    </div>
-                </a>
-
                 <a class="work-carousel-slide" href="case-study-att.html" style="--slide-bg: linear-gradient(135deg, #0e2d55 0%, #175cbb 55%, #51a8ff 100%);">
                     <div class="work-slide-text">
                         <span class="work-slide-tag">Case Studies</span>
@@ -88,18 +76,6 @@
                     </div>
                     <div class="work-slide-thumb">
                         <img src="case-studies/assets/ATT/2.jpg" alt="AT&amp;T preview">
-                    </div>
-                </a>
-
-                <a class="work-carousel-slide" href="case-study-simple-lighting.html" style="--slide-bg: linear-gradient(135deg, #161616 0%, #32261f 56%, #8a6f49 100%);">
-                    <div class="work-slide-text">
-                        <span class="work-slide-tag">Case Studies</span>
-                        <h2 class="work-slide-title">Simple Lighting</h2>
-                        <p class="work-slide-desc">A mobile-aware B2B commerce redesign supported by two motion studies that show the UI across key pages.</p>
-                        <span class="work-slide-cta">Open case study</span>
-                    </div>
-                    <div class="work-slide-thumb">
-                        <img src="case-studies/assets/Simple Lighting/rendered/11.png" alt="Simple Lighting preview">
                     </div>
                 </a>
             </div>
@@ -209,6 +185,23 @@
                 </div>
             </a>
 
+            <a class="usecase-card work-project-card" data-category="built-shipped" href="case-study-star-seeker.html">
+                <div class="work-card-media">
+                    <img src="case-studies/assets/Star Seeker/Homepage - Web.jpg" alt="Star Seeker preview">
+                </div>
+                <div class="usecase-card-inner">
+                    <div class="usecase-card-header">
+                        <span class="usecase-tag">Built &amp; Shipped</span>
+                    </div>
+                    <h3>Star Seeker</h3>
+                    <p>Recruitment storytelling for a remote hiring platform with a clearer conversion path.</p>
+                    <div class="usecase-card-footer">
+                        <span class="usecase-year">2023</span>
+                        <span class="usecase-cta-link">Open case study</span>
+                    </div>
+                </div>
+            </a>
+
             <a class="usecase-card work-project-card" data-category="case-studies" href="case-study-asian-development-bank.html">
                 <div class="work-card-media">
                     <img src="case-studies/assets/Asian Development Bank/Landing Page — News Tab.jpg" alt="Asian Development Bank preview">
@@ -273,11 +266,16 @@
         // Carousel
         (function () {
             const track  = document.getElementById('carousel-track');
+            const wrap   = document.querySelector('.work-carousel-track-wrap');
             const dots   = document.getElementById('carousel-dots');
             const prev   = document.getElementById('carousel-prev');
             const next   = document.getElementById('carousel-next');
             const slides = Array.from(track.querySelectorAll('.work-carousel-slide'));
             let current  = 0;
+            let dragStartX = 0;
+            let dragDeltaX = 0;
+            let dragging = false;
+            let suppressClick = false;
 
             // Build dots
             slides.forEach((_, i) => {
@@ -296,6 +294,8 @@
                 });
                 prev.disabled = slides.length <= 1;
                 next.disabled = slides.length <= 1;
+                dragDeltaX = 0;
+                track.style.transform = `translateX(-${current * 100}%)`;
             }
 
             prev.addEventListener('click', () => goTo(current - 1));
@@ -307,6 +307,55 @@
             }
 
             goTo(0);
+
+            function getCurrentTranslate() {
+                const slideWidth = wrap?.getBoundingClientRect().width || track.getBoundingClientRect().width;
+                return -current * slideWidth + dragDeltaX;
+            }
+
+            function updateDragTransform() {
+                track.style.transform = `translateX(${getCurrentTranslate()}px)`;
+            }
+
+            if (wrap) {
+                wrap.addEventListener('pointerdown', (e) => {
+                    if (slides.length <= 1) return;
+                    dragging = true;
+                    dragStartX = e.clientX;
+                    dragDeltaX = 0;
+                    track.classList.add('dragging');
+                    track.setPointerCapture?.(e.pointerId);
+                });
+
+                window.addEventListener('pointermove', (e) => {
+                    if (!dragging) return;
+                    dragDeltaX = e.clientX - dragStartX;
+                    updateDragTransform();
+                });
+
+                function endDrag() {
+                    if (!dragging) return;
+                    const width = wrap?.getBoundingClientRect().width || track.getBoundingClientRect().width || 1;
+                    const threshold = Math.min(140, width * 0.2);
+                    if (Math.abs(dragDeltaX) > threshold) {
+                        goTo(current + (dragDeltaX < 0 ? 1 : -1));
+                    } else {
+                        goTo(current);
+                    }
+                    dragging = false;
+                    track.classList.remove('dragging');
+                    suppressClick = true;
+                    window.setTimeout(() => { suppressClick = false; }, 180);
+                }
+
+                window.addEventListener('pointerup', endDrag);
+                window.addEventListener('pointercancel', endDrag);
+                track.addEventListener('click', (e) => {
+                    if (!suppressClick) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, true);
+            }
 
             // Work grid filter
             const filters = document.querySelectorAll('.work-grid-section .usecases-filter');
