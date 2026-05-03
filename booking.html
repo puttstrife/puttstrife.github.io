@@ -517,9 +517,14 @@ body {
         <span class="loader-label">Loading booking page…</span>
     </div>
     <script>
-        window.addEventListener('DOMContentLoaded', function () {
-            var l = document.getElementById('page-loader');
-            if (l) { l.style.opacity = '0'; setTimeout(function () { l.remove(); }, 350); }
+        var loaderStart = Date.now();
+        window.addEventListener('load', function () {
+            var elapsed = Date.now() - loaderStart;
+            var remaining = Math.max(0, 800 - elapsed);
+            setTimeout(function () {
+                var l = document.getElementById('page-loader');
+                if (l) { l.style.opacity = '0'; setTimeout(function () { l.remove(); }, 350); }
+            }, remaining);
         });
     </script>
 
