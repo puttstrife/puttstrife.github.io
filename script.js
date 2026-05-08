@@ -40,6 +40,59 @@
 })();
 
 /* ─────────────────────────────────────────
+   Floating Career Pack Toast
+───────────────────────────────────────── */
+(function () {
+    const CAREER_PACK_URL = 'https://drive.google.com/drive/folders/11-uQWzv_Ks0BhRyggO66PQGSJ-Gc3xOd?usp=drive_link';
+    const DISMISS_KEY = 'careerPackToastDismissed';
+
+    function initCareerPackToast() {
+        if (sessionStorage.getItem(DISMISS_KEY) === 'true') return;
+        if (document.querySelector('.career-pack-toast')) return;
+
+        const toast = document.createElement('aside');
+        toast.className = 'career-pack-toast';
+        toast.setAttribute('aria-label', 'Career documents');
+        toast.innerHTML = `
+            <a class="career-pack-link" href="${CAREER_PACK_URL}" target="_blank" rel="noopener">
+                <span class="career-pack-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h6l2 2h8v14H4z"/>
+                        <path d="M8 12h8"/>
+                        <path d="M8 16h5"/>
+                    </svg>
+                </span>
+                <span class="career-pack-copy">
+                    <strong>Resume, CV &amp; deck</strong>
+                    <span>Open career pack</span>
+                </span>
+                <span class="career-pack-arrow" aria-hidden="true">↗</span>
+            </a>
+            <button class="career-pack-dismiss" type="button" aria-label="Dismiss career pack link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12"/>
+                    <path d="M18 6L6 18"/>
+                </svg>
+            </button>
+        `;
+
+        toast.querySelector('.career-pack-dismiss').addEventListener('click', () => {
+            const shouldDismiss = window.confirm('Hide the resume, CV, cover letter, and presentation link for this session?');
+            if (!shouldDismiss) return;
+
+            sessionStorage.setItem(DISMISS_KEY, 'true');
+            toast.classList.add('career-pack-toast-hiding');
+            toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+        });
+
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('career-pack-toast-visible'));
+    }
+
+    document.addEventListener('DOMContentLoaded', initCareerPackToast);
+})();
+
+/* ─────────────────────────────────────────
    Medium RSS Feed
 ───────────────────────────────────────── */
 const MEDIUM_FEED = 'https://medium.com/feed/@puttstrife';
