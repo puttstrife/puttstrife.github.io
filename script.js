@@ -50,6 +50,8 @@
         if (sessionStorage.getItem(DISMISS_KEY) === 'true') return;
         if (document.querySelector('.career-pack-toast')) return;
 
+        document.body.classList.add('has-career-pack-toast');
+
         const toast = document.createElement('aside');
         toast.className = 'career-pack-toast';
         toast.setAttribute('aria-label', 'Career documents');
@@ -82,7 +84,10 @@
 
             sessionStorage.setItem(DISMISS_KEY, 'true');
             toast.classList.add('career-pack-toast-hiding');
-            toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+            toast.addEventListener('transitionend', () => {
+                toast.remove();
+                document.body.classList.remove('has-career-pack-toast');
+            }, { once: true });
         });
 
         document.body.appendChild(toast);
