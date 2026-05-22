@@ -343,7 +343,7 @@
     z-index:30;text-align:center;width:min(92vw,680px);pointer-events:none;
     opacity:0;transition:opacity 1.6s ease;
   }
-  .footer-note.show{opacity:1}
+  .footer-note.show{opacity:1;pointer-events:auto;}
   .footer-note .em-line{
     font-family:'Cormorant Garamond',serif;font-style:italic;color:#c9a777;
     font-size:clamp(14px,1.5vw,17px);line-height:1.5;
@@ -351,6 +351,15 @@
   .footer-note .sub-em{
     margin-top:6px;font-size:12px;color:#7a6244;letter-spacing:0.18em;text-transform:uppercase;font-family:'Inter',sans-serif;
   }
+  .reset-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:18px;padding:10px 22px;border-radius:999px;
+    background:rgba(14,8,3,0.65);border:1px solid rgba(255,184,106,0.35);
+    color:#c9a777;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    cursor:pointer;backdrop-filter:blur(8px);
+    transition:color .3s,border-color .3s,background .3s;
+  }
+  .reset-btn:hover{color:#ffd28a;border-color:rgba(255,210,140,0.6);background:rgba(20,12,4,0.8)}
 
   /* ===== RISING PARTICLES (ambient) ===== */
   .rising{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
@@ -818,61 +827,102 @@ function playIgnition(){
   } catch(e){ /* silent fail */ }
 }
 
-/* Ambient drone: a slow, low pad of detuned sines + filtered noise that
-   evokes the room tone of a stone chapel. Starts SILENT and fades in over
-   ~3s when toggled on; fades out over ~2s when toggled off. Returns a
-   handle with stop(); the toggle component owns the lifecycle. */
+/* Chapel organ ambient — pipe-organ harmonics + hall reverb + breath noise.
+   Fades in over ~4s, fades out over ~2.5s. Returns { stop() }. */
 function startAmbient(){
   try{
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     const ctx = new AC();
+
+    // --- convolution reverb (simulate stone chapel hall) ---
+    const reverbLen = ctx.sampleRate * 3.5;
+    const revBuf = ctx.createBuffer(2, reverbLen, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++){
+      const d = revBuf.getChannelData(ch);
+      for (let i = 0; i < reverbLen; i++){
+        // exponential decay impulse with pre-delay
+        const env = Math.pow(1 - i / reverbLen, 2.2);
+        d[i] = (Math.random() * 2 - 1) * env;
+      }
+    }
+    const convolver = ctx.createConvolver();
+    convolver.buffer = revBuf;
+    const dryGain = ctx.createGain(); dryGain.gain.value = 0.55;
+    const wetGain = ctx.createGain(); wetGain.gain.value = 0.45;
+    convolver.connect(wetGain).connect(ctx.destination);
+    dryGain.connect(ctx.destination);
+
     const master = ctx.createGain();
     master.gain.value = 0;
-    master.connect(ctx.destination);
+    master.connect(dryGain);
+    master.connect(convolver);
 
-    // Detuned low sines for a quiet harmonic pad
-    const freqs = [55, 82.4, 110]; // A1, E2, A2 — open low fifth
-    const oscs = freqs.map((f) => {
+    // --- pipe organ note: C2 + rich harmonics (diapason stop) ---
+    // C2=65.4, G2=98, C3=130.8, E3=164.8, G3=196, C4=261.6
+    const organPartials = [
+      { f: 65.41,  g: 0.28 },  // fundamental
+      { f: 130.81, g: 0.18 },  // 2nd harmonic (octave)
+      { f: 196.00, g: 0.10 },  // 3rd (perfect fifth)
+      { f: 261.63, g: 0.07 },  // 4th (2nd octave)
+      { f: 327.03, g: 0.04 },  // 5th
+      { f: 392.00, g: 0.025},  // 6th
+    ];
+    const nodes = organPartials.map(({ f, g: gain }) => {
       const o = ctx.createOscillator();
       o.type = 'sine';
       o.frequency.value = f;
-      const g = ctx.createGain();
-      g.gain.value = 0.10;
-      // slow LFO on gain for breathing motion
+      // tiny detuning for warmth
+      o.detune.value = (Math.random() - 0.5) * 4;
+      const gn = ctx.createGain();
+      gn.gain.value = gain;
+      // very slow tremulant LFO
       const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.07 + Math.random() * 0.05;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 0.04;
-      lfo.connect(lfoGain).connect(g.gain);
-      o.connect(g).connect(master);
-      o.start();
-      lfo.start();
+      lfo.frequency.value = 0.05 + Math.random() * 0.04;
+      const lfoG = ctx.createGain();
+      lfoG.gain.value = gain * 0.06;
+      lfo.connect(lfoG).connect(gn.gain);
+      o.connect(gn).connect(master);
+      o.start(); lfo.start();
       return { o, lfo };
     });
 
-    // very soft filtered noise = air / breath of the room
-    const nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    // second organ chord: A2 minor third above (adds depth, not dissonant)
+    const chordPartials = [
+      { f: 87.31,  g: 0.14 },  // F2
+      { f: 174.61, g: 0.08 },  // F3
+      { f: 261.63, g: 0.05 },  // C4
+    ];
+    chordPartials.forEach(({ f, g: gain }) => {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = f;
+      o.detune.value = (Math.random() - 0.5) * 5;
+      const gn = ctx.createGain();
+      gn.gain.value = gain * 0.7;
+      o.connect(gn).connect(master);
+      o.start();
+      nodes.push({ o, lfo: null });
+    });
+
+    // breath / air noise through pipe
+    const nb = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
     const nbd = nb.getChannelData(0);
-    for (let i = 0; i < nbd.length; i++) nbd[i] = (Math.random() * 2 - 1) * 0.5;
+    for (let i = 0; i < nbd.length; i++) nbd[i] = (Math.random() * 2 - 1);
     const noise = ctx.createBufferSource();
     noise.buffer = nb; noise.loop = true;
-    const lp = ctx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 380;
-    const ng = ctx.createGain();
-    ng.gain.value = 0.022;
-    noise.connect(lp).connect(ng).connect(master);
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = 280; bp.Q.value = 0.6;
+    const ng = ctx.createGain(); ng.gain.value = 0.012;
+    noise.connect(bp).connect(ng).connect(master);
     noise.start();
 
-    // fade in
+    // fade in slowly
     const now = ctx.currentTime;
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.9, now + 3.0);
+    master.gain.exponentialRampToValueAtTime(0.72, now + 4.0);
 
-    // Browsers block audio until a user gesture. If we created the context
-    // in a suspended state, resume it the first time the user clicks or types.
     if (ctx.state === 'suspended'){
       const resume = () => {
         ctx.resume().catch(() => {});
@@ -889,8 +939,8 @@ function startAmbient(){
           const t = ctx.currentTime;
           master.gain.cancelScheduledValues(t);
           master.gain.setValueAtTime(master.gain.value, t);
-          master.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
-          setTimeout(() => { try{ ctx.close(); } catch{} }, 2200);
+          master.gain.exponentialRampToValueAtTime(0.0001, t + 2.5);
+          setTimeout(() => { try{ ctx.close(); } catch{} }, 2700);
         } catch{}
       }
     };
@@ -1135,10 +1185,10 @@ function App(){
       {/* footer note — once joined */}
       <div className={'footer-note ' + (phase === 'wall' ? 'show' : '')}>
         <div className="em-line">Each candle represents a prayer carried with care.</div>
-        <div className="sub-em">
-          <span style={{ cursor:'pointer', borderBottom:'1px solid #4a3a25', paddingBottom:2, pointerEvents:'auto' }}
-            onClick={handleReset}>Light another candle</span>
-        </div>
+        <div className="sub-em">Your light has joined the wall.</div>
+        <button className="reset-btn" onClick={handleReset}>
+          <span>✦</span> Light Another Candle
+        </button>
       </div>
 
       {/* hover tooltip */}
