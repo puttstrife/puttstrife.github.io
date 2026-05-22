@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Light a Candle — A Living Wall of Prayer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#070401;
+    --bg-1:#120a04;
+    --bg-2:#1a0e05;
+    --ink:#f3e6cf;
+    --ink-dim:#a78f6f;
+    --ink-faint:#6a553b;
+    --amber:#ffb86a;
+    --amber-hot:#ffd28a;
+    --rose:#ff8aa0;
+    --gold:#ffd479;
+    --blue:#a6c8ff;
+    --violet:#cbb4ff;
+    --white-flame:#fff2d6;
+  }
+  *{box-sizing:border-box}
+  html,body,#root{margin:0;padding:0;height:100%;overflow:hidden}
+  html,body{background:#000;color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 110%, rgba(255,140,40,0.22) 0%, rgba(255,120,30,0.05) 35%, transparent 65%),
+      radial-gradient(ellipse 120% 80% at 50% 50%, #1a0d05 0%, #0c0602 45%, #050200 100%);
+  }
+  /* ===== VIGNETTE ===== */
+  .vignette{
+    position:fixed;inset:0;pointer-events:none;z-index:50;
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.92) 100%);
+    mix-blend-mode:multiply;
+  }
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:51;opacity:0.07;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.85 0 0 0 0 0.5 0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* ===== HEADING / COPY ===== */
+  .stage{position:relative;width:100%;height:100%;overflow:hidden}
+  .heading-wrap{
+    position:absolute;left:50%;top:6.2vh;transform:translateX(-50%);
+    text-align:center;z-index:30;pointer-events:none;width:min(92vw,720px);
+    transition:opacity 1.4s ease, transform 1.4s ease;
+  }
+  .heading{
+    font-family:'Cormorant Garamond',serif;font-weight:500;
+    font-size:clamp(28px,4.6vw,52px);letter-spacing:0.01em;
+    color:#f7e7c8;margin:0;line-height:1.05;
+    text-shadow:0 0 28px rgba(255,170,80,0.18);
+  }
+  .heading em{font-style:italic;color:#ffd28a}
+  .sub{
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
+    font-size:clamp(14px,1.5vw,18px);color:#c9b189;margin-top:10px;line-height:1.5;
+    max-width:520px;margin-left:auto;margin-right:auto;
+  }
+
+  /* ===== WALL ===== */
+  .wall{
+    position:absolute;inset:0;z-index:5;
+    transition:filter 3.4s ease, opacity 2.2s ease, transform 3.4s ease;
+  }
+  .wall.dim{filter:blur(10px) brightness(0.62) saturate(0.85)}
+  .wall.live{filter:blur(1.5px) brightness(0.95) saturate(1)}
+
+  /* parallax host — moves all wall+ambient layers very gently with the mouse */
+  .parallax{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);will-change:transform}
+
+  /* basilica architectural framing — subtle column-like darkening on left/right */
+  .basilica-frame{
+    position:absolute;inset:0;pointer-events:none;z-index:7;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 8%, transparent 18%, transparent 82%, rgba(0,0,0,0.15) 92%, rgba(0,0,0,0.55) 100%),
+      radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0,0,0,0.55) 0%, transparent 50%);
+  }
+  .wall-candle{
+    position:absolute;transform-origin:50% 100%;
+    will-change:transform,filter,opacity;
+  }
+  .wall-candle .halo{
+    position:absolute;left:50%;bottom:55%;width:120px;height:120px;
+    transform:translate(-50%,50%);border-radius:50%;
+    background:radial-gradient(circle, var(--c,#ffb86a) 0%, rgba(255,184,106,0.35) 30%, transparent 65%);
+    filter:blur(8px);opacity:0.7;mix-blend-mode:screen;pointer-events:none;
+  }
+
+  /* ===== USER CANDLE STAGE =====
+     Long, eased transitions = the candle is being CARRIED, not animated.
+     Total journey ~5.5s: hold at center while message reads, then drift back.   */
+  .user-zone{
+    position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-44%);
+    z-index:25;display:flex;flex-direction:column;align-items:center;gap:24px;
+    transition:
+      transform 5.6s cubic-bezier(.55,.02,.25,1),
+      opacity   3.0s ease,
+      top       5.6s cubic-bezier(.55,.02,.25,1),
+      left      5.6s cubic-bezier(.55,.02,.25,1),
+      filter    4.2s ease;
+  }
+
+  /* ===== CANDLE ===== */
+  .candle{
+    position:relative;width:64px;height:170px;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    transition:transform .8s ease, filter .8s ease;
+  }
+  .candle.small{width:40px;height:108px}
+  .candle.tiny{width:28px;height:78px}
+
+  .body{
+    position:relative;width:100%;height:62%;
+    border-radius:8px 8px 4px 4px;
+    background:linear-gradient(180deg, #f2d9a8 0%, #e0bf85 18%, #cfa466 45%, #a87a3f 80%, #6f4d27 100%);
+    box-shadow:
+      inset -6px 0 8px rgba(0,0,0,0.35),
+      inset 6px 0 6px rgba(255,220,170,0.15),
+      0 6px 14px rgba(0,0,0,0.5);
+    overflow:hidden;
+  }
+  .body::before{
+    content:"";position:absolute;left:6%;top:0;width:14%;height:100%;
+    background:linear-gradient(180deg, rgba(255,240,210,0.55), rgba(255,240,210,0.05));
+    filter:blur(1px);
+  }
+  .body::after{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,0.05) 8px 9px);
+    opacity:0.5;
+  }
+  .rim{
+    /* sit on top of the wax body, not on top of the whole candle bounding box.
+       The body fills the bottom 62%, so its top edge is at y=38% within .candle. */
+    position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+    width:108%;height:14px;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 30%, #f6dcad 0%, #cfa466 60%, #6f4d27 100%);
+    box-shadow:0 4px 8px rgba(0,0,0,0.45);
+  }
+  .wick{
+    /* the wick rises from the center of the rim into the flame zone */
+    position:absolute;left:50%;top:38%;transform:translate(-50%,-100%);
+    margin-top:-7px;
+    width:2px;height:8px;background:#2a1a08;border-radius:1px;
+  }
+
+  /* ===== FLAME ===== */
+  .flame-wrap{
+    /* anchored to the TOP OF THE WAX BODY (38% from candle top), extending upward.
+       Using bottom-anchoring so the flame's base always meets the wick regardless of size. */
+    position:absolute;left:50%;bottom:62%;transform:translate(-50%, 0);
+    margin-bottom:-2px;
+    width:36px;height:64px;pointer-events:none;
+    opacity:0;transition:opacity .9s ease;
+  }
+  .candle.lit .flame-wrap{opacity:1}
+  .candle.small .flame-wrap{width:22px;height:42px}
+  .candle.tiny .flame-wrap{width:16px;height:30px}
+
+  /* outer glow halo around the flame; sits behind everything */
+  .glow{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:240px;height:240px;border-radius:50%;
+    background:radial-gradient(circle,
+      var(--flame-color,#ffd28a) 0%,
+      rgba(255,180,90,0.55) 18%,
+      rgba(255,140,50,0.25) 40%,
+      rgba(255,120,40,0.08) 65%,
+      transparent 80%);
+    mix-blend-mode:screen;filter:blur(6px);
+    animation:halo 3.6s ease-in-out infinite;
+  }
+  .candle.small .glow{width:160px;height:160px}
+  .candle.tiny .glow{width:110px;height:110px}
+  @keyframes halo{
+    0%,100%{opacity:0.85;transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.07)}
+  }
+
+  /* flame outer (warm orange) */
+  .flame{
+    position:absolute;left:50%;bottom:8%;transform:translateX(-50%);
+    width:100%;height:90%;
+    background:radial-gradient(ellipse at 50% 80%,
+      #ffd684 0%, #ffae50 30%, #ff7a1f 55%, #c44a08 80%, transparent 95%);
+    border-radius:50% 50% 45% 45% / 70% 70% 35% 35%;
+    filter:blur(0.4px);
+    transform-origin:50% 100%;
+    animation:flicker 220ms ease-in-out infinite alternate;
+    mix-blend-mode:screen;
+  }
+  /* flame inner (hot core) */
+  .flame-core{
+    position:absolute;left:50%;bottom:14%;transform:translateX(-50%);
+    width:55%;height:62%;
+    background:radial-gradient(ellipse at 50% 75%,
+      #fff5d6 0%, #ffe19a 40%, #ffb45c 75%, transparent 100%);
+    border-radius:50% 50% 45% 45% / 70% 70% 35% 35%;
+    animation:flicker-core 180ms ease-in-out infinite alternate;
+    mix-blend-mode:screen;
+  }
+  /* tiny hottest tip */
+  .flame-tip{
+    position:absolute;left:50%;bottom:20%;transform:translateX(-50%);
+    width:22%;height:30%;
+    background:radial-gradient(ellipse at 50% 60%, #ffffff 0%, #ffe7a0 60%, transparent 100%);
+    border-radius:50%;
+    animation:flicker-tip 140ms ease-in-out infinite alternate;
+    mix-blend-mode:screen;
+  }
+  @keyframes flicker{
+    0%  {transform:translateX(-50%) scaleY(1)    skewX(-1deg)}
+    25% {transform:translateX(-52%) scaleY(1.08) skewX( 1deg)}
+    50% {transform:translateX(-48%) scaleY(0.95) skewX(-2deg)}
+    75% {transform:translateX(-51%) scaleY(1.04) skewX( 2deg)}
+    100%{transform:translateX(-50%) scaleY(1.02) skewX( 0deg)}
+  }
+  @keyframes flicker-core{
+    0%,100%{transform:translateX(-50%) scaleY(1) scaleX(1)}
+    50%   {transform:translateX(-51%) scaleY(0.93) scaleX(1.05)}
+  }
+  @keyframes flicker-tip{
+    0%,100%{opacity:0.9;transform:translateX(-50%) translateY(0)}
+    50%{opacity:1;transform:translateX(-51%) translateY(-2px)}
+  }
+
+  /* ===== TYPING GLOW (pre-light) ===== */
+  .pre-glow{
+    /* halo sits at the wick position */
+    position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+    width:80px;height:80px;border-radius:50%;
+    background:radial-gradient(circle,var(--flame-color,#ffb86a) 0%, rgba(255,170,80,0.45) 30%, transparent 70%);
+    filter:blur(8px);mix-blend-mode:screen;pointer-events:none;
+    opacity:0;transition:opacity .6s ease, transform .6s ease;
+  }
+  .candle.charging .pre-glow{opacity:var(--charge,0);transform:translate(-50%,-50%) scale(calc(0.7 + var(--charge,0)*0.7))}
+
+  /* ===== PRAYER INPUT ===== */
+  .input-wrap{
+    position:relative;width:min(86vw,520px);
+    transition:opacity 1.2s ease, transform 1.2s ease;
+  }
+  .prayer-area{
+    width:100%;min-height:96px;resize:none;
+    background:rgba(20,12,4,0.5);
+    border:1px solid rgba(255,184,106,0.22);
+    border-radius:14px;padding:18px 20px 22px;
+    color:#f3e6cf;font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:19px;line-height:1.5;letter-spacing:0.005em;
+    outline:none;backdrop-filter:blur(6px);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.02),
+      0 0 0 1px rgba(0,0,0,0.4),
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 calc(var(--charge,0) * 60px) rgba(255,170,80,calc(var(--charge,0) * 0.45));
+    transition:box-shadow .4s ease, border-color .4s ease;
+  }
+  .prayer-area:focus{border-color:rgba(255,200,130,0.45)}
+  .prayer-area::placeholder{color:#86714f;font-style:italic}
+
+  .light-btn{
+    margin-top:18px;display:inline-flex;align-items:center;gap:10px;
+    padding:13px 28px;border-radius:999px;
+    background:linear-gradient(180deg, #1f1407 0%, #120a04 100%);
+    border:1px solid rgba(255,184,106,0.4);
+    color:#ffd28a;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:0.04em;
+    cursor:pointer;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 28px rgba(255,140,40,0.18);
+    transition:transform .25s ease, box-shadow .35s ease, color .35s ease, opacity .35s ease;
+  }
+  .light-btn:hover:not(:disabled){
+    color:#fff2d6;border-color:rgba(255,210,140,0.7);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.4) inset, 0 10px 40px rgba(255,160,60,0.42);
+    transform:translateY(-1px);
+  }
+  .light-btn:disabled{opacity:0.45;cursor:not-allowed}
+  .light-btn .spark{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:#ffd28a;box-shadow:0 0 12px #ffb86a, 0 0 28px #ff8e3a;
+    animation:sparkpulse 1.8s ease-in-out infinite;
+  }
+  @keyframes sparkpulse{
+    0%,100%{opacity:0.5;transform:scale(1)}
+    50%{opacity:1;transform:scale(1.4)}
+  }
+
+  /* ===== INTENT LINE ===== */
+  .intent-line{
+    margin-top:14px;
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:#d6b787;font-size:16px;text-align:center;
+    opacity:0;transition:opacity .8s ease;
+    text-shadow:0 0 18px rgba(255,170,80,0.25);
+  }
+  .intent-line.show{opacity:1}
+  .intent-line strong{font-style:normal;font-weight:500;color:var(--intent-c,#ffd28a)}
+
+  .received{
+    position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);
+    z-index:40;pointer-events:none;
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.6vw,30px);
+    color:#fff2d6;text-shadow:0 0 22px rgba(255,180,90,0.5);
+    opacity:0;transition:opacity 1s ease, transform 1.6s ease;
+  }
+  .received.show{opacity:1;transform:translate(-50%,-65%)}
+
+  /* ===== TOOLTIP ===== */
+  .tip{
+    position:fixed;z-index:80;pointer-events:none;
+    padding:11px 14px 13px;border-radius:10px;
+    background:rgba(14,8,3,0.92);border:1px solid rgba(255,184,106,0.28);
+    backdrop-filter:blur(8px);
+    box-shadow:0 18px 50px rgba(0,0,0,0.7), 0 0 22px rgba(255,140,40,0.12);
+    min-width:200px;max-width:260px;
+    opacity:0;transform:translate(-50%,-100%) translateY(-12px) scale(0.96);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .tip.show{opacity:1;transform:translate(-50%,-100%) translateY(-18px) scale(1)}
+  .tip .name{
+    font-family:'Cormorant Garamond',serif;font-size:14px;color:#ffd28a;
+    letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;
+  }
+  .tip .body-text{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:#e9d6b3;font-size:15px;line-height:1.45;
+  }
+  .tip::after{
+    content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%) rotate(45deg);
+    width:10px;height:10px;background:rgba(14,8,3,0.92);
+    border-right:1px solid rgba(255,184,106,0.28);border-bottom:1px solid rgba(255,184,106,0.28);
+  }
+
+  /* ===== FOOTER NOTE ===== */
+  .footer-note{
+    position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);
+    z-index:30;text-align:center;width:min(92vw,680px);pointer-events:none;
+    opacity:0;transition:opacity 1.6s ease;
+  }
+  .footer-note.show{opacity:1}
+  .footer-note .em-line{
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:#c9a777;
+    font-size:clamp(14px,1.5vw,17px);line-height:1.5;
+  }
+  .footer-note .sub-em{
+    margin-top:6px;font-size:12px;color:#7a6244;letter-spacing:0.18em;text-transform:uppercase;font-family:'Inter',sans-serif;
+  }
+
+  /* ===== RISING PARTICLES (ambient) ===== */
+  .rising{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
+  .rising .p{
+    position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;
+    background:#ffb86a;box-shadow:0 0 8px #ffb86a, 0 0 16px rgba(255,140,40,0.6);
+    opacity:0;animation:rise linear infinite;
+  }
+  @keyframes rise{
+    0%  {transform:translateY(0) translateX(0);opacity:0}
+    10% {opacity:0.9}
+    100%{transform:translateY(-95vh) translateX(var(--drift,20px));opacity:0}
+  }
+
+  /* ===== PRAYER-TO-CANDLE PARTICLES ===== */
+  .prayer-particles{position:absolute;inset:0;pointer-events:none;z-index:26}
+  .prayer-particles .pp{
+    position:absolute;width:5px;height:5px;border-radius:50%;
+    background:#ffd28a;box-shadow:0 0 10px #ffb86a, 0 0 22px rgba(255,160,60,0.7);
+    opacity:0;
+    animation:travel 1.6s ease-out forwards;
+  }
+  @keyframes travel{
+    0%  {opacity:0;transform:translate(0,0) scale(0.5)}
+    15% {opacity:1}
+    100%{opacity:0;transform:translate(var(--dx,0),var(--dy,-200px)) scale(1.2)}
+  }
+
+  /* ===== IGNITION BURST ===== */
+  .burst{
+    position:absolute;left:50%;top:6%;transform:translate(-50%,-50%);
+    width:8px;height:8px;border-radius:50%;background:#fff2d6;
+    box-shadow:0 0 0 0 rgba(255,200,120,0.9);
+    pointer-events:none;
+    animation:burst 1.1s ease-out forwards;
+  }
+  @keyframes burst{
+    0%  {box-shadow:0 0 0 0 rgba(255,210,140,0.95);opacity:1}
+    60% {box-shadow:0 0 0 80px rgba(255,160,60,0)}
+    100%{box-shadow:0 0 0 120px rgba(255,160,60,0);opacity:0}
+  }
+
+  /* ===== BOTTOM WARM GLOW BAR ===== */
+  .floor-glow{
+    position:absolute;left:0;right:0;bottom:0;height:32vh;z-index:6;pointer-events:none;
+    background:linear-gradient(180deg, transparent 0%, rgba(255,120,40,0.05) 35%, rgba(255,140,50,0.16) 75%, rgba(255,160,60,0.28) 100%);
+    mix-blend-mode:screen;
+  }
+
+  /* ===== AMBIENT SOUND TOGGLE ===== */
+  .sound-toggle{
+    position:fixed;top:18px;right:20px;z-index:90;
+    display:inline-flex;align-items:center;gap:9px;
+    padding:8px 14px 8px 12px;border-radius:999px;
+    background:rgba(14,8,3,0.6);
+    border:1px solid rgba(255,184,106,0.22);
+    color:#c9a777;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    cursor:pointer;backdrop-filter:blur(8px);
+    transition:color .3s ease, border-color .3s ease, background .3s ease;
+  }
+  .sound-toggle:hover{color:#ffd28a;border-color:rgba(255,210,140,0.5);background:rgba(20,12,4,0.75)}
+  .sound-toggle.on{color:#ffd28a;border-color:rgba(255,210,140,0.55)}
+  .sound-toggle .dot{
+    width:7px;height:7px;border-radius:50%;background:#6a553b;
+    transition:background .3s ease, box-shadow .3s ease;
+  }
+  .sound-toggle.on .dot{background:#ffd28a;box-shadow:0 0 10px #ffb86a, 0 0 22px rgba(255,160,60,0.55)}
+
+  /* user candle marker (slight pulse) — little white dot at the very top */
+  .candle.is-user::after{
+    content:"";position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+    margin-top:-22px;
+    width:6px;height:6px;border-radius:50%;
+    background:#fff2d6;box-shadow:0 0 12px #ffd28a;
+    opacity:0.85;
+  }
+  .candle.is-user .glow{filter:blur(4px) brightness(1.1)}
+
+  /* fade utility */
+  .fade-out{opacity:0!important;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-presets="env,react">
+/* =====================================================================
+   CANDLE WALL — single-page interactive prayer experience
+   - Intent detection by keyword rules
+   - Candle ignites, then journeys backward into a wall of other candles
+   - Each candle in the wall has its own sample name + prayer
+   ===================================================================== */
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+/* ---------- 1. INTENT DETECTION ---------- */
+// Keyword rules map text to a symbolic intent + color.
+const INTENT_RULES = [
+  { key:'healing',   label:'Healing',   color:'#a6c8ff', kw:['heal','heali','sick','illness','pain','recover','recovery','hospital','health','cancer','surgery','treatment','medicine','ill'] },
+  { key:'love',      label:'Love',      color:'#ff8aa0', kw:['love','family','mother','father','mom','dad','child','son','daughter','sister','brother','relationship','marriage','wife','husband','partner'] },
+  { key:'gratitude', label:'Gratitude', color:'#ffd479', kw:['thank','grateful','gratitude','blessing','blessed','bless'] },
+  { key:'hope',      label:'Hope',      color:'#fff2d6', kw:['hope','guidance','strength','faith','direction','courage','clarity','wisdom','peace','calm'] },
+  { key:'grief',     label:'Peace',     color:'#cbb4ff', kw:['grief','loss','passed','passing','death','died','mourning','memory','remember','funeral'] },
+];
+const DEFAULT_INTENT = { key:'amber', label:'Hope', color:'#ffb86a' };
+
+function detectIntent(text){
+  if(!text) return DEFAULT_INTENT;
+  const t = text.toLowerCase();
+  // pick the rule with the most keyword hits
+  let best = null, bestCount = 0;
+  for (const r of INTENT_RULES){
+    let c = 0;
+    for (const k of r.kw){ if (t.includes(k)) c++; }
+    if (c > bestCount){ best = r; bestCount = c; }
+  }
+  return best || DEFAULT_INTENT;
+}
+
+/* ---------- 2. SAMPLE WALL DATA ----------
+   Each prayer is paired with a name. The flame color is NOT random — it's
+   derived from the prayer's own intent (detectIntent below), so a candle
+   lit for healing burns blue, one for love burns rose, etc. This makes the
+   wall feel symbolic and theologically coherent rather than decorative. */
+const WALL_ENTRIES = [
+  { name:'Maria',          prayer:'For my mother’s recovery from her illness.' },
+  { name:'Anonymous',      prayer:'For peace in my family.' },
+  { name:'Thomas',         prayer:'Thank you for another year of life.' },
+  { name:'Elena',          prayer:'For guidance in my work and direction.' },
+  { name:'Joseph',         prayer:'For my father, may he rest in peace.' },
+  { name:'A grandmother',  prayer:'For courage and strength to begin again.' },
+  { name:'Clare',          prayer:'For the children in our parish.' },
+  { name:'Patrick',        prayer:'For my marriage and my wife.' },
+  { name:'Sofia',          prayer:'For healing of body and heart.' },
+  { name:'Anonymous',      prayer:'For my brother who is sick and struggling.' },
+  { name:'Michael',        prayer:'For our community.' },
+  { name:'Anna',           prayer:'For strength to forgive.' },
+  { name:'David',          prayer:'In memory of my grandmother who passed.' },
+  { name:'Lucia',          prayer:'For clarity and direction in this season.' },
+  { name:'Anonymous',      prayer:'Thank you for the small graces of today.' },
+  { name:'Catherine',      prayer:'For everyone who is alone tonight.' },
+  { name:'James',          prayer:'For the safe return of my son.' },
+  { name:'Teresa',         prayer:'For peace within me.' },
+  { name:'Anonymous',      prayer:'For all who are suffering, wherever they are.' },
+  { name:'Francis',        prayer:'For hope when I have none.' },
+  { name:'Ruth',           prayer:'For the doctors and nurses at the hospital.' },
+  { name:'Anonymous',      prayer:'For my friend’s health and recovery.' },
+  { name:'Daniel',         prayer:'For light through this dark season.' },
+  { name:'Sister M.',      prayer:'For patience and faith.' },
+  { name:'Anonymous',      prayer:'For all who are afraid tonight.' },
+  { name:'Mateo',          prayer:'For my daughter’s exams — give her courage.' },
+  { name:'Hannah',         prayer:'In memory of my late husband.' },
+  { name:'Anonymous',      prayer:'For our parish family.' },
+  { name:'Augustine',      prayer:'For everyone whose name I forgot to mention.' },
+  { name:'Beatrice',       prayer:'For my baby on the way.' },
+  { name:'Isabel',         prayer:'For my mother’s love.' },
+  { name:'Anonymous',      prayer:'For my own heart — grant me peace.' },
+  { name:'Peter',          prayer:'For mercy, and for grace.' },
+  { name:'Ines',           prayer:'For the world, and for hope.' },
+  { name:'Anonymous',      prayer:'For one more chance.' },
+  { name:'Cecilia',        prayer:'For my husband who is recovering from surgery.' },
+  { name:'A father',       prayer:'For my son’s health.' },
+  { name:'Anonymous',      prayer:'Thank you for everything.' },
+  { name:'Bernadette',     prayer:'For guidance on my path.' },
+  { name:'A daughter',     prayer:'In memory of my father, gone too soon.' },
+  { name:'Anonymous',      prayer:'For love to find its way home.' },
+  { name:'Stephen',        prayer:'For faith when doubt is loud.' },
+  { name:'A mother',       prayer:'For my children, always.' },
+  { name:'Anonymous',      prayer:'For the lost.' },
+];
+
+/* ---------- 3. SEEDED RANDOM (stable wall layout) ---------- */
+function mulberry32(a){
+  return function(){
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* Build 60+ wall candles laid out on 4 visual depth bands, with a slight
+   basilica arch (candles curve up toward the sides like rows of pews seen
+   from the chancel). The user candle will slot in at center-front later.
+
+   Layout strategy:
+   - 'far'   row sits high & small — maximum blur; reads like a back wall
+   - 'back'  row — still small, less blur
+   - 'mid'   row — medium
+   - 'front' row — largest, sharpest, but left/right of the center reserved
+                  for the user candle so they don't overlap                */
+function buildWallCandles(){
+  const rand = mulberry32(20260522);
+  const rows = [
+    { y: 26, size: 0.34, scatter: 0.04, count: 26, depth: 'far',   archAmt: 4.5 },
+    { y: 40, size: 0.52, scatter: 0.05, count: 20, depth: 'back',  archAmt: 3.5 },
+    { y: 58, size: 0.76, scatter: 0.04, count: 16, depth: 'mid',   archAmt: 2.5 },
+    { y: 78, size: 1.00, scatter: 0.04, count: 12, depth: 'front', archAmt: 1.5 },
+  ];
+  const candles = [];
+  let i = 0;
+  for (const row of rows){
+    for (let k = 0; k < row.count; k++){
+      const t = (k + 0.5) / row.count;
+      // small horizontal jitter
+      const x = t * 100 + (rand() - 0.5) * (100 / row.count) * 0.55;
+      // basilica arch: candles farther from center sit a little higher
+      const dxFromCenter = Math.abs(t - 0.5) * 2; // 0 at center, 1 at edges
+      const arch = -dxFromCenter * dxFromCenter * row.archAmt;
+      const y = row.y + arch + (rand() - 0.5) * row.scatter * 100;
+      // skip the dead-center slot on the front row — user candle goes there
+      if (row.depth === 'front' && Math.abs(t - 0.5) < 0.06) continue;
+      const size = row.size * (0.85 + rand() * 0.3);
+      const flickerDur = 180 + rand() * 240;
+      const flickerDelay = -rand() * 2000;
+      // assign a sample entry and DERIVE its color from the prayer's intent
+      const entry = WALL_ENTRIES[i % WALL_ENTRIES.length];
+      const intent = detectIntent(entry.prayer);
+      candles.push({
+        id: 'w' + i,
+        x, y, size,
+        depth: row.depth,
+        flickerDur, flickerDelay,
+        color: intent.color,
+        intentLabel: intent.label,
+        name: entry.name,
+        prayer: entry.prayer,
+      });
+      i++;
+    }
+  }
+  return candles;
+}
+
+/* ---------- 4. CANDLE COMPONENT ---------- */
+function Candle({ lit, color = '#ffd28a', size = 'normal', charge = 0, charging = false, isUser = false, style }){
+  // size: 'normal' | 'small' | 'tiny'
+  const cls = ['candle'];
+  if (lit) cls.push('lit');
+  if (size !== 'normal') cls.push(size);
+  if (charging) cls.push('charging');
+  if (isUser) cls.push('is-user');
+  return (
+    <div
+      className={cls.join(' ')}
+      style={{ ['--flame-color']: color, ['--charge']: charge, ...style }}
+    >
+      <div className="flame-wrap">
+        <div className="glow" />
+        <div className="flame" />
+        <div className="flame-core" />
+        <div className="flame-tip" />
+      </div>
+      <div className="pre-glow" />
+      <div className="wick" />
+      <div className="rim" />
+      <div className="body" />
+    </div>
+  );
+}
+
+/* ---------- 5. WALL ---------- */
+function CandleWall({ candles, userCandle, phase, onHover, onLeave, parallax }){
+  // phase: 'idle' | 'charging' | 'lighting' | 'wall'
+  const wallClass = ['wall', phase === 'wall' ? 'live' : 'dim'].join(' ');
+  // depth-based blur/brightness + per-depth parallax multipliers.
+  // Further rows move LESS — a classic dolly parallax (back stays put,
+  // front follows the cursor most). All multipliers are small to keep it
+  // reverent rather than playful.
+  const depthMap = {
+    far:   { filter:'blur(6px) brightness(0.55) saturate(0.85)', px: 0.25, py: 0.25 },
+    back:  { filter:'blur(4px) brightness(0.7)  saturate(0.9)',  px: 0.55, py: 0.55 },
+    mid:   { filter:'blur(2.5px) brightness(0.82) saturate(0.95)', px: 0.85, py: 0.85 },
+    front: { filter:'blur(1px) brightness(0.95) saturate(1)',    px: 1.20, py: 1.20 },
+  };
+  return (
+    <div className={wallClass} aria-hidden={phase !== 'wall'}>
+      {candles.map((c) => {
+        const d = depthMap[c.depth];
+        const interactive = phase === 'wall';
+        // per-candle parallax offset; back rows barely move
+        const ox = parallax.x * d.px;
+        const oy = parallax.y * d.py;
+        return (
+          <div
+            key={c.id}
+            className="wall-candle"
+            style={{
+              left: `calc(${c.x}% + ${ox}px)`,
+              top:  `calc(${c.y}% + ${oy}px)`,
+              transform: `translate(-50%,-100%) scale(${c.size})`,
+              filter: d.filter,
+              opacity: phase === 'wall' ? 0.95 : 0.85,
+              pointerEvents: interactive ? 'auto' : 'none',
+              transition: 'filter 1.6s ease, opacity 1.6s ease, left .6s cubic-bezier(.2,.7,.2,1), top .6s cubic-bezier(.2,.7,.2,1)',
+            }}
+            onMouseEnter={(e) => interactive && onHover(e, { name:c.name, prayer:c.prayer, intentLabel:c.intentLabel, isUser:false })}
+            onMouseLeave={onLeave}
+            onMouseMove={(e) => interactive && onHover(e, { name:c.name, prayer:c.prayer, intentLabel:c.intentLabel, isUser:false })}
+          >
+            <Candle lit={true} color={c.color} size="tiny" />
+          </div>
+        );
+      })}
+      {/* user candle once journey is done — sharpest, brightest, slotted INTO the front row */}
+      {phase === 'wall' && userCandle && (
+        <div
+          className="wall-candle user-on-wall"
+          style={{
+            left: `calc(50% + ${parallax.x * 1.4}px)`,
+            top:  `calc(78% + ${parallax.y * 1.4}px)`,
+            transform: 'translate(-50%,-100%) scale(1.15)',
+            filter: 'blur(0px) brightness(1.18) saturate(1.05)',
+            zIndex: 12,
+            transition: 'left .6s cubic-bezier(.2,.7,.2,1), top .6s cubic-bezier(.2,.7,.2,1)',
+          }}
+          onMouseEnter={(e) => onHover(e, { name:'You', prayer:userCandle.text, intentLabel:userCandle.intent?.label, isUser:true })}
+          onMouseLeave={onLeave}
+          onMouseMove={(e) => onHover(e, { name:'You', prayer:userCandle.text, intentLabel:userCandle.intent?.label, isUser:true })}
+        >
+          <Candle lit={true} color={userCandle.color} size="small" isUser />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- 6. RISING PARTICLES (ambient) ---------- */
+function FloatingParticles({ count = 26 }){
+  const particles = useMemo(() => {
+    const r = mulberry32(99);
+    return Array.from({length: count}).map((_, i) => ({
+      id: i,
+      left: r() * 100,
+      delay: r() * 12,
+      duration: 9 + r() * 10,
+      drift: (r() - 0.5) * 80,
+      size: 1 + r() * 2.4,
+      hue: r() < 0.7 ? '#ffb86a' : '#ffd479'
+    }));
+  }, [count]);
+  return (
+    <div className="rising">
+      {particles.map(p => (
+        <span key={p.id} className="p" style={{
+          left: p.left + '%',
+          width: p.size, height: p.size,
+          animationDuration: p.duration + 's',
+          animationDelay: p.delay + 's',
+          background: p.hue,
+          ['--drift']: p.drift + 'px',
+        }} />
+      ))}
+    </div>
+  );
+}
+
+/* ---------- 7. PRAYER PARTICLES (textarea -> candle) ---------- */
+function PrayerParticles({ active, fromRef, toRef }){
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    if (!active) return;
+    let alive = true;
+    const tick = () => {
+      if (!alive) return;
+      const from = fromRef.current?.getBoundingClientRect();
+      const to   = toRef.current?.getBoundingClientRect();
+      if (from && to){
+        // spawn from a random point near the top of the textarea
+        const sx = from.left + from.width * (0.2 + Math.random() * 0.6);
+        const sy = from.top + 8 + Math.random() * 12;
+        // target the wick area of the candle
+        const tx = to.left + to.width / 2;
+        const ty = to.top  + to.height * 0.05;
+        const id = Math.random().toString(36).slice(2);
+        setItems(prev => [...prev, { id, sx, sy, dx: tx - sx, dy: ty - sy }]);
+        // auto-cleanup
+        setTimeout(() => setItems(prev => prev.filter(p => p.id !== id)), 1700);
+      }
+    };
+    const iv = setInterval(tick, 260);
+    return () => { alive = false; clearInterval(iv); };
+  }, [active, fromRef, toRef]);
+  return (
+    <div className="prayer-particles">
+      {items.map(p => (
+        <span key={p.id} className="pp" style={{
+          left: p.sx + 'px',
+          top:  p.sy + 'px',
+          ['--dx']: p.dx + 'px',
+          ['--dy']: p.dy + 'px',
+        }} />
+      ))}
+    </div>
+  );
+}
+
+/* ---------- 8. TOOLTIP ---------- */
+function PrayerTooltip({ data, x, y }){
+  if (!data) return null;
+  return (
+    <div className="tip show" style={{ left: x, top: y }}>
+      <div className="name">{data.isUser ? 'Your candle' : data.name}</div>
+      <div className="body-text">{data.prayer}</div>
+      {data.intentLabel && (
+        <div style={{
+          marginTop:8, paddingTop:8, borderTop:'1px solid rgba(255,184,106,0.15)',
+          fontFamily:'Inter,sans-serif', fontSize:10, letterSpacing:'0.2em',
+          textTransform:'uppercase', color:'#a78f6f'
+        }}>
+          Light of {data.intentLabel}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- 9. SOUND ---------- */
+// Soft ignition sound — brief whoosh + warm tone via Web Audio.
+function playIgnition(){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const ctx = new AC();
+    const now = ctx.currentTime;
+    // whoosh: filtered noise burst
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++){
+      const t = i / data.length;
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(1200, now);
+    lp.frequency.exponentialRampToValueAtTime(300, now + 0.7);
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.0001, now);
+    ng.gain.exponentialRampToValueAtTime(0.18, now + 0.05);
+    ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+    noise.connect(lp).connect(ng).connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.75);
+
+    // warm tone: low sine
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.9);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(0.0001, now);
+    og.gain.exponentialRampToValueAtTime(0.06, now + 0.15);
+    og.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+    osc.connect(og).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.15);
+
+    setTimeout(() => ctx.close(), 1400);
+  } catch(e){ /* silent fail */ }
+}
+
+/* Ambient drone: a slow, low pad of detuned sines + filtered noise that
+   evokes the room tone of a stone chapel. Starts SILENT and fades in over
+   ~3s when toggled on; fades out over ~2s when toggled off. Returns a
+   handle with stop(); the toggle component owns the lifecycle. */
+function startAmbient(){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    const ctx = new AC();
+    const master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+
+    // Detuned low sines for a quiet harmonic pad
+    const freqs = [55, 82.4, 110]; // A1, E2, A2 — open low fifth
+    const oscs = freqs.map((f) => {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = f;
+      const g = ctx.createGain();
+      g.gain.value = 0.10;
+      // slow LFO on gain for breathing motion
+      const lfo = ctx.createOscillator();
+      lfo.frequency.value = 0.07 + Math.random() * 0.05;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 0.04;
+      lfo.connect(lfoGain).connect(g.gain);
+      o.connect(g).connect(master);
+      o.start();
+      lfo.start();
+      return { o, lfo };
+    });
+
+    // very soft filtered noise = air / breath of the room
+    const nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const nbd = nb.getChannelData(0);
+    for (let i = 0; i < nbd.length; i++) nbd[i] = (Math.random() * 2 - 1) * 0.5;
+    const noise = ctx.createBufferSource();
+    noise.buffer = nb; noise.loop = true;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 380;
+    const ng = ctx.createGain();
+    ng.gain.value = 0.022;
+    noise.connect(lp).connect(ng).connect(master);
+    noise.start();
+
+    // fade in
+    const now = ctx.currentTime;
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(0.9, now + 3.0);
+
+    // Browsers block audio until a user gesture. If we created the context
+    // in a suspended state, resume it the first time the user clicks or types.
+    if (ctx.state === 'suspended'){
+      const resume = () => {
+        ctx.resume().catch(() => {});
+        window.removeEventListener('pointerdown', resume);
+        window.removeEventListener('keydown', resume);
+      };
+      window.addEventListener('pointerdown', resume, { once:true });
+      window.addEventListener('keydown', resume, { once:true });
+    }
+
+    return {
+      stop(){
+        try{
+          const t = ctx.currentTime;
+          master.gain.cancelScheduledValues(t);
+          master.gain.setValueAtTime(master.gain.value, t);
+          master.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
+          setTimeout(() => { try{ ctx.close(); } catch{} }, 2200);
+        } catch{}
+      }
+    };
+  } catch(e){ return null; }
+}
+
+function SoundToggle({ on, onToggle }){
+  return (
+    <button
+      className={'sound-toggle' + (on ? ' on' : '')}
+      onClick={onToggle}
+      aria-pressed={on}
+      title={on ? 'Mute ambient sound' : 'Play ambient sound'}
+    >
+      <span className="dot" />
+      <span>{on ? 'Ambient on' : 'Ambient off'}</span>
+    </button>
+  );
+}
+
+/* ---------- 10. APP ---------- */
+function App(){
+  // phase: 'idle' | 'charging' | 'lighting' | 'journey' | 'wall'
+  // 'lighting' = flame igniting + "received" message (~2.8s)
+  // 'journey'  = candle ceremonially drifts back into the wall (~5.6s)
+  const [phase, setPhase] = useState('idle');
+  const [text, setText] = useState('');
+  const [intent, setIntent] = useState(DEFAULT_INTENT);
+  const [tooltip, setTooltip] = useState(null);
+  const [userCandle, setUserCandle] = useState(null);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const [ambientOn, setAmbientOn] = useState(true);
+  const ambientRef = useRef(null);
+
+  const textareaRef = useRef(null);
+  const userCandleRef = useRef(null);
+  const stageRef = useRef(null);
+
+  // Stable wall layout
+  const wallCandles = useMemo(buildWallCandles, []);
+
+  // Update intent live as user types so they see their candle's "color of light"
+  useEffect(() => {
+    setIntent(detectIntent(text));
+  }, [text]);
+
+  // Pre-light charge — grows with character count, saturates at ~80 chars.
+  const charge = Math.min(1, text.trim().length / 80);
+
+  // restore from localStorage if user previously lit a candle this session
+  useEffect(() => {
+    try{
+      const saved = JSON.parse(localStorage.getItem('candle-wall-state') || 'null');
+      if (saved && saved.text && saved.color){
+        setText(saved.text);
+        setIntent(saved.intent || DEFAULT_INTENT);
+        setUserCandle({ text: saved.text, color: saved.color, intent: saved.intent });
+        setPhase('wall');
+      }
+    } catch {}
+  }, []);
+
+  /* Gentle reverent parallax — small offsets, eased.
+     We sample at ±15px max regardless of viewport so it stays subtle. */
+  useEffect(() => {
+    const onMove = (e) => {
+      const w = window.innerWidth, h = window.innerHeight;
+      // -1 .. 1 normalized
+      const nx = (e.clientX / w) * 2 - 1;
+      const ny = (e.clientY / h) * 2 - 1;
+      // negative => layers shift OPPOSITE to cursor (camera follows cursor)
+      setParallax({ x: -nx * 15, y: -ny * 10 });
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  /* Ambient sound toggle lifecycle */
+  useEffect(() => {
+    if (ambientOn && !ambientRef.current){
+      ambientRef.current = startAmbient();
+      if (!ambientRef.current) setAmbientOn(false); // failed to init
+    }
+    if (!ambientOn && ambientRef.current){
+      ambientRef.current.stop();
+      ambientRef.current = null;
+    }
+  }, [ambientOn]);
+  useEffect(() => () => { if (ambientRef.current) ambientRef.current.stop(); }, []);
+
+  const handleLight = useCallback(() => {
+    if (!text.trim()) { textareaRef.current?.focus(); return; }
+    const matched = detectIntent(text);
+    setIntent(matched);
+    setPhase('lighting');
+    playIgnition();
+
+    // 1) Hold at center for ~2.6s while flame settles & "received" reads.
+    setTimeout(() => {
+      setPhase('journey');
+      // 2) The CSS transition on .user-zone (5.6s) carries the candle back.
+      //    When that completes, we commit the user candle into the wall.
+      setTimeout(() => {
+        const candle = { text: text.trim(), color: matched.color, intent: matched };
+        setUserCandle(candle);
+        try{ localStorage.setItem('candle-wall-state', JSON.stringify(candle)); } catch {}
+        setPhase('wall');
+      }, 5400);
+    }, 2600);
+  }, [text]);
+
+  const handleReset = useCallback(() => {
+    try{ localStorage.removeItem('candle-wall-state'); } catch {}
+    setText('');
+    setIntent(DEFAULT_INTENT);
+    setUserCandle(null);
+    setPhase('idle');
+  }, []);
+
+  const onHover = useCallback((e, data) => {
+    setTooltip({ x: e.clientX, y: e.clientY, data });
+  }, []);
+  const onLeave = useCallback(() => setTooltip(null), []);
+
+  /* User-zone choreography per phase.
+     - idle/charging: center, full size
+     - lighting:      center, slight settle (97%)
+     - journey:       drift backward to where the front-row sits (~78%), shrink to ~30%
+     - wall:          fully invisible; persistent userCandle inside CandleWall takes over */
+  let userZoneStyle;
+  if (phase === 'wall'){
+    userZoneStyle = { opacity: 0, transform: 'translate(-50%,-50%) scale(0.28)', top:'78%', pointerEvents:'none', filter:'blur(2px)' };
+  } else if (phase === 'journey'){
+    userZoneStyle = { opacity: 0, transform: 'translate(-50%,-50%) scale(0.30)', top:'78%', pointerEvents:'none', filter:'blur(1.5px)' };
+  } else if (phase === 'lighting'){
+    userZoneStyle = { opacity: 1, transform: 'translate(-50%,-50%) scale(0.97)', top:'50%' };
+  } else {
+    userZoneStyle = { opacity: 1, transform: 'translate(-50%,-44%) scale(1)', top:'50%' };
+  }
+
+  // Heading fades back during lighting/journey/wall to let the candle breathe.
+  const headingFade = (phase === 'wall' || phase === 'journey') ? 0.55 : 1;
+
+  const lit = phase === 'lighting' || phase === 'journey' || phase === 'wall';
+
+  return (
+    <div className="stage" ref={stageRef}>
+      <SoundToggle on={ambientOn} onToggle={() => setAmbientOn(v => !v)} />
+
+      {/* parallax host — all background depth layers ride on this so they
+          shift with the cursor as a unit (each layer then scales its own
+          offset by its depth multiplier inside CandleWall). */}
+      <div
+        className="parallax"
+        style={{ transform:`translate3d(${parallax.x * 0.4}px, ${parallax.y * 0.4}px, 0)` }}
+      >
+        <FloatingParticles count={32} />
+        <CandleWall
+          candles={wallCandles}
+          userCandle={userCandle}
+          phase={phase === 'journey' ? 'lighting' : phase}
+          onHover={onHover}
+          onLeave={onLeave}
+          parallax={parallax}
+        />
+        <div className="basilica-frame" />
+        <div className="floor-glow" />
+      </div>
+
+      {/* heading */}
+      <div className="heading-wrap" style={{ opacity: headingFade }}>
+        <h1 className="heading">Light a Candle for <em>Your Prayer</em></h1>
+        <p className="sub">Write your intention. Watch your candle join a living wall of prayers carried with care.</p>
+      </div>
+
+      {/* prayer particles travelling from textarea to candle while typing */}
+      {phase === 'charging' && (
+        <PrayerParticles active={true} fromRef={textareaRef} toRef={userCandleRef} />
+      )}
+
+      {/* center user-candle zone — unmounted entirely in 'wall' phase so the
+          opacity transition doesn't flash the old candle on reload. */}
+      {phase !== 'wall' && (
+        <div className="user-zone" style={userZoneStyle}>
+        <div ref={userCandleRef} style={{ position:'relative' }}>
+          <Candle
+            lit={lit}
+            color={intent.color}
+            charge={charge}
+            charging={phase === 'charging' || phase === 'idle'}
+            size="normal"
+            isUser
+          />
+          {phase === 'lighting' && <span className="burst" />}
+        </div>
+
+        {/* prayer input + button — hide after submit */}
+        <div className="input-wrap" style={{
+          opacity: (phase === 'idle' || phase === 'charging') ? 1 : 0,
+          transform: (phase === 'idle' || phase === 'charging') ? 'translateY(0)' : 'translateY(20px)',
+          pointerEvents: (phase === 'idle' || phase === 'charging') ? 'auto' : 'none',
+        }}>
+          <textarea
+            ref={textareaRef}
+            className="prayer-area"
+            placeholder="Write your prayer intention…"
+            value={text}
+            onChange={(e) => {
+              const v = e.target.value;
+              setText(v);
+              setPhase(v.trim() ? 'charging' : 'idle');
+            }}
+            style={{ ['--charge']: charge }}
+            rows={3}
+          />
+          <div style={{ display:'flex', justifyContent:'center' }}>
+            <button
+              className="light-btn"
+              onClick={handleLight}
+              disabled={!text.trim()}
+            >
+              <span className="spark" /> Light My Candle
+            </button>
+          </div>
+
+          {/* live intent line — appears once user has typed enough */}
+          <div
+            className={'intent-line ' + (text.trim().length > 4 ? 'show' : '')}
+            style={{ ['--intent-c']: intent.color }}
+          >
+            Your prayer carries the light of <strong>{intent.label}</strong>.
+          </div>
+        </div>
+        </div>
+      )}
+
+      {/* "Your prayer has been received." — shows during ignition + journey */}
+      <div className={'received ' + ((phase === 'lighting' || phase === 'journey') ? 'show' : '')}>
+        Your prayer has been received.
+      </div>
+
+      {/* footer note — once joined */}
+      <div className={'footer-note ' + (phase === 'wall' ? 'show' : '')}>
+        <div className="em-line">Each candle represents a prayer carried with care.</div>
+        <div className="sub-em">
+          <span style={{ cursor:'pointer', borderBottom:'1px solid #4a3a25', paddingBottom:2, pointerEvents:'auto' }}
+            onClick={handleReset}>Light another candle</span>
+        </div>
+      </div>
+
+      {/* hover tooltip */}
+      {tooltip && <PrayerTooltip data={tooltip.data} x={tooltip.x} y={tooltip.y} />}
+
+      {/* film grain + vignette overlays — always on top */}
+      <div className="grain" />
+      <div className="vignette" />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
