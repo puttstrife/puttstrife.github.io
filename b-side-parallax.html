@@ -11,7 +11,7 @@
     color-scheme: dark;
     --design-width: 1728;
     --design-height: 2965;
-    --stage-max-width: 1728px;
+    --stage-max-width: 960px;
     --scene-ratio: calc(var(--design-height) / var(--design-width));
   }
 
@@ -51,8 +51,8 @@
   }
 
   .parallax-container {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    inset: 0;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -64,8 +64,12 @@
   .parallax-canvas {
     container-type: inline-size;
     position: relative;
-    width: min(100%, var(--stage-max-width));
-    height: calc(min(100vw, var(--stage-max-width)) * var(--scene-ratio));
+    --stage-width: min(
+      var(--stage-max-width),
+      max(100vw, calc(100vh / var(--scene-ratio) * 1.35))
+    );
+    width: var(--stage-width);
+    height: calc(var(--stage-width) * var(--scene-ratio));
     flex: 0 0 auto;
   }
 
@@ -168,25 +172,28 @@
   <script>
     const track = document.querySelector(".parallax-scroll-track");
     const container = document.querySelector(".parallax-container");
+    const canvas = document.querySelector(".parallax-canvas");
     const layers = [...document.querySelectorAll(".layer")];
-    const foregroundImage = document.querySelector(".layer-6 img");
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let controller = null;
     let scene = null;
 
-    function getForegroundTravel() {
-      return Math.max(foregroundImage.offsetHeight - container.offsetHeight, 0);
+    function getSceneTravel() {
+      const visibleTravel = Math.max(canvas.offsetHeight - container.offsetHeight, 0);
+      const minimumTravel = container.offsetHeight * 0.35;
+
+      return Math.max(visibleTravel, minimumTravel);
     }
 
     function setTrackHeight() {
       track.style.height = prefersReducedMotion.matches
         ? `${container.offsetHeight}px`
-        : `${container.offsetHeight + getForegroundTravel()}px`;
+        : `${container.offsetHeight + getSceneTravel()}px`;
     }
 
     function getLayerTravel(layer, progress) {
-      const requestedTravel = getForegroundTravel() * Number(layer.dataset.depth) * progress;
+      const requestedTravel = getSceneTravel() * Number(layer.dataset.depth) * progress;
       const image = layer.querySelector("img");
       const availableTravel = Math.max(image.offsetHeight + image.offsetTop - container.offsetHeight, 0);
 
@@ -231,7 +238,7 @@
       scene = new ScrollMagic.Scene({
         triggerElement: track,
         triggerHook: 0,
-        duration: getForegroundTravel(),
+        duration: getSceneTravel(),
       })
         .on("progress", (event) => applyParallax(event.progress))
         .addTo(controller);
