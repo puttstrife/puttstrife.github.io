@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>B-Side Downtown Parallax — Jeffrey Farañal</title>
+<meta name="description" content="A layered ScrollMagic parallax prototype for B-Side Downtown, preserving the Figma layer stack as independent planes." />
+<link rel="icon" type="image/x-icon" href="/images/icon-fabIcon.svg" />
+<style>
+  :root {
+    color-scheme: dark;
+    --design-width: 1728;
+    --design-height: 2965;
+    --stage-max-width: 1728px;
+    --scene-ratio: calc(var(--design-height) / var(--design-width));
+  }
+
+  * { box-sizing: border-box; }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #f7dce2;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: "Trebuchet MS", Arial, sans-serif;
+  }
+
+  .back-link {
+    position: fixed;
+    z-index: 40;
+    left: clamp(16px, 3vw, 32px);
+    bottom: clamp(16px, 3vw, 32px);
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    color: #fff8ee;
+    background: rgba(14, 24, 35, 0.32);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .parallax-scroll-track {
+    position: relative;
+    width: 100%;
+  }
+
+  .parallax-container {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #f7dce2;
+  }
+
+  .parallax-canvas {
+    container-type: inline-size;
+    position: relative;
+    width: min(100%, var(--stage-max-width));
+    height: calc(min(100vw, var(--stage-max-width)) * var(--scene-ratio));
+    flex: 0 0 auto;
+  }
+
+  .layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .layer img {
+    position: absolute;
+    inset: 0 auto auto 0;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .layer-bg { z-index: 1; }
+  .layer-2 { z-index: 2; }
+  .layer-birds { z-index: 3; }
+  .layer-3 { z-index: 4; }
+  .layer-4 { z-index: 5; }
+  .layer-5 { z-index: 6; }
+  .layer-6 { z-index: 7; }
+
+  .layer-bg img,
+  .layer-2 img,
+  .layer-birds img,
+  .layer-3 img,
+  .layer-4 img,
+  .layer-5 img {
+    left: 22.8588cqw;
+    width: 53.0093cqw;
+  }
+
+  .layer-birds img { top: 6.25cqw; }
+  .layer-5 img { top: 43.4606cqw; }
+
+  .site-header {
+    position: absolute;
+    z-index: 20;
+    inset: 0 0 auto;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .site-header img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .layer,
+    .ui-layer {
+      transform: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+  <a class="back-link" href="/work/">Back to work</a>
+
+  <main>
+    <section class="parallax-scroll-track" aria-label="B-Side Downtown layered parallax">
+      <div class="parallax-container">
+        <div class="parallax-canvas">
+          <div class="layer layer-bg" data-depth="0.12">
+            <img src="/assets/b-side-parallax/updated-layer-01-bg.webp" alt="" />
+          </div>
+          <div class="layer layer-2" data-depth="0.28">
+            <img src="/assets/b-side-parallax/updated-layer-02-skyline.webp" alt="" />
+          </div>
+          <div class="layer layer-birds" data-depth="0.32" data-unbounded>
+            <img src="/assets/b-side-parallax/updated-birds.webp" alt="" />
+          </div>
+          <div class="layer layer-3" data-depth="0.42">
+            <img src="/assets/b-side-parallax/updated-layer-03-distant-city.webp" alt="" />
+          </div>
+          <div class="layer layer-4" data-depth="0.56">
+            <img src="/assets/b-side-parallax/updated-layer-04-city-structures.webp" alt="" />
+          </div>
+          <div class="layer layer-5" data-depth="0.72">
+            <img src="/assets/b-side-parallax/updated-layer-05-buildings.webp" alt="" />
+          </div>
+          <div class="layer layer-6" data-depth="1">
+            <img src="/assets/b-side-parallax/updated-layer-06-front.webp" alt="" />
+          </div>
+
+          <header class="site-header ui-layer" data-depth="0">
+            <img src="/assets/b-side-parallax/updated-navbar.webp" alt="B-Side Downtown navigation" />
+          </header>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/vendor/ScrollMagic.min.js"></script>
+  <script>
+    const track = document.querySelector(".parallax-scroll-track");
+    const container = document.querySelector(".parallax-container");
+    const layers = [...document.querySelectorAll(".layer")];
+    const foregroundImage = document.querySelector(".layer-6 img");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let controller = null;
+    let scene = null;
+
+    function getForegroundTravel() {
+      return Math.max(foregroundImage.offsetHeight - container.offsetHeight, 0);
+    }
+
+    function setTrackHeight() {
+      track.style.height = prefersReducedMotion.matches
+        ? `${container.offsetHeight}px`
+        : `${container.offsetHeight + getForegroundTravel()}px`;
+    }
+
+    function getLayerTravel(layer, progress) {
+      const requestedTravel = getForegroundTravel() * Number(layer.dataset.depth) * progress;
+      const image = layer.querySelector("img");
+      const availableTravel = Math.max(image.offsetHeight + image.offsetTop - container.offsetHeight, 0);
+
+      return layer.hasAttribute("data-unbounded")
+        ? requestedTravel
+        : Math.min(requestedTravel, availableTravel);
+    }
+
+    function applyParallax(progress) {
+      if (prefersReducedMotion.matches) return;
+
+      layers.forEach((layer) => {
+        const travel = getLayerTravel(layer, progress);
+        layer.style.transform = `translate3d(0, ${-travel}px, 0)`;
+      });
+    }
+
+    function resetTransforms() {
+      layers.forEach((layer) => {
+        layer.style.transform = "translate3d(0, 0, 0)";
+      });
+    }
+
+    function setupScrollMagic() {
+      if (scene) {
+        scene.destroy(true);
+        scene = null;
+      }
+      if (controller) {
+        controller.destroy(true);
+        controller = null;
+      }
+
+      setTrackHeight();
+
+      if (prefersReducedMotion.matches || typeof ScrollMagic === "undefined") {
+        resetTransforms();
+        return;
+      }
+
+      controller = new ScrollMagic.Controller();
+      scene = new ScrollMagic.Scene({
+        triggerElement: track,
+        triggerHook: 0,
+        duration: getForegroundTravel(),
+      })
+        .on("progress", (event) => applyParallax(event.progress))
+        .addTo(controller);
+
+      applyParallax(0);
+    }
+
+    window.addEventListener("resize", setupScrollMagic);
+    prefersReducedMotion.addEventListener("change", setupScrollMagic);
+    window.addEventListener("load", () => {
+      history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+      setupScrollMagic();
+    });
+
+    setupScrollMagic();
+  </script>
+</body>
+</html>
