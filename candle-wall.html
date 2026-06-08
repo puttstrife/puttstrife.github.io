@@ -1,1207 +1,1811 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Light a Candle — A Living Wall of Prayer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg-0:#070401;
-    --bg-1:#120a04;
-    --bg-2:#1a0e05;
-    --ink:#f3e6cf;
-    --ink-dim:#a78f6f;
-    --ink-faint:#6a553b;
-    --amber:#ffb86a;
-    --amber-hot:#ffd28a;
-    --rose:#ff8aa0;
-    --gold:#ffd479;
-    --blue:#a6c8ff;
-    --violet:#cbb4ff;
-    --white-flame:#fff2d6;
-  }
-  *{box-sizing:border-box}
-  html,body,#root{margin:0;padding:0;height:100%;overflow:hidden}
-  html,body{background:#000;color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  body{
-    background:
-      radial-gradient(ellipse 90% 60% at 50% 110%, rgba(255,140,40,0.22) 0%, rgba(255,120,30,0.05) 35%, transparent 65%),
-      radial-gradient(ellipse 120% 80% at 50% 50%, #1a0d05 0%, #0c0602 45%, #050200 100%);
-  }
-  /* ===== VIGNETTE ===== */
-  .vignette{
-    position:fixed;inset:0;pointer-events:none;z-index:50;
-    background:
-      radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.92) 100%);
-    mix-blend-mode:multiply;
-  }
-  .grain{
-    position:fixed;inset:0;pointer-events:none;z-index:51;opacity:0.07;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.85 0 0 0 0 0.5 0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Votive Society Candle Wall</title>
+    <style>
+:root {
+  --vs-ink: #180f0b;
+  --vs-ink-soft: #241713;
+  --vs-surface: #332119;
+  --vs-surface-2: #4a3022;
+  --vs-cream: #fff4dd;
+  --vs-muted: #d6bfa1;
+  --vs-gold: #f7c66b;
+  --vs-amber: #e58b38;
+  --vs-red-glass: #a91914;
+  --vs-red-glow: #f03524;
+  --vs-stone: #7c7368;
+  --vs-stone-dark: #302b27;
+  --vs-wax: #f1d4a0;
+  --vs-wax-dim: #9c846d;
+  --vs-focus: #f7c66b;
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--vs-cream);
+  background:
+    radial-gradient(circle at 50% 32%, rgba(247, 198, 107, 0.12), transparent 34rem),
+    linear-gradient(120deg, rgba(247, 198, 107, 0.04), transparent 28%),
+    var(--vs-ink);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.candle-page {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 77%, rgba(240, 53, 36, 0.24), transparent 27rem),
+    radial-gradient(circle at 50% 44%, rgba(229, 139, 56, 0.11), transparent 33rem),
+    radial-gradient(circle at 18% 58%, rgba(247, 198, 107, 0.05), transparent 23rem),
+    radial-gradient(circle at 83% 50%, rgba(247, 198, 107, 0.05), transparent 25rem),
+    linear-gradient(180deg, rgba(12, 7, 5, 0.3), rgba(12, 7, 5, 0.86));
+}
+
+.candle-page::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  z-index: 4;
+  opacity: 0.18;
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 244, 221, 0.04) 0 1px, transparent 1px);
+  background-size: 42px 42px;
+  mix-blend-mode: screen;
+}
+
+.wall-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: start;
+  padding: clamp(0.75rem, 2vw, 1.2rem) clamp(0.8rem, 3vw, 2rem);
+  background: linear-gradient(180deg, rgba(6, 6, 5, 0.5), rgba(6, 6, 5, 0.14) 62%, transparent);
+  pointer-events: none;
+}
+
+.ghost-link,
+.secondary-button,
+.icon-button {
+  min-height: 2.5rem;
+  border: 1px solid rgba(255, 244, 221, 0.08);
+  color: var(--vs-cream);
+  background: rgba(12, 8, 6, 0.34);
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.5rem 0.72rem;
+  box-shadow: 0 0.7rem 1.7rem rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.icon-button,
+.secondary-button {
+  cursor: pointer;
+}
+
+.icon-button {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.wall-actions {
+  display: flex;
+  gap: 0.42rem;
+  justify-content: flex-end;
+}
+
+.wall-title {
+  min-width: 0;
+  text-align: center;
+  color: rgba(255, 244, 221, 0.82);
+  text-shadow: 0 0.2rem 1.4rem rgba(0, 0, 0, 0.74);
+  pointer-events: none;
+  opacity: 0.92;
+  transition: opacity 220ms ease;
+}
+
+.candle-page.is-engaged .wall-title {
+  opacity: 0.58;
+}
+
+.eyebrow {
+  margin: 0 0 0.2rem;
+  color: rgba(247, 198, 107, 0.78);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.18rem, 2.2vw, 1.9rem);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.wall-title p:last-child {
+  margin: 0.25rem 0 0;
+  color: rgba(214, 191, 161, 0.76);
+  font-size: 0.78rem;
+}
+
+.controls-panel {
+  position: fixed;
+  top: clamp(4.6rem, 8vw, 5.7rem);
+  left: 50%;
+  z-index: 13;
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) repeat(2, minmax(9rem, 12rem));
+  gap: 0.75rem;
+  width: min(58rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 244, 221, 0.08);
+  border-radius: 0.5rem;
+  background: rgba(10, 7, 5, 0.62);
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+.controls-panel[hidden] {
+  display: none;
+}
+
+.controls-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--vs-muted);
+  font-size: 0.78rem;
+}
+
+.controls-panel input,
+.controls-panel select {
+  width: 100%;
+  border: 1px solid rgba(255, 244, 221, 0.18);
+  border-radius: 0.35rem;
+  color: var(--vs-cream);
+  background: rgba(0, 0, 0, 0.22);
+  padding: 0.7rem 0.75rem;
+}
+
+.wall-environment {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100%;
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 0;
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  user-select: none;
+  background:
+    radial-gradient(ellipse at 50% 82%, rgba(240, 53, 36, 0.34), transparent 38%),
+    radial-gradient(ellipse at 48% 72%, rgba(247, 198, 107, 0.18), transparent 43%),
+    radial-gradient(ellipse at 50% 24%, rgba(12, 42, 72, 0.42), transparent 34%),
+    linear-gradient(100deg, rgba(255, 255, 255, 0.03), transparent 24%, rgba(255, 255, 255, 0.02) 58%, transparent),
+    linear-gradient(180deg, #07121d 0%, #15130f 32%, #241812 62%, #130807 100%);
+  box-shadow: inset 0 3rem 5rem rgba(0, 0, 0, 0.32), inset 0 -4rem 6rem rgba(0, 0, 0, 0.7);
+}
+
+.wall-environment.is-dragging {
+  cursor: grabbing;
+}
+
+.wall-environment::-webkit-scrollbar {
+  display: none;
+}
+
+.garden-backdrop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.garden-backdrop::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 18% 32%, rgba(174, 181, 139, 0.22), transparent 16rem),
+    radial-gradient(circle at 78% 33%, rgba(133, 159, 121, 0.16), transparent 17rem),
+    radial-gradient(circle at 50% 16%, rgba(0, 76, 166, 0.26), transparent 18rem);
+}
+
+.tree,
+.tree::before,
+.tree::after {
+  position: absolute;
+  width: 0.28rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(125, 111, 85, 0.7), rgba(36, 23, 17, 0.9));
+  content: "";
+}
+
+.tree {
+  bottom: 25%;
+  height: 41%;
+  opacity: 0.55;
+  transform-origin: bottom;
+}
+
+.tree::before {
+  bottom: 32%;
+  left: -2.2rem;
+  height: 55%;
+  transform: rotate(-21deg);
+}
+
+.tree::after {
+  bottom: 26%;
+  right: -1.9rem;
+  height: 49%;
+  transform: rotate(18deg);
+}
+
+.tree-left {
+  left: 17%;
+  transform: rotate(3deg);
+}
+
+.tree-center {
+  left: 50%;
+  height: 36%;
+  opacity: 0.38;
+  transform: rotate(-5deg);
+}
+
+.tree-right {
+  right: 15%;
+  height: 45%;
+  opacity: 0.5;
+  transform: rotate(-8deg);
+}
+
+.stone-wall {
+  position: absolute;
+  left: -4vw;
+  right: -4vw;
+  bottom: 20%;
+  height: 7rem;
+  background:
+    linear-gradient(180deg, rgba(124, 115, 104, 0.5), rgba(48, 43, 39, 0.68));
+  background-size: auto;
+  box-shadow: inset 0 1rem 1.2rem rgba(255, 255, 255, 0.05), inset 0 -1.5rem 2rem rgba(0, 0, 0, 0.42);
+  clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
+}
+
+.map-environment {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 50% 52%, rgba(247, 198, 107, 0.14), transparent 28rem),
+    radial-gradient(circle at 22% 36%, rgba(229, 139, 56, 0.1), transparent 20rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), transparent 30%),
+    linear-gradient(180deg, #2b1c16, #120a08);
+  box-shadow: inset 0 3rem 5rem rgba(0, 0, 0, 0.42), inset 0 -4rem 6rem rgba(0, 0, 0, 0.7);
+}
+
+.map-environment[hidden] {
+  display: none;
+}
+
+.map-environment::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.52)),
+    radial-gradient(circle at 50% 52%, rgba(247, 198, 107, 0.05), transparent 28rem);
+}
+
+.map-orbit {
+  position: absolute;
+  inset: 11% 7%;
+  border: 1px solid rgba(247, 198, 107, 0.08);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.map-orbit::before,
+.map-orbit::after {
+  position: absolute;
+  inset: 14% 5%;
+  border: 1px solid rgba(247, 198, 107, 0.06);
+  border-radius: 50%;
+  content: "";
+}
+
+.map-orbit::after {
+  inset: 5% 18%;
+}
+
+.map-panel {
+  position: absolute;
+  inset: clamp(5.5rem, 12vh, 7rem) clamp(1rem, 5vw, 4rem) clamp(1rem, 4vw, 3rem);
+}
+
+.prayer-map {
+  width: 100%;
+  height: 100%;
+}
+
+.land {
+  fill: rgba(118, 82, 56, 0.44);
+  stroke: rgba(255, 244, 221, 0.1);
+  stroke-width: 2;
+}
+
+.land-europe,
+.land-africa,
+.land-asia {
+  fill: rgba(139, 92, 56, 0.5);
+}
+
+.map-markers {
+  position: absolute;
+  inset: 0;
+}
+
+.map-marker {
+  position: absolute;
+  width: var(--marker-size, 1rem);
+  height: var(--marker-size, 1rem);
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--vs-cream);
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.map-marker::before {
+  position: absolute;
+  inset: 18%;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff4b4 0 14%, var(--vs-gold) 28%, var(--vs-amber) 54%, rgba(229, 139, 56, 0.12) 72%, transparent 74%);
+  box-shadow: 0 0 0.65rem rgba(247, 198, 107, var(--marker-glow, 0.36));
+}
+
+.map-marker.unlit::before {
+  background: radial-gradient(circle, rgba(247, 198, 107, 0.65), rgba(156, 132, 109, 0.3) 48%, transparent 72%);
+  box-shadow: 0 0 0.7rem rgba(247, 198, 107, 0.16);
+}
+
+.map-marker.tier-paid::before {
+  box-shadow: 0 0 1rem rgba(247, 198, 107, 0.46);
+}
+
+.map-marker.is-owned {
+  outline: 2px solid rgba(247, 198, 107, 0.62);
+  outline-offset: 0.4rem;
+  box-shadow: 0 0 1.1rem rgba(247, 198, 107, 0.24);
+}
+
+.map-marker::after {
+  position: absolute;
+  inset: -1.05rem;
+  border-radius: 50%;
+  content: "";
+  background: radial-gradient(circle, rgba(247, 198, 107, 0.1), transparent 64%);
+}
+
+.map-count {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  color: #241306;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.map-marker.unlit .map-count {
+  color: rgba(255, 244, 221, 0.74);
+}
+
+.area-marker .candle-meta {
+  width: min(12rem, 44vw);
+}
+
+.map-marker:focus-visible {
+  outline: 2px solid var(--vs-focus);
+  outline-offset: 0.45rem;
+}
+
+.map-marker .candle-meta {
+  bottom: calc(100% + 0.55rem);
+}
+
+.map-marker:hover .candle-meta,
+.map-marker:focus-visible .candle-meta {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.wall-environment::before {
+  position: fixed;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.72), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.76)),
+    linear-gradient(180deg, rgba(4, 10, 17, 0.32), transparent 35%, rgba(0, 0, 0, 0.22)),
+    radial-gradient(circle at 50% 58%, transparent 44%, rgba(0, 0, 0, 0.4));
+}
+
+.wall-environment::after {
+  position: fixed;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    radial-gradient(circle at 18% 32%, rgba(255, 244, 221, 0.045) 0 1px, transparent 1px),
+    radial-gradient(circle at 72% 68%, rgba(0, 0, 0, 0.18), transparent 16rem);
+  background-size: 38px 38px, auto;
+}
+
+.shelf-plane {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 220vw;
+}
+
+.shelf {
+  position: absolute;
+  left: 50%;
+  width: 100%;
+  height: 6rem;
+  transform: translateX(-50%);
+  perspective: 56rem;
+}
+
+.shelf::before {
+  position: absolute;
+  left: -5vw;
+  right: -5vw;
+  bottom: 0.12rem;
+  height: 1.05rem;
+  content: "";
+  background:
+    radial-gradient(ellipse at 52% 0%, rgba(255, 244, 221, 0.12), transparent 54%),
+    linear-gradient(180deg, #7f7569, #322c27 62%, #15100d 100%);
+  background-size: auto, auto;
+  box-shadow: 0 1.1rem 1.6rem rgba(0, 0, 0, 0.58), 0 -0.45rem 0.95rem rgba(240, 53, 36, 0.08);
+  transform: rotateX(42deg);
+  transform-origin: bottom;
+}
+
+.shelf::after {
+  position: absolute;
+  left: -5vw;
+  right: -5vw;
+  bottom: 1rem;
+  height: 4.4rem;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.32), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.34)),
+    radial-gradient(ellipse at 50% 100%, rgba(240, 53, 36, 0.12), transparent 48%);
+  background-size: auto, auto;
+  pointer-events: none;
+}
+
+.candle {
+  position: absolute;
+  bottom: 0.98rem;
+  width: var(--candle-width, 3rem);
+  height: var(--candle-height, 5.7rem);
+  min-width: 2.75rem;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  transform: translateX(-50%) translateY(var(--lift, 0));
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-x;
+}
+
+.candle:focus-visible {
+  outline: 2px solid var(--vs-focus);
+  outline-offset: 0.45rem;
+  border-radius: 0.5rem;
+}
+
+.candle-body {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 82%;
+  height: 78%;
+  transform: translateX(-50%);
+  border-radius: 0.34rem 0.34rem 0.18rem 0.18rem;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08) 23%, rgba(30, 10, 8, 0.2) 72%, rgba(0, 0, 0, 0.26)),
+    linear-gradient(180deg, var(--glass-top, rgba(255, 96, 65, 0.82)), var(--glass-mid, rgba(169, 25, 20, 0.9)) 48%, var(--glass-base, rgba(67, 8, 8, 0.96)));
+  box-shadow: inset 0 0.45rem 0.5rem rgba(255, 214, 158, 0.18), inset 0 -0.55rem 0.8rem rgba(41, 0, 0, 0.42), 0 0.7rem 0.65rem rgba(0, 0, 0, 0.42);
+}
+
+.candle-body::before {
+  position: absolute;
+  top: -0.2rem;
+  left: 0;
+  right: 0;
+  height: 0.66rem;
+  border-radius: 50%;
+  content: "";
+  background: radial-gradient(ellipse at 50% 52%, rgba(30, 8, 6, 0.58) 0 19%, var(--glass-top, rgba(255, 105, 72, 0.74)) 20% 68%, var(--glass-base, rgba(122, 13, 10, 0.92)) 100%);
+  box-shadow: inset 0 0 0.35rem rgba(255, 235, 185, 0.22);
+}
+
+.wick {
+  position: absolute;
+  left: 50%;
+  bottom: 73%;
+  width: 0.12rem;
+  height: 0.58rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #281611;
+  z-index: 2;
+}
+
+.flame {
+  position: absolute;
+  left: 50%;
+  bottom: calc(78% + 0.18rem);
+  width: 0.78rem;
+  height: 1.32rem;
+  transform: translateX(-50%) rotate(3deg);
+  border-radius: 65% 35% 58% 42% / 72% 48% 52% 28%;
+  background: radial-gradient(circle at 48% 68%, #fff8bd 0 18%, #f7c66b 26%, #ef8a30 58%, rgba(229, 91, 25, 0.06) 72%);
+  box-shadow: 0 0 0.42rem rgba(247, 198, 107, 0.38);
+  filter: none;
+  transform-origin: 50% 100%;
+  animation: flame-flicker 3.8s infinite ease-in-out;
+}
+
+.candle.active::before {
+  position: absolute;
+  left: 50%;
+  bottom: 31%;
+  width: 3.2rem;
+  height: 3.2rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  content: "";
+  background: radial-gradient(circle, rgba(var(--glow-rgb, 240, 53, 36), var(--glow, 0.16)), rgba(247, 198, 107, 0.06) 34%, transparent 72%);
+}
+
+.candle.tier-paid {
+  z-index: 2;
+}
+
+.candle.tier-free {
+  opacity: 0.9;
+}
+
+.candle.tier-free .candle-body {
+  height: 72%;
+}
+
+.candle.tier-paid .flame {
+  width: 0.9rem;
+  height: 1.48rem;
+  box-shadow: 0 0 0.65rem rgba(247, 198, 107, 0.56);
+}
+
+.candle.tier-paid .candle-body {
+  box-shadow: inset 0 0.45rem 0.5rem rgba(255, 214, 158, 0.24), inset 0 -0.55rem 0.8rem rgba(41, 0, 0, 0.42), 0 0.9rem 0.8rem rgba(0, 0, 0, 0.46), 0 0 0.85rem rgba(var(--glow-rgb, 240, 53, 36), 0.12);
+}
+
+.candle.expired-free {
+  opacity: 0.48;
+  filter: saturate(0.55);
+}
+
+.candle.expired-free .candle-body {
+  box-shadow: inset 0 0.3rem 0.45rem rgba(255, 214, 158, 0.08), inset 0 -0.55rem 0.8rem rgba(22, 8, 7, 0.58), 0 0.65rem 0.7rem rgba(0, 0, 0, 0.48);
+}
+
+.candle.expired-free:hover,
+.candle.expired-free:focus-visible {
+  opacity: 0.72;
+}
+
+.candle.back-ember .flame {
+  display: block;
+  width: 0.46rem;
+  height: 0.7rem;
+  bottom: calc(72% + 0.12rem);
+  opacity: 0.64;
+  box-shadow: 0 0 0.32rem rgba(247, 198, 107, 0.26);
+  animation: none;
+}
+
+.candle.back-ember::before {
+  position: absolute;
+  left: 50%;
+  bottom: 28%;
+  width: 2.2rem;
+  height: 2.2rem;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  content: "";
+  background: radial-gradient(circle, rgba(var(--glow-rgb, 240, 53, 36), 0.08), transparent 70%);
+}
+
+.candle.is-owned .candle-body {
+  outline: 2px solid rgba(247, 198, 107, 0.74);
+  outline-offset: 0.16rem;
+  box-shadow: inset 0 0.45rem 0.5rem rgba(255, 214, 158, 0.26), inset 0 -0.55rem 0.8rem rgba(41, 0, 0, 0.42), 0 0.85rem 0.75rem rgba(0, 0, 0, 0.46), 0 0 1.15rem rgba(247, 198, 107, 0.28);
+}
+
+.candle.is-owned::after {
+  position: absolute;
+  left: 50%;
+  bottom: -0.18rem;
+  width: 92%;
+  height: 0.22rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  content: "";
+  background: rgba(247, 198, 107, 0.54);
+  box-shadow: 0 0 0.85rem rgba(247, 198, 107, 0.42);
+  pointer-events: none;
+}
+
+.candle.unlit .flame {
+  display: none;
+}
+
+.candle.unlit.back-ember .flame {
+  display: block;
+}
+
+.candle.unlit .candle-body {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 35%, rgba(0, 0, 0, 0.3) 84%),
+    linear-gradient(180deg, color-mix(in srgb, var(--glass-top, rgba(129, 52, 43, 0.72)) 64%, #1a1110), color-mix(in srgb, var(--glass-mid, rgba(78, 24, 23, 0.86)) 58%, #100b0a) 58%, #1a100f);
+}
+
+.candle-meta {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.75rem);
+  z-index: 8;
+  width: min(13rem, 42vw);
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(255, 244, 221, 0.13);
+  border-radius: 0.45rem;
+  color: var(--vs-cream);
+  background: rgba(18, 10, 7, 0.82);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transform: translateX(-50%) translateY(0.35rem);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  text-align: left;
+}
+
+.candle:hover .candle-meta,
+.candle:focus-visible .candle-meta {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.candle-meta strong {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.85rem;
+}
+
+.candle-meta span,
+.candle-meta em {
+  display: block;
+  color: var(--vs-muted);
+  font-size: 0.74rem;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.sheet-note {
+  color: rgba(255, 244, 221, 0.82);
+}
+
+.upgrade-button {
+  width: 100%;
+  min-height: 2.55rem;
+  margin-top: 0.65rem;
+  border: 1px solid rgba(247, 198, 107, 0.28);
+  border-radius: 999px;
+  color: #1d1209;
+  background: linear-gradient(180deg, #f7c66b, #d88a36);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.empty-state {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  z-index: 14;
+  width: fit-content;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  color: var(--vs-muted);
+  background: rgba(18, 10, 7, 0.76);
+  border-radius: 0.45rem;
+  transform: translateX(-50%);
+}
+
+.detail-sheet {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 22;
+  display: block;
+  width: min(24rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid rgba(255, 244, 221, 0.1);
+  border-radius: 0.65rem;
+  color: var(--vs-cream);
+  background: rgba(13, 8, 6, 0.86);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(12px);
+  transform: translateY(calc(100% + 2rem));
+  transition: transform 180ms ease;
+}
+
+.detail-sheet[aria-hidden="false"] {
+  transform: translateY(0);
+}
+
+.detail-sheet h2 {
+  margin: 0.1rem 2.4rem 0.35rem 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.detail-sheet p {
+  margin: 0.3rem 0;
+  color: var(--vs-muted);
+  line-height: 1.45;
+}
+
+.sheet-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 244, 221, 0.14);
+  border-radius: 50%;
+  color: var(--vs-cream);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 21;
+  display: block;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.sheet-scrim[hidden] {
+  display: none;
+}
+
+@keyframes flame-flicker {
+  0%, 100% { opacity: 0.92; transform: translateX(-50%) rotate(2deg) scaleY(1); }
+  45% { opacity: 1; transform: translateX(-50%) rotate(-1deg) scaleY(1.04); }
+  72% { opacity: 0.86; transform: translateX(-50%) rotate(3deg) scaleY(0.97); }
+}
+
+@media (max-width: 820px) {
+  .wall-header {
+    position: fixed;
+    top: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.45rem;
+    align-items: start;
+    padding: 0.55rem 0.6rem 0.5rem;
+    background: linear-gradient(180deg, rgba(10, 7, 5, 0.5), rgba(10, 7, 5, 0.08) 78%, transparent);
+    backdrop-filter: none;
   }
 
-  /* ===== HEADING / COPY ===== */
-  .stage{position:relative;width:100%;height:100%;overflow:hidden}
-  .heading-wrap{
-    position:absolute;left:50%;top:6.2vh;transform:translateX(-50%);
-    text-align:center;z-index:30;pointer-events:none;width:min(92vw,720px);
-    transition:opacity 1.4s ease, transform 1.4s ease;
-  }
-  .heading{
-    font-family:'Cormorant Garamond',serif;font-weight:500;
-    font-size:clamp(28px,4.6vw,52px);letter-spacing:0.01em;
-    color:#f7e7c8;margin:0;line-height:1.05;
-    text-shadow:0 0 28px rgba(255,170,80,0.18);
-  }
-  .heading em{font-style:italic;color:#ffd28a}
-  .sub{
-    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
-    font-size:clamp(14px,1.5vw,18px);color:#c9b189;margin-top:10px;line-height:1.5;
-    max-width:520px;margin-left:auto;margin-right:auto;
+  .ghost-link {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    min-height: 2.25rem;
+    overflow: hidden;
+    padding: 0;
+    white-space: nowrap;
+    font-size: 0;
+    text-indent: 0;
   }
 
-  /* ===== WALL ===== */
-  .wall{
-    position:absolute;inset:0;z-index:5;
-    transition:filter 3.4s ease, opacity 2.2s ease, transform 3.4s ease;
-  }
-  .wall.dim{filter:blur(10px) brightness(0.62) saturate(0.85)}
-  .wall.live{filter:blur(1.5px) brightness(0.95) saturate(1)}
-
-  /* parallax host — moves all wall+ambient layers very gently with the mouse */
-  .parallax{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);will-change:transform}
-
-  /* basilica architectural framing — subtle column-like darkening on left/right */
-  .basilica-frame{
-    position:absolute;inset:0;pointer-events:none;z-index:7;
-    background:
-      linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 8%, transparent 18%, transparent 82%, rgba(0,0,0,0.15) 92%, rgba(0,0,0,0.55) 100%),
-      radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0,0,0,0.55) 0%, transparent 50%);
-  }
-  .wall-candle{
-    position:absolute;transform-origin:50% 100%;
-    will-change:transform,filter,opacity;
-  }
-  .wall-candle .halo{
-    position:absolute;left:50%;bottom:55%;width:120px;height:120px;
-    transform:translate(-50%,50%);border-radius:50%;
-    background:radial-gradient(circle, var(--c,#ffb86a) 0%, rgba(255,184,106,0.35) 30%, transparent 65%);
-    filter:blur(8px);opacity:0.7;mix-blend-mode:screen;pointer-events:none;
+  .ghost-link::after {
+    content: "‹";
+    display: block;
+    font-size: 1.35rem;
+    line-height: 1;
+    text-indent: 0;
   }
 
-  /* ===== USER CANDLE STAGE =====
-     Long, eased transitions = the candle is being CARRIED, not animated.
-     Total journey ~5.5s: hold at center while message reads, then drift back.   */
-  .user-zone{
-    position:absolute;left:50%;top:50%;
-    transform:translate(-50%,-44%);
-    z-index:25;display:flex;flex-direction:column;align-items:center;gap:24px;
-    transition:
-      transform 5.6s cubic-bezier(.55,.02,.25,1),
-      opacity   3.0s ease,
-      top       5.6s cubic-bezier(.55,.02,.25,1),
-      left      5.6s cubic-bezier(.55,.02,.25,1),
-      filter    4.2s ease;
+  .wall-title {
+    text-align: left;
+    padding-top: 0.12rem;
   }
 
-  /* ===== CANDLE ===== */
-  .candle{
-    position:relative;width:64px;height:170px;
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-    transition:transform .8s ease, filter .8s ease;
-  }
-  .candle.small{width:40px;height:108px}
-  .candle.tiny{width:28px;height:78px}
-
-  .body{
-    position:relative;width:100%;height:62%;
-    border-radius:8px 8px 4px 4px;
-    background:linear-gradient(180deg, #f2d9a8 0%, #e0bf85 18%, #cfa466 45%, #a87a3f 80%, #6f4d27 100%);
-    box-shadow:
-      inset -6px 0 8px rgba(0,0,0,0.35),
-      inset 6px 0 6px rgba(255,220,170,0.15),
-      0 6px 14px rgba(0,0,0,0.5);
-    overflow:hidden;
-  }
-  .body::before{
-    content:"";position:absolute;left:6%;top:0;width:14%;height:100%;
-    background:linear-gradient(180deg, rgba(255,240,210,0.55), rgba(255,240,210,0.05));
-    filter:blur(1px);
-  }
-  .body::after{
-    content:"";position:absolute;inset:0;
-    background:repeating-linear-gradient(90deg, transparent 0 8px, rgba(0,0,0,0.05) 8px 9px);
-    opacity:0.5;
-  }
-  .rim{
-    /* sit on top of the wax body, not on top of the whole candle bounding box.
-       The body fills the bottom 62%, so its top edge is at y=38% within .candle. */
-    position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
-    width:108%;height:14px;border-radius:50%;
-    background:radial-gradient(ellipse at 50% 30%, #f6dcad 0%, #cfa466 60%, #6f4d27 100%);
-    box-shadow:0 4px 8px rgba(0,0,0,0.45);
-  }
-  .wick{
-    /* the wick rises from the center of the rim into the flame zone */
-    position:absolute;left:50%;top:38%;transform:translate(-50%,-100%);
-    margin-top:-7px;
-    width:2px;height:8px;background:#2a1a08;border-radius:1px;
+  .eyebrow {
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
   }
 
-  /* ===== FLAME ===== */
-  .flame-wrap{
-    /* anchored to the TOP OF THE WAX BODY (38% from candle top), extending upward.
-       Using bottom-anchoring so the flame's base always meets the wick regardless of size. */
-    position:absolute;left:50%;bottom:62%;transform:translate(-50%, 0);
-    margin-bottom:-2px;
-    width:36px;height:64px;pointer-events:none;
-    opacity:0;transition:opacity .9s ease;
-  }
-  .candle.lit .flame-wrap{opacity:1}
-  .candle.small .flame-wrap{width:22px;height:42px}
-  .candle.tiny .flame-wrap{width:16px;height:30px}
-
-  /* outer glow halo around the flame; sits behind everything */
-  .glow{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:240px;height:240px;border-radius:50%;
-    background:radial-gradient(circle,
-      var(--flame-color,#ffd28a) 0%,
-      rgba(255,180,90,0.55) 18%,
-      rgba(255,140,50,0.25) 40%,
-      rgba(255,120,40,0.08) 65%,
-      transparent 80%);
-    mix-blend-mode:screen;filter:blur(6px);
-    animation:halo 3.6s ease-in-out infinite;
-  }
-  .candle.small .glow{width:160px;height:160px}
-  .candle.tiny .glow{width:110px;height:110px}
-  @keyframes halo{
-    0%,100%{opacity:0.85;transform:translate(-50%,-50%) scale(1)}
-    50%{opacity:1;transform:translate(-50%,-50%) scale(1.07)}
+  h1 {
+    font-size: clamp(1rem, 4.4vw, 1.24rem);
+    line-height: 1.05;
   }
 
-  /* flame outer (warm orange) */
-  .flame{
-    position:absolute;left:50%;bottom:8%;transform:translateX(-50%);
-    width:100%;height:90%;
-    background:radial-gradient(ellipse at 50% 80%,
-      #ffd684 0%, #ffae50 30%, #ff7a1f 55%, #c44a08 80%, transparent 95%);
-    border-radius:50% 50% 45% 45% / 70% 70% 35% 35%;
-    filter:blur(0.4px);
-    transform-origin:50% 100%;
-    animation:flicker 220ms ease-in-out infinite alternate;
-    mix-blend-mode:screen;
-  }
-  /* flame inner (hot core) */
-  .flame-core{
-    position:absolute;left:50%;bottom:14%;transform:translateX(-50%);
-    width:55%;height:62%;
-    background:radial-gradient(ellipse at 50% 75%,
-      #fff5d6 0%, #ffe19a 40%, #ffb45c 75%, transparent 100%);
-    border-radius:50% 50% 45% 45% / 70% 70% 35% 35%;
-    animation:flicker-core 180ms ease-in-out infinite alternate;
-    mix-blend-mode:screen;
-  }
-  /* tiny hottest tip */
-  .flame-tip{
-    position:absolute;left:50%;bottom:20%;transform:translateX(-50%);
-    width:22%;height:30%;
-    background:radial-gradient(ellipse at 50% 60%, #ffffff 0%, #ffe7a0 60%, transparent 100%);
-    border-radius:50%;
-    animation:flicker-tip 140ms ease-in-out infinite alternate;
-    mix-blend-mode:screen;
-  }
-  @keyframes flicker{
-    0%  {transform:translateX(-50%) scaleY(1)    skewX(-1deg)}
-    25% {transform:translateX(-52%) scaleY(1.08) skewX( 1deg)}
-    50% {transform:translateX(-48%) scaleY(0.95) skewX(-2deg)}
-    75% {transform:translateX(-51%) scaleY(1.04) skewX( 2deg)}
-    100%{transform:translateX(-50%) scaleY(1.02) skewX( 0deg)}
-  }
-  @keyframes flicker-core{
-    0%,100%{transform:translateX(-50%) scaleY(1) scaleX(1)}
-    50%   {transform:translateX(-51%) scaleY(0.93) scaleX(1.05)}
-  }
-  @keyframes flicker-tip{
-    0%,100%{opacity:0.9;transform:translateX(-50%) translateY(0)}
-    50%{opacity:1;transform:translateX(-51%) translateY(-2px)}
+  .wall-title p:last-child {
+    font-size: 0.68rem;
   }
 
-  /* ===== TYPING GLOW (pre-light) ===== */
-  .pre-glow{
-    /* halo sits at the wick position */
-    position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
-    width:80px;height:80px;border-radius:50%;
-    background:radial-gradient(circle,var(--flame-color,#ffb86a) 0%, rgba(255,170,80,0.45) 30%, transparent 70%);
-    filter:blur(8px);mix-blend-mode:screen;pointer-events:none;
-    opacity:0;transition:opacity .6s ease, transform .6s ease;
-  }
-  .candle.charging .pre-glow{opacity:var(--charge,0);transform:translate(-50%,-50%) scale(calc(0.7 + var(--charge,0)*0.7))}
-
-  /* ===== PRAYER INPUT ===== */
-  .input-wrap{
-    position:relative;width:min(86vw,520px);
-    transition:opacity 1.2s ease, transform 1.2s ease;
-  }
-  .prayer-area{
-    width:100%;min-height:96px;resize:none;
-    background:rgba(20,12,4,0.5);
-    border:1px solid rgba(255,184,106,0.22);
-    border-radius:14px;padding:18px 20px 22px;
-    color:#f3e6cf;font-family:'Cormorant Garamond',serif;font-style:italic;
-    font-size:19px;line-height:1.5;letter-spacing:0.005em;
-    outline:none;backdrop-filter:blur(6px);
-    box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,0.02),
-      0 0 0 1px rgba(0,0,0,0.4),
-      0 20px 60px rgba(0,0,0,0.5),
-      0 0 calc(var(--charge,0) * 60px) rgba(255,170,80,calc(var(--charge,0) * 0.45));
-    transition:box-shadow .4s ease, border-color .4s ease;
-  }
-  .prayer-area:focus{border-color:rgba(255,200,130,0.45)}
-  .prayer-area::placeholder{color:#86714f;font-style:italic}
-
-  .light-btn{
-    margin-top:18px;display:inline-flex;align-items:center;gap:10px;
-    padding:13px 28px;border-radius:999px;
-    background:linear-gradient(180deg, #1f1407 0%, #120a04 100%);
-    border:1px solid rgba(255,184,106,0.4);
-    color:#ffd28a;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:0.04em;
-    cursor:pointer;
-    box-shadow:0 0 0 1px rgba(0,0,0,0.4) inset, 0 8px 28px rgba(255,140,40,0.18);
-    transition:transform .25s ease, box-shadow .35s ease, color .35s ease, opacity .35s ease;
-  }
-  .light-btn:hover:not(:disabled){
-    color:#fff2d6;border-color:rgba(255,210,140,0.7);
-    box-shadow:0 0 0 1px rgba(0,0,0,0.4) inset, 0 10px 40px rgba(255,160,60,0.42);
-    transform:translateY(-1px);
-  }
-  .light-btn:disabled{opacity:0.45;cursor:not-allowed}
-  .light-btn .spark{
-    display:inline-block;width:6px;height:6px;border-radius:50%;
-    background:#ffd28a;box-shadow:0 0 12px #ffb86a, 0 0 28px #ff8e3a;
-    animation:sparkpulse 1.8s ease-in-out infinite;
-  }
-  @keyframes sparkpulse{
-    0%,100%{opacity:0.5;transform:scale(1)}
-    50%{opacity:1;transform:scale(1.4)}
+  .wall-actions {
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: flex-end;
   }
 
-  /* ===== INTENT LINE ===== */
-  .intent-line{
-    margin-top:14px;
-    font-family:'Cormorant Garamond',serif;font-style:italic;
-    color:#d6b787;font-size:16px;text-align:center;
-    opacity:0;transition:opacity .8s ease;
-    text-shadow:0 0 18px rgba(255,170,80,0.25);
-  }
-  .intent-line.show{opacity:1}
-  .intent-line strong{font-style:normal;font-weight:500;color:var(--intent-c,#ffd28a)}
-
-  .received{
-    position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);
-    z-index:40;pointer-events:none;
-    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.6vw,30px);
-    color:#fff2d6;text-shadow:0 0 22px rgba(255,180,90,0.5);
-    opacity:0;transition:opacity 1s ease, transform 1.6s ease;
-  }
-  .received.show{opacity:1;transform:translate(-50%,-65%)}
-
-  /* ===== TOOLTIP ===== */
-  .tip{
-    position:fixed;z-index:80;pointer-events:none;
-    padding:11px 14px 13px;border-radius:10px;
-    background:rgba(14,8,3,0.92);border:1px solid rgba(255,184,106,0.28);
-    backdrop-filter:blur(8px);
-    box-shadow:0 18px 50px rgba(0,0,0,0.7), 0 0 22px rgba(255,140,40,0.12);
-    min-width:200px;max-width:260px;
-    opacity:0;transform:translate(-50%,-100%) translateY(-12px) scale(0.96);
-    transition:opacity .25s ease, transform .25s ease;
-  }
-  .tip.show{opacity:1;transform:translate(-50%,-100%) translateY(-18px) scale(1)}
-  .tip .name{
-    font-family:'Cormorant Garamond',serif;font-size:14px;color:#ffd28a;
-    letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;
-  }
-  .tip .body-text{
-    font-family:'Cormorant Garamond',serif;font-style:italic;
-    color:#e9d6b3;font-size:15px;line-height:1.45;
-  }
-  .tip::after{
-    content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%) rotate(45deg);
-    width:10px;height:10px;background:rgba(14,8,3,0.92);
-    border-right:1px solid rgba(255,184,106,0.28);border-bottom:1px solid rgba(255,184,106,0.28);
+  .ghost-link,
+  .secondary-button,
+  .icon-button {
+    min-height: 2.25rem;
+    border-color: rgba(255, 244, 221, 0.14);
+    background: rgba(24, 15, 11, 0.62);
+    padding: 0.46rem 0.62rem;
   }
 
-  /* ===== FOOTER NOTE ===== */
-  .footer-note{
-    position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);
-    z-index:30;text-align:center;width:min(92vw,680px);pointer-events:none;
-    opacity:0;transition:opacity 1.6s ease;
-  }
-  .footer-note.show{opacity:1;pointer-events:auto;}
-  .footer-note .em-line{
-    font-family:'Cormorant Garamond',serif;font-style:italic;color:#c9a777;
-    font-size:clamp(14px,1.5vw,17px);line-height:1.5;
-  }
-  .footer-note .sub-em{
-    margin-top:6px;font-size:12px;color:#7a6244;letter-spacing:0.18em;text-transform:uppercase;font-family:'Inter',sans-serif;
-  }
-  .reset-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    margin-top:18px;padding:10px 22px;border-radius:999px;
-    background:rgba(14,8,3,0.65);border:1px solid rgba(255,184,106,0.35);
-    color:#c9a777;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
-    cursor:pointer;backdrop-filter:blur(8px);
-    transition:color .3s,border-color .3s,background .3s;
-  }
-  .reset-btn:hover{color:#ffd28a;border-color:rgba(255,210,140,0.6);background:rgba(20,12,4,0.8)}
-
-  /* ===== RISING PARTICLES (ambient) ===== */
-  .rising{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
-  .rising .p{
-    position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;
-    background:#ffb86a;box-shadow:0 0 8px #ffb86a, 0 0 16px rgba(255,140,40,0.6);
-    opacity:0;animation:rise linear infinite;
-  }
-  @keyframes rise{
-    0%  {transform:translateY(0) translateX(0);opacity:0}
-    10% {opacity:0.9}
-    100%{transform:translateY(-95vh) translateX(var(--drift,20px));opacity:0}
+  .ghost-link {
+    padding: 0;
   }
 
-  /* ===== PRAYER-TO-CANDLE PARTICLES ===== */
-  .prayer-particles{position:absolute;inset:0;pointer-events:none;z-index:26}
-  .prayer-particles .pp{
-    position:absolute;width:5px;height:5px;border-radius:50%;
-    background:#ffd28a;box-shadow:0 0 10px #ffb86a, 0 0 22px rgba(255,160,60,0.7);
-    opacity:0;
-    animation:travel 1.6s ease-out forwards;
-  }
-  @keyframes travel{
-    0%  {opacity:0;transform:translate(0,0) scale(0.5)}
-    15% {opacity:1}
-    100%{opacity:0;transform:translate(var(--dx,0),var(--dy,-200px)) scale(1.2)}
-  }
-
-  /* ===== IGNITION BURST ===== */
-  .burst{
-    position:absolute;left:50%;top:6%;transform:translate(-50%,-50%);
-    width:8px;height:8px;border-radius:50%;background:#fff2d6;
-    box-shadow:0 0 0 0 rgba(255,200,120,0.9);
-    pointer-events:none;
-    animation:burst 1.1s ease-out forwards;
-  }
-  @keyframes burst{
-    0%  {box-shadow:0 0 0 0 rgba(255,210,140,0.95);opacity:1}
-    60% {box-shadow:0 0 0 80px rgba(255,160,60,0)}
-    100%{box-shadow:0 0 0 120px rgba(255,160,60,0);opacity:0}
+  .controls-panel {
+    position: fixed;
+    left: max(0.75rem, env(safe-area-inset-left));
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    top: auto;
+    z-index: 18;
+    grid-template-columns: 1fr;
+    width: auto;
+    max-height: min(72vh, 26rem);
+    margin: 0;
+    overflow: auto;
+    padding: 0.9rem;
+    border-radius: 0.75rem;
+    background: rgba(18, 10, 7, 0.94);
+    box-shadow: 0 -1rem 3.5rem rgba(0, 0, 0, 0.48);
+    transform: none;
+    backdrop-filter: blur(14px);
   }
 
-  /* ===== BOTTOM WARM GLOW BAR ===== */
-  .floor-glow{
-    position:absolute;left:0;right:0;bottom:0;height:32vh;z-index:6;pointer-events:none;
-    background:linear-gradient(180deg, transparent 0%, rgba(255,120,40,0.05) 35%, rgba(255,140,50,0.16) 75%, rgba(255,160,60,0.28) 100%);
-    mix-blend-mode:screen;
+  .controls-panel::before {
+    width: 2.4rem;
+    height: 0.22rem;
+    margin: 0 auto 0.25rem;
+    border-radius: 999px;
+    content: "";
+    background: rgba(255, 244, 221, 0.28);
   }
 
-  /* ===== AMBIENT SOUND TOGGLE ===== */
-  .sound-toggle{
-    position:fixed;top:18px;right:20px;z-index:90;
-    display:inline-flex;align-items:center;gap:9px;
-    padding:8px 14px 8px 12px;border-radius:999px;
-    background:rgba(14,8,3,0.6);
-    border:1px solid rgba(255,184,106,0.22);
-    color:#c9a777;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
-    cursor:pointer;backdrop-filter:blur(8px);
-    transition:color .3s ease, border-color .3s ease, background .3s ease;
+  .controls-panel input,
+  .controls-panel select {
+    min-height: 2.85rem;
+    font-size: 1rem;
   }
-  .sound-toggle:hover{color:#ffd28a;border-color:rgba(255,210,140,0.5);background:rgba(20,12,4,0.75)}
-  .sound-toggle.on{color:#ffd28a;border-color:rgba(255,210,140,0.55)}
-  .sound-toggle .dot{
-    width:7px;height:7px;border-radius:50%;background:#6a553b;
-    transition:background .3s ease, box-shadow .3s ease;
-  }
-  .sound-toggle.on .dot{background:#ffd28a;box-shadow:0 0 10px #ffb86a, 0 0 22px rgba(255,160,60,0.55)}
 
-  /* user candle marker (slight pulse) — little white dot at the very top */
-  .candle.is-user::after{
-    content:"";position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
-    margin-top:-22px;
-    width:6px;height:6px;border-radius:50%;
-    background:#fff2d6;box-shadow:0 0 12px #ffd28a;
-    opacity:0.85;
+  .wall-environment {
+    width: 100vw;
+    height: 100%;
+    min-height: 100svh;
+    margin-top: 0;
+    cursor: default;
   }
-  .candle.is-user .glow{filter:blur(4px) brightness(1.1)}
 
-  /* fade utility */
-  .fade-out{opacity:0!important;pointer-events:none}
+  .shelf-plane {
+    width: 240vw;
+  }
+
+  .shelf {
+    width: 100%;
+    height: 6.2rem;
+  }
+
+  .candle {
+    width: max(var(--candle-width, 3rem), 3.35rem);
+    min-width: 3.35rem;
+    min-height: 6.25rem;
+  }
+
+  .candle-body {
+    border-radius: 0.42rem 0.42rem 0.2rem 0.2rem;
+    box-shadow: inset 0 0.32rem 0.38rem rgba(255, 214, 158, 0.12), inset 0 -0.42rem 0.55rem rgba(41, 0, 0, 0.34), 0 0.45rem 0.45rem rgba(0, 0, 0, 0.34);
+  }
+
+  .candle-body::before {
+    box-shadow: none;
+  }
+
+  .flame {
+    animation: none;
+    box-shadow: 0 0 0.28rem rgba(247, 198, 107, 0.28);
+  }
+
+  .candle.active::before,
+  .candle.back-ember::before {
+    display: none;
+  }
+
+  .candle.tier-paid .flame {
+    box-shadow: 0 0 0.36rem rgba(247, 198, 107, 0.36);
+  }
+
+  .candle.tier-paid .candle-body,
+  .candle.expired-free .candle-body,
+  .candle.is-owned .candle-body {
+    box-shadow: inset 0 0.32rem 0.38rem rgba(255, 214, 158, 0.14), inset 0 -0.42rem 0.55rem rgba(41, 0, 0, 0.34), 0 0.48rem 0.48rem rgba(0, 0, 0, 0.36);
+  }
+
+  .candle.expired-free {
+    filter: none;
+    opacity: 0.58;
+  }
+
+  .candle.is-owned .candle-body {
+    outline: 2px solid rgba(247, 198, 107, 0.62);
+  }
+
+  .candle.is-owned::after {
+    box-shadow: none;
+  }
+
+  .map-environment {
+    width: 100vw;
+    height: 100%;
+    min-height: 100svh;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .map-panel {
+    inset: 5rem 0.5rem 1rem;
+  }
+
+  .map-marker {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+
+  .candle-meta {
+    display: none;
+  }
+
+  .map-marker .candle-meta {
+    display: none;
+  }
+
+  .detail-sheet {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 22;
+    display: block;
+    padding: 1rem;
+    border: 1px solid rgba(255, 244, 221, 0.14);
+    border-radius: 0.7rem;
+    color: var(--vs-cream);
+    background: rgba(18, 10, 7, 0.93);
+    box-shadow: 0 -1rem 4rem rgba(0, 0, 0, 0.5);
+    transform: translateY(calc(100% + 1rem));
+    transition: transform 180ms ease;
+  }
+
+  .detail-sheet[aria-hidden="false"] {
+    transform: translateY(0);
+  }
+
+  .sheet-close {
+    position: absolute;
+    top: 0.65rem;
+    right: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid rgba(255, 244, 221, 0.18);
+    border-radius: 50%;
+    color: var(--vs-cream);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .detail-sheet h2 {
+    margin: 0.1rem 2.4rem 0.35rem 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+
+  .detail-sheet p {
+    margin: 0.3rem 0;
+    color: var(--vs-muted);
+    line-height: 1.45;
+  }
+
+  .sheet-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 21;
+    display: block;
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .sheet-scrim[hidden] {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .wall-header {
+    gap: 0.35rem;
+    padding-inline: 0.45rem;
+  }
+
+  .ghost-link,
+  .icon-button {
+    width: 2.1rem;
+    height: 2.1rem;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .secondary-button {
+    min-height: 2.1rem;
+    padding-inline: 0.5rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .secondary-button::after {
+    content: "Map";
+  }
+
+  .secondary-button {
+    font-size: 0;
+  }
+
+  .secondary-button::after {
+    font-size: 0.78rem;
+  }
+
+  .icon-button span:last-child {
+    display: none;
+  }
+
+  .wall-title {
+    max-width: calc(100vw - 7.8rem);
+    padding-top: 0.02rem;
+  }
+
+  .eyebrow {
+    font-size: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(0.92rem, 4.8vw, 1.08rem);
+    max-width: 8.2rem;
+  }
+
+  .wall-title p:last-child {
+    font-size: 0.62rem;
+    white-space: nowrap;
+  }
+
+  .controls-panel {
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: max(0.55rem, env(safe-area-inset-bottom));
+    max-height: min(68vh, 22rem);
+    padding: 0.75rem;
+    gap: 0.62rem;
+    border-radius: 0.85rem;
+  }
+
+  .controls-panel label {
+    font-size: 0.7rem;
+  }
+
+  .controls-panel input,
+  .controls-panel select {
+    min-height: 2.55rem;
+    border-radius: 0.45rem;
+    font-size: 0.92rem;
+  }
+
+  .wall-environment {
+    width: 100vw;
+    margin-top: 0;
+  }
+
+  .shelf-plane {
+    width: 225vw;
+  }
+
+  .shelf {
+    width: 100%;
+  }
+
+  .candle {
+    width: max(var(--candle-width, 3rem), 3.35rem);
+    min-width: 3.35rem;
+    min-height: 6.4rem;
+  }
+
+  .stone-wall {
+    bottom: 21%;
+    height: 6rem;
+  }
+
+  .detail-sheet {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0.9rem 0.9rem 0 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .wall-header {
+    gap: 0.28rem;
+    padding-inline: 0.35rem;
+  }
+
+  .ghost-link,
+  .icon-button {
+    width: 1.95rem;
+    height: 1.95rem;
+    min-width: 1.95rem;
+    min-height: 1.95rem;
+  }
+
+  .secondary-button {
+    min-height: 1.95rem;
+    padding-inline: 0.42rem;
+  }
+
+  .secondary-button::after {
+    font-size: 0.72rem;
+  }
+
+  .wall-title {
+    max-width: calc(100vw - 7rem);
+  }
+
+  h1 {
+    max-width: 7rem;
+    font-size: 0.9rem;
+  }
+
+  .wall-title p:last-child {
+    font-size: 0.56rem;
+  }
+
+  .controls-panel {
+    left: 0.4rem;
+    right: 0.4rem;
+    bottom: max(0.4rem, env(safe-area-inset-bottom));
+    max-height: min(66vh, 20rem);
+    padding: 0.65rem;
+    gap: 0.52rem;
+  }
+
+  .controls-panel input,
+  .controls-panel select {
+    min-height: 2.4rem;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.86rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 </style>
-</head>
-<body>
+  </head>
+  <body>
+    <main class="candle-page">
+      <header class="wall-header" aria-label="Candle wall navigation">
+        <a class="ghost-link" href="#" aria-label="Go back">Back</a>
+        <section class="wall-title" aria-labelledby="page-title">
+          <p class="eyebrow">Votive Society</p>
+          <h1 id="page-title">Living Wall of Prayers</h1>
+          <p><span id="visible-count">0</span> candles held in prayer</p>
+        </section>
+        <nav class="wall-actions" aria-label="Wall actions">
+          <button class="icon-button" type="button" id="filters-toggle" aria-expanded="false" aria-controls="filters-panel">
+            <span aria-hidden="true">⚙</span>
+            <span>Filters</span>
+          </button>
+          <button class="secondary-button" type="button" id="view-toggle" aria-pressed="false">Map View</button>
+        </nav>
+      </header>
 
-<div id="root"></div>
+      <section class="controls-panel" id="filters-panel" aria-label="Candle filters" hidden>
+        <label class="search-field">
+          <span>Search prayers</span>
+          <input id="search-input" type="search" placeholder="Name, country, or intention" autocomplete="off" />
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="status-filter">
+            <option value="all">All candles</option>
+            <option value="active">Active flames</option>
+            <option value="unlit">Quiet candles</option>
+          </select>
+        </label>
+        <label>
+          <span>Country</span>
+          <select id="country-filter">
+            <option value="all">All countries</option>
+          </select>
+        </label>
+      </section>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+      <section class="wall-environment" aria-label="Communal candle wall">
+        <div class="garden-backdrop" aria-hidden="true">
+          <span class="tree tree-left"></span>
+          <span class="tree tree-center"></span>
+          <span class="tree tree-right"></span>
+          <span class="stone-wall"></span>
+        </div>
+        <div class="shelf-plane" id="candle-wall"></div>
+      </section>
 
-<script type="text/babel" data-presets="env,react">
-/* =====================================================================
-   CANDLE WALL — single-page interactive prayer experience
-   - Intent detection by keyword rules
-   - Candle ignites, then journeys backward into a wall of other candles
-   - Each candle in the wall has its own sample name + prayer
-   ===================================================================== */
-const { useState, useEffect, useRef, useMemo, useCallback } = React;
+      <section class="map-environment" id="map-view" aria-label="Map of prayers" hidden>
+        <div class="map-orbit" aria-hidden="true"></div>
+        <div class="map-panel">
+          <svg class="prayer-map" viewBox="0 0 1000 520" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">Map of prayers</title>
+            <desc id="map-desc">A quiet world map with candle markers for the filtered prayers.</desc>
+            <path class="land land-americas" d="M162 135c38-35 94-39 132-16 24 14 17 41 42 54 19 10 46 3 58 22 14 21-8 48-28 65-16 14-30 35-23 56 6 18 27 23 36 39 12 23-10 50-35 58-27 9-58-2-75-24-16-21-15-48-27-72-18-36-58-53-81-88-23-36-28-89 1-124z" />
+            <path class="land land-south" d="M330 303c39 7 59 46 55 85-4 42-39 73-54 112-8 21-15 49-39 54-19 4-34-13-39-31-8-31 8-62 1-92-7-29-34-49-34-79 0-28 30-51 60-51 10 0 20 1 30 3z" />
+            <path class="land land-europe" d="M485 141c42-28 102-28 139 3 22 18 27 47 10 68-19 23-54 23-83 19-34-4-72-6-96-30-22-22-14-52 30-60z" />
+            <path class="land land-africa" d="M553 222c56-5 99 35 106 90 7 52-28 108-77 124-36 12-73-9-84-45-12-38 8-76-1-114-7-30 19-72 56-55z" />
+            <path class="land land-asia" d="M635 122c79-35 188-21 244 47 37 45 49 107 14 144-28 29-78 20-113 43-31 20-39 65-74 78-33 12-67-14-78-46-10-31 3-67-17-93-17-22-53-21-69-44-18-26 0-64 28-78 22-11 43-23 65-51z" />
+            <path class="land land-australia" d="M780 376c44-25 109-11 133 33 14 27 2 57-29 66-39 11-85-5-120-24-26-15-15-54 16-75z" />
+          </svg>
+          <div class="map-markers" id="map-markers"></div>
+        </div>
+      </section>
 
-/* ---------- 1. INTENT DETECTION ---------- */
-// Keyword rules map text to a symbolic intent + color.
-const INTENT_RULES = [
-  { key:'healing',   label:'Healing',   color:'#a6c8ff', kw:['heal','heali','sick','illness','pain','recover','recovery','hospital','health','cancer','surgery','treatment','medicine','ill'] },
-  { key:'love',      label:'Love',      color:'#ff8aa0', kw:['love','family','mother','father','mom','dad','child','son','daughter','sister','brother','relationship','marriage','wife','husband','partner'] },
-  { key:'gratitude', label:'Gratitude', color:'#ffd479', kw:['thank','grateful','gratitude','blessing','blessed','bless'] },
-  { key:'hope',      label:'Hope',      color:'#fff2d6', kw:['hope','guidance','strength','faith','direction','courage','clarity','wisdom','peace','calm'] },
-  { key:'grief',     label:'Peace',     color:'#cbb4ff', kw:['grief','loss','passed','passing','death','died','mourning','memory','remember','funeral'] },
+      <p class="empty-state" id="empty-state" hidden>No candles match these filters.</p>
+    </main>
+
+    <aside class="detail-sheet" id="detail-sheet" aria-hidden="true" aria-labelledby="sheet-title">
+      <button class="sheet-close" type="button" id="sheet-close" aria-label="Close candle details">×</button>
+      <p class="eyebrow" id="sheet-status">Active flame</p>
+      <h2 id="sheet-title"></h2>
+      <p id="sheet-meta"></p>
+      <p id="sheet-intention"></p>
+      <p class="sheet-note" id="sheet-note"></p>
+      <button class="upgrade-button" type="button" id="upgrade-button" hidden>Upgrade to a paid vigil</button>
+    </aside>
+    <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+
+    <script>
+const currentUserId = "member-001";
+
+const candles = [
+  { name: "Mara", country: "Philippines", time: "Lit 8 min ago", intention: "For a safe recovery and a quiet night.", active: true },
+  { name: "Elias", country: "Greece", time: "Lit 14 min ago", intention: "For my mother, and for courage.", active: true },
+  { name: "Anika", country: "India", time: "Lit 21 min ago", intention: "For peace in our home.", active: true },
+  { name: "Jonas", country: "Germany", time: "Lit 33 min ago", intention: "For the people carrying grief today.", active: true },
+  { name: "Lina", country: "Mexico", time: "Lit 42 min ago", intention: "For a child waiting for good news.", active: true },
+  { name: "Noah", country: "United States", time: "Lit 55 min ago", intention: "For healing after surgery.", active: true },
+  { name: "Sofia", country: "Brazil", time: "Lit 1 hr ago", intention: "For steady work and a gentle answer.", active: true },
+  { name: "Amal", country: "Jordan", time: "Lit 1 hr ago", intention: "For families far from home.", active: true },
+  { name: "Claire", country: "France", time: "Lit 2 hr ago", intention: "For forgiveness and patience.", active: true },
+  { name: "Theo", country: "Canada", time: "Lit 2 hr ago", intention: "For my brother's next step.", active: true },
+  { name: "Kei", country: "Japan", time: "Lit 3 hr ago", intention: "For calm before the exam.", active: true },
+  { name: "Nadia", country: "Morocco", time: "Lit 3 hr ago", intention: "For rain and mercy.", active: true },
+  { name: "Iris", country: "Ireland", time: "Resting", intention: "For the anniversary of my father.", active: false },
+  { name: "Mateo", country: "Chile", time: "Resting", intention: "For everyone who feels alone.", active: false },
+  { name: "Ruth", country: "Kenya", time: "Resting", intention: "For a peaceful birth.", active: false },
+  { name: "Sam", country: "United Kingdom", time: "Resting", intention: "For clarity and tenderness.", active: false },
+  { name: "Leila", country: "Lebanon", time: "Resting", intention: "For protection on the road.", active: false },
+  { name: "Peter", country: "Australia", time: "Resting", intention: "For my friend in treatment.", active: false },
+  { name: "Amina", country: "Nigeria", time: "Lit 4 hr ago", intention: "For reconciliation.", active: true },
+  { name: "Isabel", country: "Spain", time: "Lit 5 hr ago", intention: "For the strength to begin again.", active: true },
+  { name: "Owen", country: "New Zealand", time: "Lit 5 hr ago", intention: "For a good diagnosis.", active: true },
+  { name: "Mina", country: "South Korea", time: "Lit 6 hr ago", intention: "For my grandmother's memory.", active: true },
+  { name: "Fatima", country: "Egypt", time: "Resting", intention: "For shelter and bread.", active: false },
+  { name: "Luca", country: "Italy", time: "Lit 7 hr ago", intention: "For the courage to apologize.", active: true }
 ];
-const DEFAULT_INTENT = { key:'amber', label:'Hope', color:'#ffb86a' };
 
-function detectIntent(text){
-  if(!text) return DEFAULT_INTENT;
-  const t = text.toLowerCase();
-  // pick the rule with the most keyword hits
-  let best = null, bestCount = 0;
-  for (const r of INTENT_RULES){
-    let c = 0;
-    for (const k of r.kw){ if (t.includes(k)) c++; }
-    if (c > bestCount){ best = r; bestCount = c; }
+candles.forEach((candle, index) => {
+  candle.tier = index % 4 === 0 || index % 7 === 0 ? "paid" : "free";
+  candle.ownerId = index === 1 || index === 12 || index === 20 ? currentUserId : `guest-${index + 1}`;
+  candle.expiresAfterSunday = candle.tier === "free";
+  candle.expired = candle.tier === "free" && (index % 3 === 0 || !candle.active);
+  candle.active = candle.tier === "paid" || (candle.active && !candle.expired);
+});
+
+function shelfSlots(count, start = 5, end = 95) {
+  return Array.from({ length: count }, (_, index) => start + ((end - start) / Math.max(count - 1, 1)) * index);
+}
+
+function getRowTemplates() {
+  if (window.matchMedia("(max-width: 520px)").matches) {
+    return [
+      { top: 43, xs: shelfSlots(10, 8, 92) },
+      { top: 59, xs: shelfSlots(12, 7, 93) },
+      { top: 75, xs: shelfSlots(14, 6, 94) }
+    ];
   }
-  return best || DEFAULT_INTENT;
-}
 
-/* ---------- 2. SAMPLE WALL DATA ----------
-   Each prayer is paired with a name. The flame color is NOT random — it's
-   derived from the prayer's own intent (detectIntent below), so a candle
-   lit for healing burns blue, one for love burns rose, etc. This makes the
-   wall feel symbolic and theologically coherent rather than decorative. */
-const WALL_ENTRIES = [
-  { name:'Maria',          prayer:'For my mother’s recovery from her illness.' },
-  { name:'Anonymous',      prayer:'For peace in my family.' },
-  { name:'Thomas',         prayer:'Thank you for another year of life.' },
-  { name:'Elena',          prayer:'For guidance in my work and direction.' },
-  { name:'Joseph',         prayer:'For my father, may he rest in peace.' },
-  { name:'A grandmother',  prayer:'For courage and strength to begin again.' },
-  { name:'Clare',          prayer:'For the children in our parish.' },
-  { name:'Patrick',        prayer:'For my marriage and my wife.' },
-  { name:'Sofia',          prayer:'For healing of body and heart.' },
-  { name:'Anonymous',      prayer:'For my brother who is sick and struggling.' },
-  { name:'Michael',        prayer:'For our community.' },
-  { name:'Anna',           prayer:'For strength to forgive.' },
-  { name:'David',          prayer:'In memory of my grandmother who passed.' },
-  { name:'Lucia',          prayer:'For clarity and direction in this season.' },
-  { name:'Anonymous',      prayer:'Thank you for the small graces of today.' },
-  { name:'Catherine',      prayer:'For everyone who is alone tonight.' },
-  { name:'James',          prayer:'For the safe return of my son.' },
-  { name:'Teresa',         prayer:'For peace within me.' },
-  { name:'Anonymous',      prayer:'For all who are suffering, wherever they are.' },
-  { name:'Francis',        prayer:'For hope when I have none.' },
-  { name:'Ruth',           prayer:'For the doctors and nurses at the hospital.' },
-  { name:'Anonymous',      prayer:'For my friend’s health and recovery.' },
-  { name:'Daniel',         prayer:'For light through this dark season.' },
-  { name:'Sister M.',      prayer:'For patience and faith.' },
-  { name:'Anonymous',      prayer:'For all who are afraid tonight.' },
-  { name:'Mateo',          prayer:'For my daughter’s exams — give her courage.' },
-  { name:'Hannah',         prayer:'In memory of my late husband.' },
-  { name:'Anonymous',      prayer:'For our parish family.' },
-  { name:'Augustine',      prayer:'For everyone whose name I forgot to mention.' },
-  { name:'Beatrice',       prayer:'For my baby on the way.' },
-  { name:'Isabel',         prayer:'For my mother’s love.' },
-  { name:'Anonymous',      prayer:'For my own heart — grant me peace.' },
-  { name:'Peter',          prayer:'For mercy, and for grace.' },
-  { name:'Ines',           prayer:'For the world, and for hope.' },
-  { name:'Anonymous',      prayer:'For one more chance.' },
-  { name:'Cecilia',        prayer:'For my husband who is recovering from surgery.' },
-  { name:'A father',       prayer:'For my son’s health.' },
-  { name:'Anonymous',      prayer:'Thank you for everything.' },
-  { name:'Bernadette',     prayer:'For guidance on my path.' },
-  { name:'A daughter',     prayer:'In memory of my father, gone too soon.' },
-  { name:'Anonymous',      prayer:'For love to find its way home.' },
-  { name:'Stephen',        prayer:'For faith when doubt is loud.' },
-  { name:'A mother',       prayer:'For my children, always.' },
-  { name:'Anonymous',      prayer:'For the lost.' },
-];
+  if (window.matchMedia("(max-width: 820px)").matches) {
+    return [
+      { top: 43, xs: shelfSlots(12, 8, 92) },
+      { top: 59, xs: shelfSlots(15, 7, 93) },
+      { top: 75, xs: shelfSlots(18, 6, 94) }
+    ];
+  }
 
-/* ---------- 3. SEEDED RANDOM (stable wall layout) ---------- */
-function mulberry32(a){
-  return function(){
-    let t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/* Build 60+ wall candles laid out on 4 visual depth bands, with a slight
-   basilica arch (candles curve up toward the sides like rows of pews seen
-   from the chancel). The user candle will slot in at center-front later.
-
-   Layout strategy:
-   - 'far'   row sits high & small — maximum blur; reads like a back wall
-   - 'back'  row — still small, less blur
-   - 'mid'   row — medium
-   - 'front' row — largest, sharpest, but left/right of the center reserved
-                  for the user candle so they don't overlap                */
-function buildWallCandles(){
-  const rand = mulberry32(20260522);
-  const rows = [
-    { y: 26, size: 0.34, scatter: 0.04, count: 26, depth: 'far',   archAmt: 4.5 },
-    { y: 40, size: 0.52, scatter: 0.05, count: 20, depth: 'back',  archAmt: 3.5 },
-    { y: 58, size: 0.76, scatter: 0.04, count: 16, depth: 'mid',   archAmt: 2.5 },
-    { y: 78, size: 1.00, scatter: 0.04, count: 12, depth: 'front', archAmt: 1.5 },
+  return [
+    { top: 41, xs: shelfSlots(28, 6, 94) },
+    { top: 57, xs: shelfSlots(36, 4.5, 95.5) },
+    { top: 73, xs: shelfSlots(44, 3.5, 96.5) }
   ];
-  const candles = [];
-  let i = 0;
-  for (const row of rows){
-    for (let k = 0; k < row.count; k++){
-      const t = (k + 0.5) / row.count;
-      // small horizontal jitter
-      const x = t * 100 + (rand() - 0.5) * (100 / row.count) * 0.55;
-      // basilica arch: candles farther from center sit a little higher
-      const dxFromCenter = Math.abs(t - 0.5) * 2; // 0 at center, 1 at edges
-      const arch = -dxFromCenter * dxFromCenter * row.archAmt;
-      const y = row.y + arch + (rand() - 0.5) * row.scatter * 100;
-      // skip the dead-center slot on the front row — user candle goes there
-      if (row.depth === 'front' && Math.abs(t - 0.5) < 0.06) continue;
-      const size = row.size * (0.85 + rand() * 0.3);
-      const flickerDur = 180 + rand() * 240;
-      const flickerDelay = -rand() * 2000;
-      // assign a sample entry and DERIVE its color from the prayer's intent
-      const entry = WALL_ENTRIES[i % WALL_ENTRIES.length];
-      const intent = detectIntent(entry.prayer);
-      candles.push({
-        id: 'w' + i,
-        x, y, size,
-        depth: row.depth,
-        flickerDur, flickerDelay,
-        color: intent.color,
-        intentLabel: intent.label,
-        name: entry.name,
-        prayer: entry.prayer,
+}
+
+const candleColors = [
+  { name: "White", top: "rgba(255, 246, 226, 0.88)", mid: "rgba(236, 221, 194, 0.86)", base: "rgba(132, 116, 92, 0.9)", glow: "247, 198, 107" },
+  { name: "Red", top: "rgba(255, 96, 65, 0.82)", mid: "rgba(169, 25, 20, 0.9)", base: "rgba(67, 8, 8, 0.96)", glow: "240, 53, 36" },
+  { name: "Blue", top: "rgba(91, 137, 196, 0.82)", mid: "rgba(55, 91, 145, 0.9)", base: "rgba(20, 38, 76, 0.96)", glow: "91, 137, 196" },
+  { name: "Green", top: "rgba(82, 153, 97, 0.82)", mid: "rgba(56, 123, 71, 0.9)", base: "rgba(24, 67, 38, 0.96)", glow: "82, 153, 97" },
+  { name: "Pink", top: "rgba(224, 132, 177, 0.82)", mid: "rgba(205, 105, 157, 0.9)", base: "rgba(109, 35, 76, 0.96)", glow: "224, 132, 177" },
+  { name: "Purple", top: "rgba(133, 82, 169, 0.82)", mid: "rgba(106, 62, 145, 0.9)", base: "rgba(55, 26, 82, 0.96)", glow: "133, 82, 169" },
+  { name: "Orange", top: "rgba(245, 142, 45, 0.84)", mid: "rgba(222, 120, 35, 0.9)", base: "rgba(117, 54, 17, 0.96)", glow: "245, 142, 45" },
+  { name: "Brown", top: "rgba(138, 91, 56, 0.82)", mid: "rgba(112, 74, 46, 0.9)", base: "rgba(61, 37, 24, 0.96)", glow: "174, 108, 63" }
+];
+
+const wall = document.querySelector("#candle-wall");
+const visibleCount = document.querySelector("#visible-count");
+const emptyState = document.querySelector("#empty-state");
+const filtersPanel = document.querySelector("#filters-panel");
+const filtersToggle = document.querySelector("#filters-toggle");
+const searchInput = document.querySelector("#search-input");
+const statusFilter = document.querySelector("#status-filter");
+const countryFilter = document.querySelector("#country-filter");
+const sheet = document.querySelector("#detail-sheet");
+const sheetScrim = document.querySelector("#sheet-scrim");
+const sheetClose = document.querySelector("#sheet-close");
+const viewToggle = document.querySelector("#view-toggle");
+const wallEnvironment = document.querySelector(".wall-environment");
+const mapView = document.querySelector("#map-view");
+const mapMarkers = document.querySelector("#map-markers");
+const candlePage = document.querySelector(".candle-page");
+let currentView = "wall";
+let isDraggingWall = false;
+let hasDraggedWall = false;
+let dragStartX = 0;
+let dragStartScroll = 0;
+let resizeFrame = 0;
+let wallCentered = false;
+
+const mapPositions = {
+  "United States": [25, 41],
+  Canada: [24, 29],
+  Mexico: [24, 55],
+  Chile: [34, 82],
+  Brazil: [43, 69],
+  Ireland: [47, 32],
+  "United Kingdom": [49, 34],
+  France: [51, 39],
+  Spain: [49, 46],
+  Germany: [54, 35],
+  Greece: [57, 44],
+  Italy: [55, 43],
+  Morocco: [50, 53],
+  Egypt: [59, 56],
+  Kenya: [62, 68],
+  Nigeria: [54, 63],
+  Jordan: [63, 51],
+  Lebanon: [61, 49],
+  India: [72, 57],
+  Japan: [88, 43],
+  "South Korea": [84, 44],
+  Philippines: [82, 60],
+  Australia: [84, 80],
+  "New Zealand": [92, 86]
+};
+
+function uniqueCountries() {
+  return [...new Set(candles.map((candle) => candle.country))].sort();
+}
+
+function populateCountries() {
+  uniqueCountries().forEach((country) => {
+    const option = document.createElement("option");
+    option.value = country;
+    option.textContent = country;
+    countryFilter.append(option);
+  });
+}
+
+function getFilteredCandles() {
+  const query = searchInput.value.trim().toLowerCase();
+  const status = statusFilter.value;
+  const country = countryFilter.value;
+
+  return candles.filter((candle) => {
+    const matchesQuery = [candle.name, candle.country, candle.intention, candle.time]
+      .join(" ")
+      .toLowerCase()
+      .includes(query);
+    const matchesStatus = status === "all" || (status === "active" ? candle.active : !candle.active);
+    const matchesCountry = country === "all" || candle.country === country;
+    return matchesQuery && matchesStatus && matchesCountry;
+  });
+}
+
+function createCandle(candle, index, x, rowIndex = 0) {
+  const button = document.createElement("button");
+  const isOwned = candle.ownerId === currentUserId;
+  const isPaid = candle.tier === "paid";
+  const isExpiredFree = candle.tier === "free" && candle.expired;
+  const isBackRow = rowIndex <= 1;
+  const hasBackEmber = candle.tier === "free" && isBackRow && index % 5 === 0;
+  const status = candle.active ? "active" : "unlit";
+  const color = candleColors[index % candleColors.length];
+  const baseHeight = 4.8 + ((index * 7) % 18) / 10;
+  const baseWidth = 2.35 + ((index * 5) % 10) / 10;
+  const height = isPaid ? baseHeight : baseHeight - 0.5;
+  const width = isPaid ? baseWidth : baseWidth - 0.18;
+
+  button.type = "button";
+  button.className = `candle ${status} tier-${candle.tier}${isExpiredFree ? " expired-free" : ""}${hasBackEmber ? " back-ember" : ""}${isOwned ? " is-owned" : ""}`;
+  button.style.left = `${x}%`;
+  button.style.setProperty("--candle-height", `${height}rem`);
+  button.style.setProperty("--candle-width", `${width}rem`);
+  button.style.setProperty("--lift", `${((index % 5) - 2) * 0.11}rem`);
+  button.style.setProperty("--glass-top", color.top);
+  button.style.setProperty("--glass-mid", color.mid);
+  button.style.setProperty("--glass-base", color.base);
+  button.style.setProperty("--glow-rgb", color.glow);
+  button.style.setProperty("--glow", `${candle.active ? (isPaid ? 0.22 : 0.14) + (index % 5) * 0.02 : hasBackEmber ? 0.08 : 0.035}`);
+  button.setAttribute("aria-label", `${isOwned ? "Your candle, " : ""}${candle.name}, ${color.name} ${candle.tier} candle, ${candle.country}, ${isExpiredFree ? "expired free candle" : candle.active ? "active flame" : hasBackEmber ? "faint ember" : "quiet unlit candle"}. ${candle.intention}`);
+
+  button.innerHTML = `
+    <span class="flame" aria-hidden="true"></span>
+    <span class="wick" aria-hidden="true"></span>
+    <span class="candle-body" aria-hidden="true"></span>
+    <span class="candle-meta" role="presentation">
+      <strong>${isOwned ? "A candle you lit" : candle.name}</strong>
+      <span>${color.name} · ${isPaid ? "Paid vigil" : isExpiredFree ? "Free candle expired" : "Free candle"} · ${candle.country}</span>
+      <em>${candle.intention}</em>
+      ${isExpiredFree ? `<em>Upgrade to keep this vigil lit.</em>` : ""}
+    </span>
+  `;
+  button.addEventListener("click", () => {
+    if (hasDraggedWall) return;
+    openSheet(candle, color.name);
+  });
+  return button;
+}
+
+function groupCandlesByCountry(candlesForMap) {
+  return [...candlesForMap.reduce((groups, candle) => {
+    if (!groups.has(candle.country)) {
+      groups.set(candle.country, {
+        country: candle.country,
+        candles: [],
+        activeCount: 0,
+        paidCount: 0,
+        freeCount: 0,
+        restingCount: 0
       });
-      i++;
     }
-  }
-  return candles;
+    const group = groups.get(candle.country);
+    group.candles.push(candle);
+    if (candle.active) group.activeCount += 1;
+    if (candle.tier === "paid") group.paidCount += 1;
+    if (candle.tier === "free") group.freeCount += 1;
+    if (!candle.active) group.restingCount += 1;
+    return groups;
+  }, new Map()).values()];
 }
 
-/* ---------- 4. CANDLE COMPONENT ---------- */
-function Candle({ lit, color = '#ffd28a', size = 'normal', charge = 0, charging = false, isUser = false, style }){
-  // size: 'normal' | 'small' | 'tiny'
-  const cls = ['candle'];
-  if (lit) cls.push('lit');
-  if (size !== 'normal') cls.push(size);
-  if (charging) cls.push('charging');
-  if (isUser) cls.push('is-user');
-  return (
-    <div
-      className={cls.join(' ')}
-      style={{ ['--flame-color']: color, ['--charge']: charge, ...style }}
-    >
-      <div className="flame-wrap">
-        <div className="glow" />
-        <div className="flame" />
-        <div className="flame-core" />
-        <div className="flame-tip" />
-      </div>
-      <div className="pre-glow" />
-      <div className="wick" />
-      <div className="rim" />
-      <div className="body" />
-    </div>
-  );
+function createAreaMarker(area, index) {
+  const [x, y] = mapPositions[area.country] || [50, 50];
+  const hasActive = area.activeCount > 0;
+  const markerSize = 1.1 + Math.min(area.activeCount, 9) * 0.13;
+  const marker = document.createElement("button");
+  marker.type = "button";
+  marker.className = `map-marker area-marker ${hasActive ? "active" : "unlit"}${area.paidCount ? " tier-paid" : ""}`;
+  marker.style.left = `${x}%`;
+  marker.style.top = `${y}%`;
+  marker.style.setProperty("--marker-size", `${markerSize}rem`);
+  marker.style.setProperty("--marker-glow", `${hasActive ? 0.28 + Math.min(area.activeCount, 8) * 0.035 : 0.12}`);
+  marker.setAttribute("aria-label", `${area.country}, ${area.activeCount} lit candles, ${area.restingCount} resting candles.`);
+  marker.innerHTML = `
+    <span class="map-count" aria-hidden="true">${area.activeCount}</span>
+    <span class="candle-meta" role="presentation">
+      <strong>${area.country}</strong>
+      <span>${area.activeCount} lit · ${area.restingCount} resting</span>
+      <em>${area.paidCount} paid vigils · ${area.freeCount} free candles</em>
+    </span>
+  `;
+  marker.addEventListener("click", () => openAreaSheet(area));
+  return marker;
 }
 
-/* ---------- 5. WALL ---------- */
-function CandleWall({ candles, userCandle, phase, onHover, onLeave, parallax }){
-  // phase: 'idle' | 'charging' | 'lighting' | 'wall'
-  const wallClass = ['wall', phase === 'wall' ? 'live' : 'dim'].join(' ');
-  // depth-based blur/brightness + per-depth parallax multipliers.
-  // Further rows move LESS — a classic dolly parallax (back stays put,
-  // front follows the cursor most). All multipliers are small to keep it
-  // reverent rather than playful.
-  const depthMap = {
-    far:   { filter:'blur(6px) brightness(0.55) saturate(0.85)', px: 0.25, py: 0.25 },
-    back:  { filter:'blur(4px) brightness(0.7)  saturate(0.9)',  px: 0.55, py: 0.55 },
-    mid:   { filter:'blur(2.5px) brightness(0.82) saturate(0.95)', px: 0.85, py: 0.85 },
-    front: { filter:'blur(1px) brightness(0.95) saturate(1)',    px: 1.20, py: 1.20 },
-  };
-  return (
-    <div className={wallClass} aria-hidden={phase !== 'wall'}>
-      {candles.map((c) => {
-        const d = depthMap[c.depth];
-        const interactive = phase === 'wall';
-        // per-candle parallax offset; back rows barely move
-        const ox = parallax.x * d.px;
-        const oy = parallax.y * d.py;
-        return (
-          <div
-            key={c.id}
-            className="wall-candle"
-            style={{
-              left: `calc(${c.x}% + ${ox}px)`,
-              top:  `calc(${c.y}% + ${oy}px)`,
-              transform: `translate(-50%,-100%) scale(${c.size})`,
-              filter: d.filter,
-              opacity: phase === 'wall' ? 0.95 : 0.85,
-              pointerEvents: interactive ? 'auto' : 'none',
-              transition: 'filter 1.6s ease, opacity 1.6s ease, left .6s cubic-bezier(.2,.7,.2,1), top .6s cubic-bezier(.2,.7,.2,1)',
-            }}
-            onMouseEnter={(e) => interactive && onHover(e, { name:c.name, prayer:c.prayer, intentLabel:c.intentLabel, isUser:false })}
-            onMouseLeave={onLeave}
-            onMouseMove={(e) => interactive && onHover(e, { name:c.name, prayer:c.prayer, intentLabel:c.intentLabel, isUser:false })}
-          >
-            <Candle lit={true} color={c.color} size="tiny" />
-          </div>
-        );
-      })}
-      {/* user candle once journey is done — sharpest, brightest, slotted INTO the front row */}
-      {phase === 'wall' && userCandle && (
-        <div
-          className="wall-candle user-on-wall"
-          style={{
-            left: `calc(50% + ${parallax.x * 1.4}px)`,
-            top:  `calc(78% + ${parallax.y * 1.4}px)`,
-            transform: 'translate(-50%,-100%) scale(1.15)',
-            filter: 'blur(0px) brightness(1.18) saturate(1.05)',
-            zIndex: 12,
-            transition: 'left .6s cubic-bezier(.2,.7,.2,1), top .6s cubic-bezier(.2,.7,.2,1)',
-          }}
-          onMouseEnter={(e) => onHover(e, { name:'You', prayer:userCandle.text, intentLabel:userCandle.intent?.label, isUser:true })}
-          onMouseLeave={onLeave}
-          onMouseMove={(e) => onHover(e, { name:'You', prayer:userCandle.text, intentLabel:userCandle.intent?.label, isUser:true })}
-        >
-          <Candle lit={true} color={userCandle.color} size="small" isUser />
-        </div>
-      )}
-    </div>
-  );
+function renderMap(filtered) {
+  mapMarkers.replaceChildren();
+  groupCandlesByCountry(filtered).forEach((area, index) => {
+    mapMarkers.append(createAreaMarker(area, index));
+  });
 }
 
-/* ---------- 6. RISING PARTICLES (ambient) ---------- */
-function FloatingParticles({ count = 26 }){
-  const particles = useMemo(() => {
-    const r = mulberry32(99);
-    return Array.from({length: count}).map((_, i) => ({
-      id: i,
-      left: r() * 100,
-      delay: r() * 12,
-      duration: 9 + r() * 10,
-      drift: (r() - 0.5) * 80,
-      size: 1 + r() * 2.4,
-      hue: r() < 0.7 ? '#ffb86a' : '#ffd479'
-    }));
-  }, [count]);
-  return (
-    <div className="rising">
-      {particles.map(p => (
-        <span key={p.id} className="p" style={{
-          left: p.left + '%',
-          width: p.size, height: p.size,
-          animationDuration: p.duration + 's',
-          animationDelay: p.delay + 's',
-          background: p.hue,
-          ['--drift']: p.drift + 'px',
-        }} />
-      ))}
-    </div>
-  );
-}
+function renderWall() {
+  const filtered = getFilteredCandles();
+  const rowTemplates = getRowTemplates();
+  wall.replaceChildren();
+  const shelves = rowTemplates.map((template) => {
+    const shelf = document.createElement("div");
+    shelf.className = "shelf";
+    shelf.style.top = `${template.top}%`;
+    wall.append(shelf);
+    return shelf;
+  });
 
-/* ---------- 7. PRAYER PARTICLES (textarea -> candle) ---------- */
-function PrayerParticles({ active, fromRef, toRef }){
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    if (!active) return;
-    let alive = true;
-    const tick = () => {
-      if (!alive) return;
-      const from = fromRef.current?.getBoundingClientRect();
-      const to   = toRef.current?.getBoundingClientRect();
-      if (from && to){
-        // spawn from a random point near the top of the textarea
-        const sx = from.left + from.width * (0.2 + Math.random() * 0.6);
-        const sy = from.top + 8 + Math.random() * 12;
-        // target the wick area of the candle
-        const tx = to.left + to.width / 2;
-        const ty = to.top  + to.height * 0.05;
-        const id = Math.random().toString(36).slice(2);
-        setItems(prev => [...prev, { id, sx, sy, dx: tx - sx, dy: ty - sy }]);
-        // auto-cleanup
-        setTimeout(() => setItems(prev => prev.filter(p => p.id !== id)), 1700);
-      }
-    };
-    const iv = setInterval(tick, 260);
-    return () => { alive = false; clearInterval(iv); };
-  }, [active, fromRef, toRef]);
-  return (
-    <div className="prayer-particles">
-      {items.map(p => (
-        <span key={p.id} className="pp" style={{
-          left: p.sx + 'px',
-          top:  p.sy + 'px',
-          ['--dx']: p.dx + 'px',
-          ['--dy']: p.dy + 'px',
-        }} />
-      ))}
-    </div>
-  );
-}
-
-/* ---------- 8. TOOLTIP ---------- */
-function PrayerTooltip({ data, x, y }){
-  if (!data) return null;
-  return (
-    <div className="tip show" style={{ left: x, top: y }}>
-      <div className="name">{data.isUser ? 'Your candle' : data.name}</div>
-      <div className="body-text">{data.prayer}</div>
-      {data.intentLabel && (
-        <div style={{
-          marginTop:8, paddingTop:8, borderTop:'1px solid rgba(255,184,106,0.15)',
-          fontFamily:'Inter,sans-serif', fontSize:10, letterSpacing:'0.2em',
-          textTransform:'uppercase', color:'#a78f6f'
-        }}>
-          Light of {data.intentLabel}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ---------- 9. SOUND ---------- */
-// Soft ignition sound — brief whoosh + warm tone via Web Audio.
-function playIgnition(){
-  try{
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    const ctx = new AC();
-    const now = ctx.currentTime;
-    // whoosh: filtered noise burst
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.6, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++){
-      const t = i / data.length;
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2);
-    }
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    const lp = ctx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.setValueAtTime(1200, now);
-    lp.frequency.exponentialRampToValueAtTime(300, now + 0.7);
-    const ng = ctx.createGain();
-    ng.gain.setValueAtTime(0.0001, now);
-    ng.gain.exponentialRampToValueAtTime(0.18, now + 0.05);
-    ng.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
-    noise.connect(lp).connect(ng).connect(ctx.destination);
-    noise.start(now);
-    noise.stop(now + 0.75);
-
-    // warm tone: low sine
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(180, now);
-    osc.frequency.exponentialRampToValueAtTime(120, now + 0.9);
-    const og = ctx.createGain();
-    og.gain.setValueAtTime(0.0001, now);
-    og.gain.exponentialRampToValueAtTime(0.06, now + 0.15);
-    og.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
-    osc.connect(og).connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 1.15);
-
-    setTimeout(() => ctx.close(), 1400);
-  } catch(e){ /* silent fail */ }
-}
-
-/* Chapel organ ambient — pipe-organ harmonics + hall reverb + breath noise.
-   Fades in over ~4s, fades out over ~2.5s. Returns { stop() }. */
-function startAmbient(){
-  try{
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    const ctx = new AC();
-
-    // --- convolution reverb (simulate stone chapel hall) ---
-    const reverbLen = ctx.sampleRate * 3.5;
-    const revBuf = ctx.createBuffer(2, reverbLen, ctx.sampleRate);
-    for (let ch = 0; ch < 2; ch++){
-      const d = revBuf.getChannelData(ch);
-      for (let i = 0; i < reverbLen; i++){
-        // exponential decay impulse with pre-delay
-        const env = Math.pow(1 - i / reverbLen, 2.2);
-        d[i] = (Math.random() * 2 - 1) * env;
-      }
-    }
-    const convolver = ctx.createConvolver();
-    convolver.buffer = revBuf;
-    const dryGain = ctx.createGain(); dryGain.gain.value = 0.55;
-    const wetGain = ctx.createGain(); wetGain.gain.value = 0.45;
-    convolver.connect(wetGain).connect(ctx.destination);
-    dryGain.connect(ctx.destination);
-
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    master.connect(dryGain);
-    master.connect(convolver);
-
-    // --- pipe organ note: C2 + rich harmonics (diapason stop) ---
-    // C2=65.4, G2=98, C3=130.8, E3=164.8, G3=196, C4=261.6
-    const organPartials = [
-      { f: 65.41,  g: 0.28 },  // fundamental
-      { f: 130.81, g: 0.18 },  // 2nd harmonic (octave)
-      { f: 196.00, g: 0.10 },  // 3rd (perfect fifth)
-      { f: 261.63, g: 0.07 },  // 4th (2nd octave)
-      { f: 327.03, g: 0.04 },  // 5th
-      { f: 392.00, g: 0.025},  // 6th
-    ];
-    const nodes = organPartials.map(({ f, g: gain }) => {
-      const o = ctx.createOscillator();
-      o.type = 'sine';
-      o.frequency.value = f;
-      // tiny detuning for warmth
-      o.detune.value = (Math.random() - 0.5) * 4;
-      const gn = ctx.createGain();
-      gn.gain.value = gain;
-      // very slow tremulant LFO
-      const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.05 + Math.random() * 0.04;
-      const lfoG = ctx.createGain();
-      lfoG.gain.value = gain * 0.06;
-      lfo.connect(lfoG).connect(gn.gain);
-      o.connect(gn).connect(master);
-      o.start(); lfo.start();
-      return { o, lfo };
+  rowTemplates
+    .flatMap((template, rowIndex) =>
+      template.xs.map((x, placeIndex) => ({
+        rowIndex,
+        placeIndex,
+        x,
+        distance: Math.abs(x - 50) + Math.abs(rowIndex - 1.7) * 6
+      }))
+    )
+    .sort((a, b) => a.distance - b.distance)
+    .sort((a, b) => a.rowIndex - b.rowIndex || a.x - b.x)
+    .forEach((slot, index) => {
+      if (!filtered.length) return;
+      const candle = filtered[index % filtered.length];
+      shelves[slot.rowIndex].append(createCandle(candle, slot.rowIndex * 36 + slot.placeIndex, slot.x, slot.rowIndex));
     });
 
-    // second organ chord: A2 minor third above (adds depth, not dissonant)
-    const chordPartials = [
-      { f: 87.31,  g: 0.14 },  // F2
-      { f: 174.61, g: 0.08 },  // F3
-      { f: 261.63, g: 0.05 },  // C4
-    ];
-    chordPartials.forEach(({ f, g: gain }) => {
-      const o = ctx.createOscillator();
-      o.type = 'sine';
-      o.frequency.value = f;
-      o.detune.value = (Math.random() - 0.5) * 5;
-      const gn = ctx.createGain();
-      gn.gain.value = gain * 0.7;
-      o.connect(gn).connect(master);
-      o.start();
-      nodes.push({ o, lfo: null });
-    });
-
-    // breath / air noise through pipe
-    const nb = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
-    const nbd = nb.getChannelData(0);
-    for (let i = 0; i < nbd.length; i++) nbd[i] = (Math.random() * 2 - 1);
-    const noise = ctx.createBufferSource();
-    noise.buffer = nb; noise.loop = true;
-    const bp = ctx.createBiquadFilter();
-    bp.type = 'bandpass'; bp.frequency.value = 280; bp.Q.value = 0.6;
-    const ng = ctx.createGain(); ng.gain.value = 0.012;
-    noise.connect(bp).connect(ng).connect(master);
-    noise.start();
-
-    // fade in slowly
-    const now = ctx.currentTime;
-    master.gain.cancelScheduledValues(now);
-    master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.72, now + 4.0);
-
-    if (ctx.state === 'suspended'){
-      const resume = () => {
-        ctx.resume().catch(() => {});
-        window.removeEventListener('pointerdown', resume);
-        window.removeEventListener('keydown', resume);
-      };
-      window.addEventListener('pointerdown', resume, { once:true });
-      window.addEventListener('keydown', resume, { once:true });
-    }
-
-    return {
-      stop(){
-        try{
-          const t = ctx.currentTime;
-          master.gain.cancelScheduledValues(t);
-          master.gain.setValueAtTime(master.gain.value, t);
-          master.gain.exponentialRampToValueAtTime(0.0001, t + 2.5);
-          setTimeout(() => { try{ ctx.close(); } catch{} }, 2700);
-        } catch{}
-      }
-    };
-  } catch(e){ return null; }
+  visibleCount.textContent = String(filtered.length);
+  emptyState.hidden = filtered.length > 0;
+  renderMap(filtered);
+  centerWall();
 }
 
-function SoundToggle({ on, onToggle }){
-  return (
-    <button
-      className={'sound-toggle' + (on ? ' on' : '')}
-      onClick={onToggle}
-      aria-pressed={on}
-      title={on ? 'Mute ambient sound' : 'Play ambient sound'}
-    >
-      <span className="dot" />
-      <span>{on ? 'Ambient on' : 'Ambient off'}</span>
-    </button>
-  );
+function openSheet(candle, colorName) {
+  const isOwned = candle.ownerId === currentUserId;
+  const isPaid = candle.tier === "paid";
+  const isExpiredFree = candle.tier === "free" && candle.expired;
+  document.querySelector("#sheet-status").textContent = isExpiredFree ? "Expired free candle" : isPaid ? "Active paid vigil" : candle.active ? "Active free candle" : "Quiet candle";
+  document.querySelector("#sheet-title").textContent = isOwned ? "A candle you lit" : candle.name;
+  document.querySelector("#sheet-meta").textContent = `${colorName ? `${colorName} · ` : ""}${candle.country} · ${candle.time}`;
+  document.querySelector("#sheet-intention").textContent = candle.intention;
+  document.querySelector("#sheet-note").textContent = isOwned
+    ? isExpiredFree
+      ? "This free candle has completed its day on the wall. Upgrade it to keep the vigil alive."
+      : "You lit this candle."
+    : isExpiredFree
+      ? "This free candle has completed its day and now rests on the wall."
+      : isPaid
+        ? "This paid vigil remains active and held in prayer."
+        : "";
+  document.querySelector("#upgrade-button").hidden = !(isOwned && isExpiredFree);
+  sheet.setAttribute("aria-hidden", "false");
+  sheetScrim.hidden = false;
 }
 
-/* ---------- 10. APP ---------- */
-function App(){
-  // phase: 'idle' | 'charging' | 'lighting' | 'journey' | 'wall'
-  // 'lighting' = flame igniting + "received" message (~2.8s)
-  // 'journey'  = candle ceremonially drifts back into the wall (~5.6s)
-  const [phase, setPhase] = useState('idle');
-  const [text, setText] = useState('');
-  const [intent, setIntent] = useState(DEFAULT_INTENT);
-  const [tooltip, setTooltip] = useState(null);
-  const [userCandle, setUserCandle] = useState(null);
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
-  const [ambientOn, setAmbientOn] = useState(true);
-  const ambientRef = useRef(null);
+function openAreaSheet(area) {
+  document.querySelector("#sheet-status").textContent = "Prayer area";
+  document.querySelector("#sheet-title").textContent = area.country;
+  document.querySelector("#sheet-meta").textContent = `${area.activeCount} lit candles · ${area.restingCount} resting`;
+  document.querySelector("#sheet-intention").textContent = `${area.paidCount} paid vigils and ${area.freeCount} free candles are being held from this area.`;
+  document.querySelector("#sheet-note").textContent = area.activeCount
+    ? "The marker size and glow reflect the number of candles currently lit here."
+    : "No candles are currently lit here, but resting candles remain visible in the wall.";
+  document.querySelector("#upgrade-button").hidden = true;
+  sheet.setAttribute("aria-hidden", "false");
+  sheetScrim.hidden = false;
+}
 
-  const textareaRef = useRef(null);
-  const userCandleRef = useRef(null);
-  const stageRef = useRef(null);
+function closeSheet() {
+  sheet.setAttribute("aria-hidden", "true");
+  sheetScrim.hidden = true;
+}
 
-  // Stable wall layout
-  const wallCandles = useMemo(buildWallCandles, []);
+function markEngaged() {
+  candlePage.classList.add("is-engaged");
+}
 
-  // Update intent live as user types so they see their candle's "color of light"
-  useEffect(() => {
-    setIntent(detectIntent(text));
-  }, [text]);
+function isMobileWall() {
+  return window.matchMedia("(max-width: 820px)").matches;
+}
 
-  // Pre-light charge — grows with character count, saturates at ~80 chars.
-  const charge = Math.min(1, text.trim().length / 80);
+function centerWall(force = false) {
+  if (wallCentered && !force) return;
+  wallEnvironment.scrollLeft = Math.max(0, (wallEnvironment.scrollWidth - wallEnvironment.clientWidth) / 2);
+  wallCentered = true;
+}
 
-  // restore from localStorage if user previously lit a candle this session
-  useEffect(() => {
-    try{
-      const saved = JSON.parse(localStorage.getItem('candle-wall-state') || 'null');
-      if (saved && saved.text && saved.color){
-        setText(saved.text);
-        setIntent(saved.intent || DEFAULT_INTENT);
-        setUserCandle({ text: saved.text, color: saved.color, intent: saved.intent });
-        setPhase('wall');
-      }
-    } catch {}
-  }, []);
+function startWallDrag(event) {
+  if (currentView !== "wall" || isMobileWall()) return;
+  markEngaged();
+  isDraggingWall = true;
+  hasDraggedWall = false;
+  dragStartX = event.clientX;
+  dragStartScroll = wallEnvironment.scrollLeft;
+  wallEnvironment.classList.add("is-dragging");
+  wallEnvironment.setPointerCapture?.(event.pointerId);
+}
 
-  /* Gentle reverent parallax — small offsets, eased.
-     We sample at ±15px max regardless of viewport so it stays subtle. */
-  useEffect(() => {
-    const onMove = (e) => {
-      const w = window.innerWidth, h = window.innerHeight;
-      // -1 .. 1 normalized
-      const nx = (e.clientX / w) * 2 - 1;
-      const ny = (e.clientY / h) * 2 - 1;
-      // negative => layers shift OPPOSITE to cursor (camera follows cursor)
-      setParallax({ x: -nx * 15, y: -ny * 10 });
-    };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
+function moveWallDrag(event) {
+  if (!isDraggingWall || isMobileWall()) return;
+  event.preventDefault();
+  const deltaX = event.clientX - dragStartX;
+  if (Math.abs(deltaX) > 6) hasDraggedWall = true;
+  wallEnvironment.scrollLeft = dragStartScroll - deltaX;
+}
 
-  /* Ambient sound toggle lifecycle */
-  useEffect(() => {
-    if (ambientOn && !ambientRef.current){
-      ambientRef.current = startAmbient();
-      if (!ambientRef.current) setAmbientOn(false); // failed to init
-    }
-    if (!ambientOn && ambientRef.current){
-      ambientRef.current.stop();
-      ambientRef.current = null;
-    }
-  }, [ambientOn]);
-  useEffect(() => () => { if (ambientRef.current) ambientRef.current.stop(); }, []);
+function endWallDrag(event) {
+  if (!isDraggingWall) return;
+  isDraggingWall = false;
+  wallEnvironment.classList.remove("is-dragging");
+  wallEnvironment.releasePointerCapture?.(event.pointerId);
+  window.setTimeout(() => {
+    hasDraggedWall = false;
+  }, 0);
+}
 
-  const handleLight = useCallback(() => {
-    if (!text.trim()) { textareaRef.current?.focus(); return; }
-    const matched = detectIntent(text);
-    setIntent(matched);
-    setPhase('lighting');
-    playIgnition();
+filtersToggle.addEventListener("click", () => {
+  markEngaged();
+  const isHidden = filtersPanel.hidden;
+  filtersPanel.hidden = !isHidden;
+  filtersToggle.setAttribute("aria-expanded", String(isHidden));
+  if (isHidden) searchInput.focus();
+});
 
-    // 1) Hold at center for ~2.6s while flame settles & "received" reads.
-    setTimeout(() => {
-      setPhase('journey');
-      // 2) The CSS transition on .user-zone (5.6s) carries the candle back.
-      //    When that completes, we commit the user candle into the wall.
-      setTimeout(() => {
-        const candle = { text: text.trim(), color: matched.color, intent: matched };
-        setUserCandle(candle);
-        try{ localStorage.setItem('candle-wall-state', JSON.stringify(candle)); } catch {}
-        setPhase('wall');
-      }, 5400);
-    }, 2600);
-  }, [text]);
+viewToggle.addEventListener("click", () => {
+  markEngaged();
+  currentView = currentView === "wall" ? "map" : "wall";
+  const showingMap = currentView === "map";
+  wallEnvironment.hidden = showingMap;
+  mapView.hidden = !showingMap;
+  viewToggle.textContent = showingMap ? "Wall View" : "Map View";
+  viewToggle.setAttribute("aria-pressed", String(showingMap));
+});
 
-  const handleReset = useCallback(() => {
-    try{ localStorage.removeItem('candle-wall-state'); } catch {}
-    setText('');
-    setIntent(DEFAULT_INTENT);
-    setUserCandle(null);
-    setPhase('idle');
-  }, []);
+[searchInput, statusFilter, countryFilter].forEach((control) => {
+  control.addEventListener("input", () => {
+    markEngaged();
+    renderWall();
+  });
+});
 
-  const onHover = useCallback((e, data) => {
-    setTooltip({ x: e.clientX, y: e.clientY, data });
-  }, []);
-  const onLeave = useCallback(() => setTooltip(null), []);
+wallEnvironment.addEventListener("pointerdown", markEngaged);
+wallEnvironment.addEventListener("pointerdown", startWallDrag);
+wallEnvironment.addEventListener("pointermove", moveWallDrag);
+wallEnvironment.addEventListener("pointerup", endWallDrag);
+wallEnvironment.addEventListener("pointercancel", endWallDrag);
+mapView.addEventListener("pointerdown", markEngaged);
 
-  /* User-zone choreography per phase.
-     - idle/charging: center, full size
-     - lighting:      center, slight settle (97%)
-     - journey:       drift backward to where the front-row sits (~78%), shrink to ~30%
-     - wall:          fully invisible; persistent userCandle inside CandleWall takes over */
-  let userZoneStyle;
-  if (phase === 'wall'){
-    userZoneStyle = { opacity: 0, transform: 'translate(-50%,-50%) scale(0.28)', top:'78%', pointerEvents:'none', filter:'blur(2px)' };
-  } else if (phase === 'journey'){
-    userZoneStyle = { opacity: 0, transform: 'translate(-50%,-50%) scale(0.30)', top:'78%', pointerEvents:'none', filter:'blur(1.5px)' };
-  } else if (phase === 'lighting'){
-    userZoneStyle = { opacity: 1, transform: 'translate(-50%,-50%) scale(0.97)', top:'50%' };
-  } else {
-    userZoneStyle = { opacity: 1, transform: 'translate(-50%,-44%) scale(1)', top:'50%' };
+sheetClose.addEventListener("click", closeSheet);
+sheetScrim.addEventListener("click", closeSheet);
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeSheet();
+  const target = event.target;
+  const isTyping = target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
+  if (currentView !== "wall" || isTyping) return;
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    markEngaged();
+    wallEnvironment.scrollBy({ left: -140, behavior: "smooth" });
   }
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    markEngaged();
+    wallEnvironment.scrollBy({ left: 140, behavior: "smooth" });
+  }
+});
+window.addEventListener("resize", () => {
+  window.cancelAnimationFrame(resizeFrame);
+  resizeFrame = window.requestAnimationFrame(() => {
+    wallCentered = false;
+    renderWall();
+    centerWall(true);
+  });
+});
 
-  // Heading fades back during lighting/journey/wall to let the candle breathe.
-  const headingFade = (phase === 'wall' || phase === 'journey') ? 0.55 : 1;
+populateCountries();
+renderWall();
+centerWall(true);
 
-  const lit = phase === 'lighting' || phase === 'journey' || phase === 'wall';
-
-  return (
-    <div className="stage" ref={stageRef}>
-      <SoundToggle on={ambientOn} onToggle={() => setAmbientOn(v => !v)} />
-
-      {/* parallax host — all background depth layers ride on this so they
-          shift with the cursor as a unit (each layer then scales its own
-          offset by its depth multiplier inside CandleWall). */}
-      <div
-        className="parallax"
-        style={{ transform:`translate3d(${parallax.x * 0.4}px, ${parallax.y * 0.4}px, 0)` }}
-      >
-        <FloatingParticles count={32} />
-        <CandleWall
-          candles={wallCandles}
-          userCandle={userCandle}
-          phase={phase === 'journey' ? 'lighting' : phase}
-          onHover={onHover}
-          onLeave={onLeave}
-          parallax={parallax}
-        />
-        <div className="basilica-frame" />
-        <div className="floor-glow" />
-      </div>
-
-      {/* heading */}
-      <div className="heading-wrap" style={{ opacity: headingFade }}>
-        <h1 className="heading">Light a Candle for <em>Your Prayer</em></h1>
-        <p className="sub">Write your intention. Watch your candle join a living wall of prayers carried with care.</p>
-      </div>
-
-      {/* prayer particles travelling from textarea to candle while typing */}
-      {phase === 'charging' && (
-        <PrayerParticles active={true} fromRef={textareaRef} toRef={userCandleRef} />
-      )}
-
-      {/* center user-candle zone — unmounted entirely in 'wall' phase so the
-          opacity transition doesn't flash the old candle on reload. */}
-      {phase !== 'wall' && (
-        <div className="user-zone" style={userZoneStyle}>
-        <div ref={userCandleRef} style={{ position:'relative' }}>
-          <Candle
-            lit={lit}
-            color={intent.color}
-            charge={charge}
-            charging={phase === 'charging' || phase === 'idle'}
-            size="normal"
-            isUser
-          />
-          {phase === 'lighting' && <span className="burst" />}
-        </div>
-
-        {/* prayer input + button — hide after submit */}
-        <div className="input-wrap" style={{
-          opacity: (phase === 'idle' || phase === 'charging') ? 1 : 0,
-          transform: (phase === 'idle' || phase === 'charging') ? 'translateY(0)' : 'translateY(20px)',
-          pointerEvents: (phase === 'idle' || phase === 'charging') ? 'auto' : 'none',
-        }}>
-          <textarea
-            ref={textareaRef}
-            className="prayer-area"
-            placeholder="Write your prayer intention…"
-            value={text}
-            onChange={(e) => {
-              const v = e.target.value;
-              setText(v);
-              setPhase(v.trim() ? 'charging' : 'idle');
-            }}
-            style={{ ['--charge']: charge }}
-            rows={3}
-          />
-          <div style={{ display:'flex', justifyContent:'center' }}>
-            <button
-              className="light-btn"
-              onClick={handleLight}
-              disabled={!text.trim()}
-            >
-              <span className="spark" /> Light My Candle
-            </button>
-          </div>
-
-          {/* live intent line — appears once user has typed enough */}
-          <div
-            className={'intent-line ' + (text.trim().length > 4 ? 'show' : '')}
-            style={{ ['--intent-c']: intent.color }}
-          >
-            Your prayer carries the light of <strong>{intent.label}</strong>.
-          </div>
-        </div>
-        </div>
-      )}
-
-      {/* "Your prayer has been received." — shows during ignition + journey */}
-      <div className={'received ' + ((phase === 'lighting' || phase === 'journey') ? 'show' : '')}>
-        Your prayer has been received.
-      </div>
-
-      {/* footer note — once joined */}
-      <div className={'footer-note ' + (phase === 'wall' ? 'show' : '')}>
-        <div className="em-line">Each candle represents a prayer carried with care.</div>
-        <div className="sub-em">Your light has joined the wall.</div>
-        <button className="reset-btn" onClick={handleReset}>
-          <span>✦</span> Light Another Candle
-        </button>
-      </div>
-
-      {/* hover tooltip */}
-      {tooltip && <PrayerTooltip data={tooltip.data} x={tooltip.x} y={tooltip.y} />}
-
-      {/* film grain + vignette overlays — always on top */}
-      <div className="grain" />
-      <div className="vignette" />
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
-</body>
+  </body>
 </html>
