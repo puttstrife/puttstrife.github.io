@@ -85,6 +85,8 @@ body.has-career-pack-toast {
 .ai-project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: min(1120px, calc(100% - 48px)); margin: 0 auto 100px; }
 .ai-project-card { overflow: hidden; border: 1px solid #e0e0e7; border-radius: 22px; background: #fff; box-shadow: 0 14px 40px rgba(23,23,35,.05); }
 .ai-visual { position: relative; height: 330px; overflow: hidden; }
+.ai-real-capture { display: grid; place-items: center; background: #12121a; }
+.ai-real-capture img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 .ai-card-body { padding: 30px; }
 .ai-card-body h2 { font-size: 28px; letter-spacing: -.04em; }
 .ai-card-body > p:not(.ai-card-type) { margin-top: 14px; color: #5c5c62; font-size: 14px; }
