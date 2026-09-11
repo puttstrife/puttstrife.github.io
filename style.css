@@ -73,9 +73,6 @@ body.has-career-pack-toast {
 
 /* ── AI Projects ── */
 .ai-projects-page { background: #f5f5fa; color: #151515; }
-.ai-projects-work-preview { display: grid; place-items: center; background: linear-gradient(135deg, #f4e5a1, #d8d5ff); }
-.ai-projects-work-preview img { width: 116px; height: 86px; object-fit: contain; filter: drop-shadow(0 10px 12px rgba(30, 40, 31, .16)); }
-.ai-projects-work-preview span { position: absolute; margin-top: 116px; color: #314334; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .ai-hero { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 190px 0 72px; }
 .ai-eyebrow, .ai-card-type { margin: 0 0 14px; color: #6d6d73; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .ai-hero h1 { max-width: 700px; font-size: clamp(52px, 8vw, 104px); letter-spacing: -.065em; }
