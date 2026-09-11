@@ -89,6 +89,7 @@ body.has-career-pack-toast {
 .ai-card-body h2 { font-size: 28px; letter-spacing: -.04em; }
 .ai-card-body > p:not(.ai-card-type) { margin-top: 14px; color: #5c5c62; font-size: 14px; }
 .ai-card-body ul { display: grid; gap: 7px; margin: 22px 0; color: #444; font-size: 13px; }
+.ai-case-study-link { display: inline-flex; margin: 0 0 20px; color: #111; font-size: 13px; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
 .ai-card-body li::before { content: '↗'; margin-right: 8px; color: #7d67ff; font-weight: 800; }
 .ai-card-footer { display: flex; justify-content: space-between; gap: 16px; padding-top: 17px; border-top: 1px solid #eeeef2; color: #777; font-size: 12px; font-weight: 700; }
 .ai-card-footer a { color: #111; text-decoration: underline; text-underline-offset: 3px; }
